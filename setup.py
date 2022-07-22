@@ -34,5 +34,8 @@ setup(
         "frictionless>=4,<5",
         "pandas>=1.3,<2",
     ],
+    entry_points={
+        "console_scripts": ["echemdbconverters=echemdbconverters.__main__:cli"],
+    },
     python_requires=">=3.9",
 )

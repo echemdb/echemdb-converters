@@ -40,39 +40,6 @@ import os
 
 import click
 
-#################################
-@click.command(name='package')
-@click.argument("svg", type=click.Path(exists=True))
-@click.option("--metadata", type=click.File("rb"), default=None, help="yaml file with metadata"
-)
-@click.option("--device", type='string', default=None, help='select a specific CSVloader by specifying the device')
-@click.option(
-    "--outdir",
-    type=click.Path(file_okay=False),
-    default=None,
-    help="write output files to this directory",
-)
-def package_csv(csv, metadata, outdir):
-    r"""Created a frictionless datapackage from a CSV.
-    The entries of a YAML containing metadata are added as
-    as descriptors.
-    """
-    if metadata:
-        import yaml
-
-        metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
-
-    from ..echemdbconverters.csvloader import CSVloader
-    with open(csv, "rb") as infile:
-        cv = CV(
-            _create_svgplot(infile, sampling_interval=sampling_interval, skewed=skewed),
-            metadata=metadata,
-        )
-
-    csvname = _outfile(svg, suffix=".csv", outdir=outdir)
-
-###############################
-
 
 @click.group(help=__doc__.split("EXAMPLES")[0])
 def cli():
@@ -81,14 +48,6 @@ def cli():
 
     This redirects to the individual commands listed below.
     """
-
-
-# The --skewed flag that is shared by many of the subcommands
-skewed_option = click.option(
-    "--skewed",
-    is_flag=True,
-    help="Detect non-orthogonal skewed axes going through the markers instead of assuming that axes are perfectly horizontal and vertical.",
-)
 
 
 def _outfile(template, suffix=None, outdir=None):
@@ -129,115 +88,72 @@ def _outfile(template, suffix=None, outdir=None):
 
     return template
 
-
-def _create_svgplot(svg, sampling_interval, skewed):
+def _create_package(converter, csvname, outdir):
     r"""
-    Return an :class:`SVGPlot` as read from the stream `svg`.
+    Return a data package built from a :param:`metadata` dict and tabular data
+    in :param:`csvname`.
 
-    EXAMPLES::
-
-        >>> from svgdigitizer.test.cli import invoke, TemporaryData
-        >>> with TemporaryData("**/xy.svg") as directory:
-        ...     svg = os.path.join(directory, "xy.svg")
-        ...     with open(svg, "rb") as infile:
-        ...         _create_svgplot(infile, sampling_interval=None, skewed=False)
-        <svgdigitizer.svgplot.SVGPlot object at 0x...>
-
+    This is a helper method for :meth:`convert`.
     """
-    from svgdigitizer.svg import SVG
-    from svgdigitizer.svgplot import SVGPlot
+    from frictionless import Package, Resource, Schema
 
-    return SVGPlot(
-        SVG(svg),
-        sampling_interval=sampling_interval,
-        algorithm="mark-aligned" if skewed else "axis-aligned",
+    package = Package(
+        converter.metadata,
+        resources=[
+            Resource(
+                path=os.path.basename(csvname),
+                basepath=outdir or os.path.dirname(csvname),
+            )
+        ],
     )
+    package.infer()
 
+    package["resources"][0]["schema"] = converter.schema
 
-@click.command()
-@click.option(
-    "--sampling-interval",
-    type=float,
-    default=None,
-    help="Sampling interval on the x-axis.",
-)
-@skewed_option
-@click.argument("svg", type=click.File("rb"))
-def plot(svg, sampling_interval, skewed):
+    return package
+
+def _write_metadata(out, metadata):
     r"""
-    Display a plot of the data traced in an SVG.
+    Write `metadata` to the `out` stream in JSON format.
 
-    EXAMPLES::
-
-        >>> from svgdigitizer.test.cli import invoke, TemporaryData
-        >>> with TemporaryData("**/xy.svg") as directory:
-        ...     invoke(cli, "plot", os.path.join(directory, "xy.svg"))
-
+    This is a helper method for :meth:`digitize_cv`.
     """
-    svgplot = _create_svgplot(svg, sampling_interval=sampling_interval, skewed=skewed)
-    svgplot.plot()
+
+    def defaultconverter(item):
+        r"""
+        Return `item` that Python's json package does not know how to serialize
+        in a format that Python's json package does know how to serialize.
+        """
+        from datetime import date, datetime
+
+        # The YAML standard knows about dates and times, so we might see these
+        # in the metadata. However, standard JSON does not know about these so
+        # we need to serialize them as strings explicitly.
+        if isinstance(item, (datetime, date)):
+            return item.__str__()
+
+        raise TypeError(f"Cannot serialize ${item} of type ${type(item)} to JSON.")
+
+    import json
+
+    json.dump(metadata, out, default=defaultconverter)
 
 
-@click.command()
-@click.option(
-    "--sampling-interval",
-    type=float,
-    default=None,
-    help="Sampling interval on the x-axis.",
-)
+@click.command(name='ec')
+@click.argument("csv", type=click.Path(exists=True))
+@click.option("--device", type=str, default=None, help='selects a specific CSVloader')
 @click.option(
     "--outdir",
     type=click.Path(file_okay=False),
     default=None,
     help="write output files to this directory",
 )
-@skewed_option
-@click.argument("svg", type=click.Path(exists=True))
-def digitize(svg, sampling_interval, outdir, skewed):
-    r"""
-    Digitize a plot.
-
-    Produces a CSV from the curve traced in the SVG.
-
-    EXAMPLES::
-
-        >>> from svgdigitizer.test.cli import invoke, TemporaryData
-        >>> with TemporaryData("**/xy_rate.svg") as directory:
-        ...     invoke(cli, "digitize", os.path.join(directory, "xy_rate.svg"))
-
-    """
-    with open(svg, "rb") as infile:
-        svg_plot = _create_svgplot(
-            infile, sampling_interval=sampling_interval, skewed=skewed
-        )
-
-    svg_plot.df.to_csv(_outfile(svg, suffix=".csv", outdir=outdir), index=False)
-
-
-@click.command(name="cv")
-@click.option(
-    "--sampling-interval",
-    type=float,
-    default=None,
-    help="sampling interval on the x-axis in volts",
-)
-@click.option(
-    "--metadata", type=click.File("rb"), default=None, help="yaml file with metadata"
+@click.option("--metadata", type=click.File("rb"), default=None, help="yaml file with metadata"
 )
 @click.option("--package", is_flag=True, help="create .json in data package format")
-@click.option(
-    "--outdir",
-    type=click.Path(file_okay=False),
-    default=None,
-    help="write output files to this directory",
-)
-@click.argument("svg", type=click.Path(exists=True))
-@skewed_option
-def digitize_cv(svg, sampling_interval, metadata, package, outdir, skewed):
+def convert(csv, device, outdir, metadata, package):
     r"""
-    Digitize a cylic voltammogram.
-
-    For inclusion in the echemdb.
+    Convert an electrochemistry file into an echemdb datapackage.
 
     EXAMPLES::
 
@@ -271,196 +187,37 @@ def digitize_cv(svg, sampling_interval, metadata, package, outdir, skewed):
         ...     invoke(cli, "cv", os.path.join(directory, "xy_rate.svg"))
 
     """
-    from svgdigitizer.electrochemistry.cv import CV
-
-    if sampling_interval is not None:
-        # Rewrite the sampling interval in terms of the unit on the x-axis.
-        with open(svg, "rb") as infile:
-            cv = CV(_create_svgplot(infile, sampling_interval=None, skewed=skewed))
-
-            from astropy import units as u
-
-            sampling_interval /= u.Unit(
-                cv.figure_schema.get_field(cv.voltage_dimension)["unit"]
-            ).to(u.V)
+    from .csvloader import CSVloader
+    from .ecconverter import ECConverter
+    import yaml
 
     if metadata:
-        import yaml
-
         metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
 
-    with open(svg, "rb") as infile:
-        cv = CV(
-            _create_svgplot(infile, sampling_interval=sampling_interval, skewed=skewed),
-            metadata=metadata,
-        )
+    if device:
+        converter = ECConverter.get_converter(device)(CSVloader.get_loader(device)(open(csv, 'r'), metadata))
+    else:
+        converter = ECConverter(open(csv, 'r'), metadata)
 
-    csvname = _outfile(svg, suffix=".csv", outdir=outdir)
-    cv.df.to_csv(csvname, index=False)
+    csvname = _outfile(csv, suffix=".csv", outdir=outdir)
+    converter.df.to_csv(csvname, index=False)
 
     if package:
-        package = _create_package(cv.metadata, csvname, outdir)
+        package = _create_package(converter, csvname, outdir)
 
-    with open(
-        _outfile(svg, suffix=".json", outdir=outdir),
-        mode="w",
-        encoding="utf-8",
-    ) as json:
-        _write_metadata(json, package.to_dict() if package else cv.metadata)
-
-
-def _create_package(metadata, csvname, outdir):
-    r"""
-    Return a data package built from a :param:`metadata` dict and tabular data
-    in :param:`csvname`.
-
-    This is a helper method for :meth:`digitize_cv`.
-    """
-    from frictionless import Package, Resource, Schema
-
-    package = Package(
-        metadata,
-        resources=[
-            Resource(
-                path=os.path.basename(csvname),
-                basepath=outdir or os.path.dirname(csvname),
-            )
-        ],
-    )
-    package.infer()
-    # Update fields in the datapackage describing the data in the CSV
-    package_schema = package["resources"][0]["schema"]
-    data_description_schema = Schema(fields=package["data description"]["fields"])
-
-    new_fields = []
-    for name in package_schema.field_names:
-        if not name in data_description_schema.field_names:
-            raise KeyError(
-                f"Field with name {name} is not specified in `data_descripton.fields`."
-            )
-        new_fields.append(
-            data_description_schema.get_field(name).to_dict()
-            | package_schema.get_field(name).to_dict()
-        )
-
-    package["resources"][0]["schema"]["fields"] = new_fields
-    del package["data description"]["fields"]
-
-    return package
+        with open(
+            _outfile(csv, suffix=".json", outdir=outdir),
+            mode="w",
+            encoding="utf-8",
+        ) as json:
+            _write_metadata(json, package.to_dict() if package else converter.metadata)
+    pass
 
 
-def _write_metadata(out, metadata):
-    r"""
-    Write `metadata` to the `out` stream in JSON format.
-
-    This is a helper method for :meth:`digitize_cv`.
-    """
-
-    def defaultconverter(item):
-        r"""
-        Return `item` that Python's json package does not know how to serialize
-        in a format that Python's json package does know how to serialize.
-        """
-        from datetime import date, datetime
-
-        # The YAML standard knows about dates and times, so we might see these
-        # in the metadata. However, standard JSON does not know about these so
-        # we need to serialize them as strings explicitly.
-        if isinstance(item, (datetime, date)):
-            return item.__str__()
-
-        raise TypeError(f"Cannot serialize ${item} of type ${type(item)} to JSON.")
-
-    import json
-
-    json.dump(metadata, out, default=defaultconverter)
-
-
-def _create_linked_svg(svg, png):
-    r"""
-    Write an SVG to `svg` that shows `png` as a linked image.
-
-    This is a helper method for :meth:`paginate`.
-    """
-    from PIL import Image
-
-    width, height = Image.open(png).size
-
-    import svgwrite
-
-    drawing = svgwrite.Drawing(
-        svg,
-        size=(f"{width}px", f"{height}px"),
-        profile="full",
-    )
-
-    from svgwrite.extensions.inkscape import Inkscape
-
-    Inkscape(drawing)
-
-    img = drawing.add(
-        svgwrite.image.Image(
-            png,
-            insert=(0, 0),
-            size=(f"{width}px", f"{height}px"),
-        )
-    )
-
-    # workaround: add missing locking attribute for image element
-    # https://github.com/mozman/svgwrite/blob/c8cbf6f615910b3818ccf939fce0e407c9c789cb/svgwrite/extensions/inkscape.py#L50
-    elements = drawing.validator.elements
-    elements["image"].valid_attributes = {
-        "sodipodi:insensitive",
-    } | elements["image"].valid_attributes
-    img.attribs["sodipodi:insensitive"] = "true"
-
-    drawing.save(pretty=True)
-
-
-@click.command()
-@click.option("--onlypng", is_flag=True, help="Only produce png files")
-@click.option(
-    "--outdir",
-    type=click.Path(file_okay=False),
-    default=None,
-    help="write output files to this directory",
-)
-@click.argument("pdf")
-def paginate(onlypng, pdf, outdir):
-    r"""
-    Render PDF pages as individual SVG files with linked PNG images.
-
-    The SVG and PNG files are written to the PDF's directory.
-
-    EXAMPLES::
-
-        >>> from svgdigitizer.test.cli import invoke, TemporaryData
-        >>> with TemporaryData("**/mustermann_2021_svgdigitizer_1.pdf") as directory:
-        ...     invoke(cli, "paginate", os.path.join(directory, "mustermann_2021_svgdigitizer_1.pdf"))
-
-    """
-    from pdf2image import convert_from_path
-
-    pages = convert_from_path(pdf, dpi=600)
-    pngs = [
-        _outfile(pdf, suffix=f"_p{page}.png", outdir=outdir)
-        for page in range(len(pages))
-    ]
-
-    for page, png in zip(pages, pngs):
-        page.save(png, "PNG")
-
-        if not onlypng:
-            _create_linked_svg(_outfile(png, suffix=".svg", outdir=outdir), png)
-
-
-cli.add_command(plot)
-cli.add_command(digitize)
-cli.add_command(digitize_cv)
-cli.add_command(paginate)
+cli.add_command(convert)
 
 # Register command docstrings for doctesting.
-# Since commands are not fnuctions anymore due to their decorator, their
+# Since commands are not functions anymore due to their decorator, their
 # docstrings would otherwise be ignored.
 __test__ = {
     name: command.__doc__ for (name, command) in cli.commands.items() if command.__doc__

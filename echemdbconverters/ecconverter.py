@@ -52,8 +52,9 @@ import logging
 
 logger = logging.getLogger("ecconverter")
 
+
 class ECConverter:
-    """
+    r"""
     Creates standardized echemdb datapackage compatible CSV.
 
     The file loaded must have the columns t, U/E, and I/j.
@@ -92,6 +93,36 @@ class ECConverter:
 
     @property
     def fields(self):
+        r"""
+        Fields describing the column names.
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''t,E,j,x
+            ... 0,0,0,0
+            ... 1,1,1,1''')
+            >>> from .csvloader import CSVloader
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
+            >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
+            >>> ec.fields
+            [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]
+
+        A file with unspecified fields::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''t,E,j,x
+            ... 0,0,0,0
+            ... 1,1,1,1''')
+            >>> from .csvloader import CSVloader
+            >>> ec = ECConverter(CSVloader(file=file))
+            >>> ec.fields  # doctest: +NORMALIZE_WHITESPACE
+            [{'name': 't', 'comment': 'Created by echemdb-converters.'},
+            {'name': 'E', 'comment': 'Created by echemdb-converters.'},
+            {'name': 'j', 'comment': 'Created by echemdb-converters.'},
+            {'name': 'x', 'comment': 'Created by echemdb-converters.'}]
+
+        """
         if not self._fields:
             return self.loader.fields
 
@@ -303,7 +334,7 @@ class ECConverter:
 
     @property
     def df(self):
-        """
+        r"""
         Creates standardized electrochemistry dataframes.
 
         The file loaded must have the columns t, U/E, and I/j.
@@ -328,4 +359,22 @@ class ECConverter:
 
     @property
     def metadata(self):
+        r"""
+        Returns metadata associated with the CSV.
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''t,E,j,x
+            ... 0,0,0,0
+            ... 1,1,1,1''')
+            >>> from .csvloader import CSVloader
+            >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}
+            >>> ec = ECConverter(CSVloader(file, metadata))
+            >>> ec.metadata  # doctest: +NORMALIZE_WHITESPACE
+            {'figure description': {'fields': [{'name': 't', 'unit': 's'},
+            {'name': 'E', 'unit': 'V', 'reference': 'RHE'},
+            {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]}}
+
+        """
         return self.loader.metadata

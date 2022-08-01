@@ -245,8 +245,11 @@ class ECLabLoader(CSVloader):
             ... ''')
             >>> from .csvloader import CSVloader
             >>> ec = CSVloader.get_loader('eclab')(file)
-            >>> ec.create_fields()
-            [{'name': 'mode'}, {'name': 'time/s', 'unit': 's', 'dimension': 't', 'description': 'relative time'}, {'name': 'control/V', 'unit': 'V', 'dimension': 'E', 'description': 'control voltage'}, {'name': 'Ewe/V', 'unit': 'V', 'dimension': 'E', 'description': 'working electrode potential'}, {'name': '<I>/mA', 'unit': 'mA', 'dimension': 'I', 'description': 'working electrode current'}]
+            >>> ec.create_fields() # doctest: +NORMALIZE_WHITESPACE
+            [{'name': 'mode'}, {'name': 'time/s', 'unit': 's', 'dimension': 't', 'description': 'relative time'},
+            {'name': 'control/V', 'unit': 'V', 'dimension': 'E', 'description': 'control voltage'},
+            {'name': 'Ewe/V', 'unit': 'V', 'dimension': 'E', 'description': 'working electrode potential'},
+            {'name': '<I>/mA', 'unit': 'mA', 'dimension': 'I', 'description': 'working electrode current'}]
 
         """
         # TODO:: When the file contains an unnamed column an this is not 13, this approach will fail. (see: #8)

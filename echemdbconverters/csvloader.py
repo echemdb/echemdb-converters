@@ -128,22 +128,21 @@ class CSVloader:
             >>> csv.fields
             [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}]
 
-        When a field is missing (here `t`) it will be generated and all obsolete fields descriptions (here `x`) are removed.::
+        When a field is missing (here `t`) it will be generated and all obsolete fields are removed.::
 
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'}]}}}
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}}
             >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
             >>> csv.fields
             [{'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 't', 'comment': 'Created by echemdb-converters.'}]
 
         """
-        #_fields = self._fields
         if not self._fields:
             return self.create_fields()
 
-        from frictionless import Schema, Field
+        from frictionless import Field, Schema
 
         # Validate if fields are valid frictionless fields.
         schema = Schema(fields=[Field(field) for field in self._fields])
@@ -152,9 +151,10 @@ class CSVloader:
         # and remove the field if not available.
         for field in schema.fields:
             try:
-                field['name']
+                field["name"]
             except KeyError:
-                schema.fields.remove(field)
+                # pylint dows not recognize that fields have a remove method
+                schema.fields.remove(field)  # pylint: disable=no-member
                 logger.warning("Field {field} has no attribute `name`.")
 
         # Remove fields which are not found in the column names.
@@ -227,14 +227,18 @@ class CSVloader:
             1     2       1   1.4       5          1
 
         """
-        from .eclabloader import ECLabLoader
+        # from .eclabloader import ECLabLoader
 
-        devices = {
-            "eclab": ECLabLoader,  # Biologic-EClab device
-        }
+        # devices = {
+        #     "eclab": ECLabLoader,  # Biologic-EClab device
+        # }
 
-        if device in devices:
-            return devices[device]
+        # if device in devices:
+        #     return devices[device]
+        if device == "eclab":
+            from .eclabloader import ECLabLoader
+
+            return ECLabLoader
 
         raise KeyError(f"Device wth name '{device}' is unknown to the loader'.")
 
@@ -424,7 +428,7 @@ class CSVloader:
             {'name': 'voltage', 'comment': 'Created by echemdb-converters.'}
 
         """
-        return {"name": name, 'comment': 'Created by echemdb-converters.'}
+        return {"name": name, "comment": "Created by echemdb-converters."}
 
     @property
     def delimiter(self):

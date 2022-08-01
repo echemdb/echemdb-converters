@@ -23,12 +23,12 @@ jobs:
       - name: pylint
         shell: bash -l {0}
         run: |
-          pylint echemdb-converters
+          pylint echemdbconverters
       - name: black
         shell: bash -l {0}
         run: |
-          black --check --diff echemdb-converters
+          black --check --diff echemdbconverters
       - name: isort
         shell: bash -l {0}
         run: |
-          isort --check --diff --profile black echemdb-converters
+          isort --check --diff --profile black echemdbconverters

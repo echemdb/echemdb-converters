@@ -80,7 +80,7 @@ class ECConverter:
         ['t', 'E', 'j']
 
         >>> ec.schema['fields']
-        [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}]
+        [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
 
         >>> ec.schema.field_names
         ['t', 'E', 'j']
@@ -106,7 +106,7 @@ class ECConverter:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
             >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
             >>> ec.fields
-            [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]
+            [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]
 
         A file with unspecified fields::
 
@@ -236,7 +236,10 @@ class ECConverter:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
             >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
             >>> ec._schema
-            {'fields': [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]}
+            {'fields': [{'name': 't', 'unit': 's'},
+                        {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
+                        {'name': 'j', 'unit': 'uA / cm2'},
+                        {'name': 'x', 'unit': 'm'}]}
 
 
             >>> from io import StringIO
@@ -247,7 +250,10 @@ class ECConverter:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
             >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
             >>> ec._schema
-            {'fields': [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'comment': 'Created by echemdb-converters.'}]}
+            {'fields': [{'name': 't', 'unit': 's'},
+                        {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
+                        {'name': 'j', 'unit': 'uA / cm2'},
+                        {'comment': 'Created by echemdb-converters.', 'name': 'x'}]}
 
         """
         schema = self.loader.schema
@@ -274,7 +280,9 @@ class ECConverter:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
             >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
             >>> ec.schema
-            {'fields': [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}]}
+            {'fields': [{'name': 't', 'unit': 's'},
+                        {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
+                        {'name': 'j', 'unit': 'uA / cm2'}]}
 
         """
         from frictionless import Schema

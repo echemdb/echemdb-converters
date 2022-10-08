@@ -126,7 +126,7 @@ class CSVloader:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
             >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
             >>> csv.fields
-            [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}]
+            [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
 
         When a field is missing (here `t`) it will be generated and all obsolete fields are removed.::
 
@@ -136,7 +136,7 @@ class CSVloader:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}}
             >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
             >>> csv.fields
-            [{'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 't', 'comment': 'Created by echemdb-converters.'}]
+            [{'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}, {'comment': 'Created by echemdb-converters.', 'name': 't'}]
 
         """
         if not self._fields:
@@ -311,6 +311,7 @@ class CSVloader:
         from io import StringIO
 
         return StringIO(
+            #"".join(line for line in self.file.readlines()[self.header_lines :])
             "".join(line for line in self.file.readlines()[self.header_lines + 1 :])
         )
 
@@ -382,7 +383,9 @@ class CSVloader:
             >>> from .csvloader import CSVloader
             >>> csv = CSVloader(file)
             >>> csv.schema
-            {'fields': [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]}
+            {'fields': [{'comment': 'Created by echemdb-converters.', 'name': 't'},
+                        {'comment': 'Created by echemdb-converters.', 'name': 'E'},
+                        {'comment': 'Created by echemdb-converters.', 'name': 'j'}]}
 
         Field description provided in the metadata::
 
@@ -392,7 +395,9 @@ class CSVloader:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
             >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
             >>> csv.schema
-            {'fields': [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}]}
+            {'fields': [{'name': 't', 'unit': 's'},
+                        {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
+                        {'name': 'j', 'unit': 'uA / cm2'}]}
 
         """
         from frictionless import Schema

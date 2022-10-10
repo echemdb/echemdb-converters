@@ -311,7 +311,6 @@ class CSVloader:
         from io import StringIO
 
         return StringIO(
-            # "".join(line for line in self.file.readlines()[self.header_lines :])
             "".join(line for line in self.file.readlines()[self.header_lines + 1 :])
         )
 

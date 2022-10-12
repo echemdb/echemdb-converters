@@ -85,9 +85,10 @@ class ECUnitPackageAdapter:
     """
     core_dimensions = {"time": ["t"], "voltage": ["E", "U"], "current": ["I", "j"]}
 
-    def __init__(self, loader, fields=None):
+    def __init__(self, loader, fields=None, metadata=None): # TODO add device as input argument and select loader accordingly
         self.loader = loader
         self._fields = self.loader.derive_fields(fields=fields)
+        self._metadata = metadata
 
     @staticmethod
     def create(device=None):
@@ -262,7 +263,8 @@ class ECUnitPackageAdapter:
         df.columns = self.column_names
         return df
 
-    def augment(self, metadata=None):
+    @property
+    def metadata(self):
         r"""
         Returns metadata associated with the CSV.
 
@@ -274,11 +276,11 @@ class ECUnitPackageAdapter:
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
             >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}
-            >>> ec = ECUnitPackageAdapter(CSVloader(file))
-            >>> ec.augment(metadata)  # doctest: +NORMALIZE_WHITESPACE
+            >>> ec = ECUnitPackageAdapter(CSVloader(file), metadata=metadata)
+            >>> ec.metadata  # doctest: +NORMALIZE_WHITESPACE
             {'figure description': {'fields': [{'name': 't', 'unit': 's'},
             {'name': 'E', 'unit': 'V', 'reference': 'RHE'},
             {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]}}
 
         """
-        return self.loader.augment(metadata)
+        return self._metadata

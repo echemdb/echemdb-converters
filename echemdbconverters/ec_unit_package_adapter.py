@@ -155,7 +155,7 @@ class ECUnitPackageAdapter:
             {'name': 'j', 'unit': 'uA / cm2'},
             {'name': 'x', 'unit': 'm'}]
 
-        A CVS with incomplete field information.::
+        A CSV with incomplete field information.::
 
             >>> from io import StringIO
             >>> file = StringIO(r'''t,E,j,x
@@ -170,7 +170,7 @@ class ECUnitPackageAdapter:
             {'name': 'j', 'unit': 'uA / cm2'},
             {'comment': 'Created by echemdb-converters.', 'name': 'x'}]
 
-        A CVS with a missing potential axis which is, however, defined in the field description.::
+        A CSV with a missing potential axis which is, however, defined in the field description.::
 
             >>> from io import StringIO
             >>> file = StringIO(r'''t,j,x

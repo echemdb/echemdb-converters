@@ -340,28 +340,27 @@ class CSVloader:
         # Validate if fields are valid frictionless fields.
         schema = Schema(fields=[Field(field) for field in fields])
 
-        # Validate that the fields have an attribute 'name'
-        # and remove the field if not available.
+        # Validate that the fields have an attribute 'name'.
         for field in schema.fields:
             try:
                 field["name"]
             except KeyError:
-                # pylint dows not recognize that fields have a remove method
+                # pylint does not recognize that frictionless fields have a remove method
                 schema.fields.remove(field)  # pylint: disable=no-member
                 logger.warning(f"Field {field} has no attribute `name`.")
 
-        # Remove fields which are not found in the column names.
+        # Remove fields which are not present in the column names.
         for name in schema.field_names:
             if not name in self.column_names:
                 schema.remove_field(name)
 
-        # Add fields for columns names that are not described in the provided fields.
+        # Add fields for column that are not described in the provided fields.
         for name in self.column_names:
             if not name in schema.field_names:
                 schema.add_field(self._create_field(name))
                 logger.warning(f"A field with name `{name}` was added to the schema.")
 
-        # Reorder fields according to the column order in the dataframe
+        # Reorder fields according to the column order in the dataframe.
         fields = [schema.get_field(name) for name in self.column_names]
 
         return fields

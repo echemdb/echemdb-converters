@@ -131,7 +131,7 @@ class CSVloader:
         return metadata or {}
 
     @staticmethod
-    def get_loader(device=None):
+    def create(device=None):
         r"""
         Calls a specific `loader` based on a given device.
 
@@ -147,7 +147,7 @@ class CSVloader:
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> csv = CSVloader.get_loader('eclab')(file)
+            >>> csv = CSVloader.create('eclab')(file)
             >>> csv.df
             mode  time/s Ewe/V  <I>/mA  control/V
             0     2       0   0.1       0          0
@@ -287,7 +287,7 @@ class CSVloader:
             ... 2\t0\t0,1\t0\t0
             ... 2\t1\t1,4\t5\t1
             ... ''')
-            >>> csv = CSVloader.get_loader('eclab')(file)
+            >>> csv = CSVloader.create('eclab')(file)
             >>> csv.header_lines
             5
 
@@ -450,7 +450,7 @@ class CSVloader:
             ... 2\t0\t0,1\t0\t0
             ... 2\t1\t1,4\t5\t1
             ... ''')
-            >>> csv = CSVloader.get_loader('eclab')(file)
+            >>> csv = CSVloader.create('eclab')(file)
             >>> csv.decimal
             ','
 

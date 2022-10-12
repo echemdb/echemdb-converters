@@ -76,9 +76,8 @@ class CSVloader:
 
     """
 
-    def __init__(self, file, metadata=None, fields=None):
+    def __init__(self, file, fields=None):
         self._file = file.read()
-        self._metadata = metadata or {}
         self._fields = fields
 
     @property
@@ -124,7 +123,7 @@ class CSVloader:
             ... 0,0,0
             ... 1,1,1''')
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-            >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
+            >>> csv = CSVloader(file=file, fields=metadata['figure description']['schema']['fields'])
             >>> csv.fields
             [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
 
@@ -134,7 +133,7 @@ class CSVloader:
             ... 0,0,0
             ... 1,1,1''')
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}}
-            >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
+            >>> csv = CSVloader(file=file, fields=metadata['figure description']['schema']['fields'])
             >>> csv.fields
             [{'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}, {'comment': 'Created by echemdb-converters.', 'name': 't'}]
 
@@ -170,8 +169,7 @@ class CSVloader:
 
         return schema.fields
 
-    @property
-    def metadata(self):
+    def augment(self, metadata=None):
         r"""
         Metadata constructed from input metadata and the CSV header.
         A simple CSV does not have any metadata in the header.
@@ -186,7 +184,7 @@ class CSVloader:
             ... 1,1,1''')
             >>> from .csvloader import CSVloader
             >>> csv = CSVloader(file)
-            >>> csv.metadata
+            >>> csv.augment()
             {}
 
         Without metadata provided to the loader::
@@ -196,12 +194,12 @@ class CSVloader:
             ... 0,0,0
             ... 1,1,1''')
             >>> from .csvloader import CSVloader
-            >>> csv = CSVloader(file, metadata={'foo':'bar'})
-            >>> csv.metadata
+            >>> csv = CSVloader(file)
+            >>> csv.augment(metadata={'foo':'bar'})
             {'foo': 'bar'}
 
         """
-        return self._metadata.copy()
+        return metadata or {}
 
     @staticmethod
     def get_loader(device=None):
@@ -392,7 +390,7 @@ class CSVloader:
             ... 0,0,0
             ... 1,1,1''')
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-            >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
+            >>> csv = CSVloader(file=file, fields=metadata['figure description']['schema']['fields'])
             >>> csv.schema
             {'fields': [{'name': 't', 'unit': 's'},
                         {'name': 'E', 'reference': 'RHE', 'unit': 'V'},

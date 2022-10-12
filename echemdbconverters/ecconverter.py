@@ -68,7 +68,7 @@ class ECConverter:
         ... 1,1,1,1''')
         >>> from .csvloader import CSVloader
         >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-        >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
+        >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
         >>> ec.df
            t  E  j
         0  0  0  0
@@ -104,7 +104,7 @@ class ECConverter:
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-            >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
+            >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
             >>> ec.fields
             [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]
 
@@ -234,7 +234,7 @@ class ECConverter:
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-            >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
+            >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
             >>> ec._schema
             {'fields': [{'name': 't', 'unit': 's'},
                         {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
@@ -248,7 +248,7 @@ class ECConverter:
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-            >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
+            >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
             >>> ec._schema
             {'fields': [{'name': 't', 'unit': 's'},
                         {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
@@ -278,7 +278,7 @@ class ECConverter:
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-            >>> ec = ECConverter(CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields']))
+            >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
             >>> ec.schema
             {'fields': [{'name': 't', 'unit': 's'},
                         {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
@@ -365,8 +365,7 @@ class ECConverter:
         """
         return self._df[self.column_names]
 
-    @property
-    def metadata(self):
+    def augment(self, metadata=None):
         r"""
         Returns metadata associated with the CSV.
 
@@ -378,11 +377,11 @@ class ECConverter:
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
             >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}
-            >>> ec = ECConverter(CSVloader(file, metadata))
-            >>> ec.metadata  # doctest: +NORMALIZE_WHITESPACE
+            >>> ec = ECConverter(CSVloader(file))
+            >>> ec.augment(metadata)  # doctest: +NORMALIZE_WHITESPACE
             {'figure description': {'fields': [{'name': 't', 'unit': 's'},
             {'name': 'E', 'unit': 'V', 'reference': 'RHE'},
             {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]}}
 
         """
-        return self.loader.metadata
+        return self.loader.augment(metadata)

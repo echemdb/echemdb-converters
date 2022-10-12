@@ -216,7 +216,7 @@ class ECConverter:
 
         self._validate_core_dimensions(schema.field_names)
 
-        return schema['fields']
+        return schema["fields"]
 
     @property
     def column_names(self):
@@ -237,6 +237,7 @@ class ECConverter:
 
         """
         from frictionless import Schema
+
         return Schema(fields=self.fields()).field_names
 
     @property

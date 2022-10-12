@@ -294,41 +294,6 @@ class CSVloader:
         """
         return 0
 
-    # def derive_schema(self, fields=None):
-    #     r"""
-    #     A frictionless `Schema` object, including a `Fields` object
-    #     describing the columns.
-
-    #     EXAMPLES::
-
-    #         >>> from io import StringIO
-    #         >>> file = StringIO(r'''t,E,j
-    #         ... 0,0,0
-    #         ... 1,1,1''')
-    #         >>> from .csvloader import CSVloader
-    #         >>> csv = CSVloader(file)
-    #         >>> csv.derive_schema()
-    #         {'fields': [{'comment': 'Created by echemdb-converters.', 'name': 't'},
-    #                     {'comment': 'Created by echemdb-converters.', 'name': 'E'},
-    #                     {'comment': 'Created by echemdb-converters.', 'name': 'j'}]}
-
-    #     Field description provided in the metadata::
-
-    #         >>> file = StringIO(r'''t,E,j
-    #         ... 0,0,0
-    #         ... 1,1,1''')
-    #         >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-    #         >>> csv = CSVloader(file=file)
-    #         >>> csv.derive_schema(fields=metadata['figure description']['schema']['fields'])
-    #         {'fields': [{'name': 't', 'unit': 's'},
-    #                     {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
-    #                     {'name': 'j', 'unit': 'uA / cm2'}]}
-
-    #     """
-    #     from frictionless import Schema
-
-    #     return Schema(fields=self._fields(fields=fields))
-
     def derive_fields(self, fields=None):
         r"""
         Fields describing the column names.

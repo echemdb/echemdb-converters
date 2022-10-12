@@ -57,8 +57,8 @@ class ECUnitPackageAdapter:
     r"""
     Creates standardized echemdb datapackage compatible CSV.
 
-    The file loaded must have the columns t, U/E, and I/j.
-    Any other columns will be discarded.
+    The file loaded must have the columns t, U or E, and I or j.
+    In addition each fields with the respective name must be associated with a unit.
 
     EXAMPLES::
 
@@ -85,7 +85,10 @@ class ECUnitPackageAdapter:
     """
     core_dimensions = {"time": ["t"], "voltage": ["E", "U"], "current": ["I", "j"]}
 
-    def __init__(self, loader, fields=None, metadata=None): # TODO add device as input argument and select loader accordingly
+    def __init__(
+        self, loader, fields=None, metadata=None, device=None
+    ):  # TODO add device as input argument and select loader accordingly
+        self.device = device
         self.loader = loader
         self._fields = self.loader.derive_fields(fields=fields)
         self._metadata = metadata
@@ -129,30 +132,6 @@ class ECUnitPackageAdapter:
         """
         return {}
 
-    @classmethod
-    def _validate_core_dimensions(cls, column_names):
-        """
-        Validates that the column names contain a time, voltage and current axis.
-
-        EXAMPLES::
-
-            >>> ECUnitPackageAdapter.core_dimensions
-            {'time': ['t'], 'voltage': ['E', 'U'], 'current': ['I', 'j']}
-
-            >>> ECUnitPackageAdapter._validate_core_dimensions(column_names=['t','U','I','cycle','comment'])
-            True
-
-            >>> ECUnitPackageAdapter._validate_core_dimensions(column_names=['t','U'])
-            Traceback (most recent call last):
-            ...
-            KeyError: "No column with a 'current' axis."
-
-        """
-        for key, item in cls.core_dimensions.items():
-            if not set(item).intersection(set(column_names)):
-                raise KeyError(f"No column with a '{key}' axis.")
-        return True
-
     def fields(self):
         r"""
         A frictionless `Schema` object, including a `Fields` object
@@ -183,8 +162,8 @@ class ECUnitPackageAdapter:
             ... 0,0,0,0
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
-            >>> metadata2 = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'t', 'unit':'s'}]}}}
-            >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata2['figure description']['schema']['fields'])
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'t', 'unit':'s'}]}}}
+            >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.fields() # doctest: +NORMALIZE_WHITESPACE
             [{'name': 't', 'unit': 's'},
             {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
@@ -206,16 +185,46 @@ class ECUnitPackageAdapter:
             KeyError: "No column with a 'voltage' axis."
 
 
+        Fields with missing units in one o the core dimension fields.::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''t,E,j,x
+            ... 0,0,0,0
+            ... 1,1,1,1''')
+            >>> from .csvloader import CSVloader
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'t'}]}}}
+            >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
+            >>> ec.fields()
+            Traceback (most recent call last):
+            ...
+            KeyError: "No unit associated with the field named 't'"
+
         """
+        import itertools
+
         from frictionless import Schema
 
         schema = Schema(fields=self._fields)
 
         for name in schema.field_names:
+            # Change the name of specific fields.
             if name in self.field_name_conversion:
                 schema.get_field(name)["name"] = self.field_name_conversion[name]
+            # Validate that each field with a core dimension has a unit.
+            if name in list(
+                itertools.chain.from_iterable(list(self.core_dimensions.values()))
+            ):
+                try:
+                    schema.get_field(name)["unit"]
+                except KeyError as exc:
+                    raise KeyError(
+                        f"No unit associated with the field named '{name}'"
+                    ) from exc
 
-        self._validate_core_dimensions(schema.field_names)
+        # Validates that the column names contain a time, voltage and current axis.
+        for key, item in self.core_dimensions.items():
+            if not set(item).intersection(set(schema.field_names)):
+                raise KeyError(f"No column with a '{key}' axis.")
 
         return schema["fields"]
 

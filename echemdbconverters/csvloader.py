@@ -348,7 +348,7 @@ class CSVloader:
             except KeyError:
                 # pylint dows not recognize that fields have a remove method
                 schema.fields.remove(field)  # pylint: disable=no-member
-                logger.warning("Field {field} has no attribute `name`.")
+                logger.warning(f"Field {field} has no attribute `name`.")
 
         # Remove fields which are not found in the column names.
         for name in schema.field_names:
@@ -359,7 +359,7 @@ class CSVloader:
         for name in self.column_names:
             if not name in schema.field_names:
                 schema.add_field(self._create_field(name))
-                logger.warning("A field with name `{name}` was added to the schema.")
+                logger.warning(f"A field with name `{name}` was added to the schema.")
 
         # Reorder fields according to the column order in the dataframe
         fields = [schema.get_field(name) for name in self.column_names]

@@ -11,12 +11,12 @@ EXAMPLES::
     ... 0,0,0,0
     ... 1,1,1,1''')
     >>> from .csvloader import CSVloader
-    >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}
-    >>> ec = ECConverter(CSVloader(file, metadata))
+    >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
+    >>> ec = ECConverter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
     >>> ec.df
-       t  E  j
-    0  0  0  0
-    1  1  1  1
+       t  E  j  x
+    0  0  0  0  0
+    1  1  1  1  1
 
 The original dataframe is still accessible from the loader::
 
@@ -68,65 +68,26 @@ class ECConverter:
         ... 1,1,1,1''')
         >>> from .csvloader import CSVloader
         >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-        >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
+        >>> ec = ECConverter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
         >>> ec.df
-           t  E  j
-        0  0  0  0
-        1  1  1  1
+           t  E  j  x
+        0  0  0  0  0
+        1  1  1  1  1
 
     A list of names describing the columns::
 
         >>> ec.column_names
-        ['t', 'E', 'j']
+        ['t', 'E', 'j', 'x']
 
-        >>> ec.schema['fields']
-        [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
-
-        >>> ec.schema.field_names
-        ['t', 'E', 'j']
+        >>> ec.fields()
+        [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]
 
     """
+    core_dimensions = {"time": ["t"], "voltage": ["E", "U"], "current": ["I", "j"]}
 
     def __init__(self, loader, fields=None):
         self.loader = loader
-        self._fields = fields
-
-    @property
-    def fields(self):
-        r"""
-        Fields describing the column names.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j,x
-            ... 0,0,0,0
-            ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-            >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
-            >>> ec.fields
-            [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]
-
-        A file with unspecified fields::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j,x
-            ... 0,0,0,0
-            ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> ec = ECConverter(CSVloader(file=file))
-            >>> ec.fields  # doctest: +NORMALIZE_WHITESPACE
-            [{'name': 't', 'comment': 'Created by echemdb-converters.'},
-            {'name': 'E', 'comment': 'Created by echemdb-converters.'},
-            {'name': 'j', 'comment': 'Created by echemdb-converters.'},
-            {'name': 'x', 'comment': 'Created by echemdb-converters.'}]
-
-        """
-        if not self._fields:
-            return self.loader.fields
-
-        return self._fields
+        self._fields = self.loader.derive_fields(fields=fields)
 
     @staticmethod
     def get_converter(device=None):
@@ -145,11 +106,11 @@ class ECConverter:
         raise KeyError(f"Device wth name '{device}' is unknown to the converter'.")
 
     @property
-    def name_conversion(self):
+    def field_name_conversion(self):
         """
         A dictionary which defines new names for column names of the loaded CSV.
         For example the loaded CSV could contain a column with name `time/s`.
-        In the converted CSV that column should be names `t` instead.
+        In the converted CSV that column should be named `t` instead.
         In that case {'time/s':'t'} should be returned.
         The property should be adapted in the respective device converters.
 
@@ -162,7 +123,7 @@ class ECConverter:
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
             >>> ec = ECConverter(CSVloader(file))
-            >>> ec.name_conversion
+            >>> ec.field_name_conversion
             {}
         """
         return {}
@@ -174,51 +135,24 @@ class ECConverter:
 
         EXAMPLES::
 
-            >>> ECConverter._validate_core_dimensions(['t','U','I'])
+            >>> ECConverter.core_dimensions
+            {'time': ['t'], 'voltage': ['E', 'U'], 'current': ['I', 'j']}
+
+            >>> ECConverter._validate_core_dimensions(column_names=['t','U','I','cycle','comment'])
             True
 
-            >>> ECConverter._validate_core_dimensions(['t','U'])
+            >>> ECConverter._validate_core_dimensions(column_names=['t','U'])
             Traceback (most recent call last):
             ...
             KeyError: "No column with a 'current' axis."
 
         """
-        core_dimensions = {"time": ["t"], "voltage": ["E", "U"], "current": ["I", "j"]}
-
-        for key, item in core_dimensions.items():
+        for key, item in cls.core_dimensions.items():
             if not set(item).intersection(set(column_names)):
                 raise KeyError(f"No column with a '{key}' axis.")
         return True
 
-    @classmethod
-    def get_electrochemistry_dimensions(cls, column_names):
-        """
-        Creates standardized electrochemistry dataframes.
-
-        The file loaded must have the columns t, U/E, and I/j,
-        but may contain any other columns related to the EC data.
-
-        EXAMPLES::
-
-            >>> ECConverter.get_electrochemistry_dimensions(['t', 'y', 'U', 'E', 'x', 'j'])
-            ['t', 'E', 'U', 'j']
-
-        """
-        cls._validate_core_dimensions(column_names)
-
-        valid_dimensions = {"time": ["t"], "voltage": ["E", "U"], "current": ["I", "j"]}
-
-        available_dimensions = []
-
-        for _, items in valid_dimensions.items():
-            for item in items:
-                if item in column_names:
-                    available_dimensions.append(item)
-
-        return available_dimensions
-
-    @property
-    def _schema(self):
+    def fields(self):
         r"""
         A frictionless `Schema` object, including a `Fields` object
         describing the columns of the converted electrochemical data.
@@ -234,69 +168,55 @@ class ECConverter:
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-            >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
-            >>> ec._schema
-            {'fields': [{'name': 't', 'unit': 's'},
-                        {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
-                        {'name': 'j', 'unit': 'uA / cm2'},
-                        {'name': 'x', 'unit': 'm'}]}
+            >>> ec = ECConverter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
+            >>> ec.fields() # doctest: +NORMALIZE_WHITESPACE
+            [{'name': 't', 'unit': 's'},
+            {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
+            {'name': 'j', 'unit': 'uA / cm2'},
+            {'name': 'x', 'unit': 'm'}]
 
+        A CVS with incomplete field information.::
 
             >>> from io import StringIO
             >>> file = StringIO(r'''t,E,j,x
             ... 0,0,0,0
             ... 1,1,1,1''')
+            >>> from .csvloader import CSVloader
+            >>> metadata2 = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'t', 'unit':'s'}]}}}
+            >>> ec = ECConverter(CSVloader(file=file), fields=metadata2['figure description']['schema']['fields'])
+            >>> ec.fields() # doctest: +NORMALIZE_WHITESPACE
+            [{'name': 't', 'unit': 's'},
+            {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
+            {'name': 'j', 'unit': 'uA / cm2'},
+            {'comment': 'Created by echemdb-converters.', 'name': 'x'}]
+
+        A CVS with a missing potential axis which is, however, defined in the field description.::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''t,j,x
+            ... 0,0,0
+            ... 1,1,1''')
             >>> from .csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-            >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
-            >>> ec._schema
-            {'fields': [{'name': 't', 'unit': 's'},
-                        {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
-                        {'name': 'j', 'unit': 'uA / cm2'},
-                        {'comment': 'Created by echemdb-converters.', 'name': 'x'}]}
+            >>> ec = ECConverter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
+            >>> ec.fields()
+            Traceback (most recent call last):
+            ...
+            KeyError: "No column with a 'voltage' axis."
 
-        """
-        schema = self.loader.schema
-
-        for name in schema.field_names:
-            if name in self.name_conversion:
-                schema.get_field(name)["name"] = self.name_conversion[name]
-
-        return schema
-
-    @property
-    def schema(self):
-        """
-        A frictionless `Schema` object, including a `Fields` object
-        describing the columns of the converted electrochemical data.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j,x
-            ... 0,0,0,0
-            ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-            >>> ec = ECConverter(CSVloader(file=file, fields=metadata['figure description']['schema']['fields']))
-            >>> ec.schema
-            {'fields': [{'name': 't', 'unit': 's'},
-                        {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
-                        {'name': 'j', 'unit': 'uA / cm2'}]}
 
         """
         from frictionless import Schema
 
-        schema = Schema(
-            fields=[
-                self._schema.get_field(name)
-                for name in self.get_electrochemistry_dimensions(
-                    self._schema.field_names
-                )
-            ]
-        )
+        schema = Schema(fields=self._fields)
 
-        return schema
+        for name in schema.field_names:
+            if name in self.field_name_conversion:
+                schema.get_field(name)["name"] = self.field_name_conversion[name]
+
+        self._validate_core_dimensions(schema.field_names)
+
+        return schema['fields']
 
     @property
     def column_names(self):
@@ -310,16 +230,17 @@ class ECConverter:
             ... 0,0,0,0
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-            >>> ec = ECConverter(CSVloader(file, metadata))
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'},{'name':'t', 'unit':'s'}]}}}
+            >>> ec = ECConverter(CSVloader(file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.column_names
-            ['t', 'E', 'j']
+            ['t', 'E', 'j', 'x']
 
         """
-        return self.schema.field_names
+        from frictionless import Schema
+        return Schema(fields=self.fields()).field_names
 
     @property
-    def _df(self):
+    def df(self):
         """
         EXAMPLES::
 
@@ -328,42 +249,17 @@ class ECConverter:
             ... 0,0,0,0
             ... 1,1,1,1''')
             >>> from .csvloader import CSVloader
-            >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}
-            >>> ec = ECConverter(CSVloader(file, metadata))
-            >>> ec._df
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
+            >>> ec = ECConverter(CSVloader(file), fields=metadata['figure description']['schema']['fields'])
+            >>> ec.df
                t  E  j  x
             0  0  0  0  0
             1  1  1  1  1
 
         """
         df = self.loader.df.copy()
-        df.columns = self._schema.field_names
+        df.columns = self.column_names
         return df
-
-    @property
-    def df(self):
-        r"""
-        Creates standardized electrochemistry dataframes.
-
-        The file loaded must have the columns t, U/E, and I/j.
-        Any other columns are discarded.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j,x
-            ... 0,0,0,0
-            ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}
-            >>> ec = ECConverter(CSVloader(file, metadata))
-            >>> ec.df
-               t  E  j
-            0  0  0  0
-            1  1  1  1
-
-        """
-        return self._df[self.column_names]
 
     def augment(self, metadata=None):
         r"""

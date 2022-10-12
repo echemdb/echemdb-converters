@@ -76,9 +76,8 @@ class CSVloader:
 
     """
 
-    def __init__(self, file, fields=None):
+    def __init__(self, file):
         self._file = file.read()
-        self._fields = fields
 
     @property
     def file(self):
@@ -98,76 +97,6 @@ class CSVloader:
         from io import StringIO
 
         return StringIO(self._file)
-
-    @property
-    def fields(self):
-        r"""
-        Fields describing the column names.
-
-        EXAMPLES:
-
-        If not specified, the fields are created from the `column_names`.::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> csv = CSVloader(file)
-            >>> csv.fields
-            [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]
-
-        The fields can be provided as an argument to the loader.::
-
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-            >>> csv = CSVloader(file=file, fields=metadata['figure description']['schema']['fields'])
-            >>> csv.fields
-            [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
-
-        When a field is missing (here `t`) it will be generated and all obsolete fields are removed.::
-
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}}
-            >>> csv = CSVloader(file=file, fields=metadata['figure description']['schema']['fields'])
-            >>> csv.fields
-            [{'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}, {'comment': 'Created by echemdb-converters.', 'name': 't'}]
-
-        """
-        if not self._fields:
-            return self.create_fields()
-
-        from frictionless import Field, Schema
-
-        # Validate if fields are valid frictionless fields.
-        schema = Schema(fields=[Field(field) for field in self._fields])
-
-        # Validate that the fields have an attribute 'name'
-        # and remove the field if not available.
-        for field in schema.fields:
-            try:
-                field["name"]
-            except KeyError:
-                # pylint dows not recognize that fields have a remove method
-                schema.fields.remove(field)  # pylint: disable=no-member
-                logger.warning("Field {field} has no attribute `name`.")
-
-        # Remove fields which are not found in the column names.
-        for name in schema.field_names:
-            if not name in self.column_names:
-                schema.remove_field(name)
-
-        # Add fields for columns names that are not described in the provided fields.
-        for name in self.column_names:
-            if not name in schema.field_names:
-                schema.add_field(self.create_field(name))
-                logger.warning("A field with name `{name}` was added to the schema.")
-
-        return schema.fields
 
     def augment(self, metadata=None):
         r"""
@@ -365,13 +294,48 @@ class CSVloader:
         """
         return 0
 
-    @property
-    def schema(self):
-        r"""
-        A frictionless `Schema` object, including a `Fields` object
-        describing the columns.
+    # def derive_schema(self, fields=None):
+    #     r"""
+    #     A frictionless `Schema` object, including a `Fields` object
+    #     describing the columns.
 
-        EXAMPLES::
+    #     EXAMPLES::
+
+    #         >>> from io import StringIO
+    #         >>> file = StringIO(r'''t,E,j
+    #         ... 0,0,0
+    #         ... 1,1,1''')
+    #         >>> from .csvloader import CSVloader
+    #         >>> csv = CSVloader(file)
+    #         >>> csv.derive_schema()
+    #         {'fields': [{'comment': 'Created by echemdb-converters.', 'name': 't'},
+    #                     {'comment': 'Created by echemdb-converters.', 'name': 'E'},
+    #                     {'comment': 'Created by echemdb-converters.', 'name': 'j'}]}
+
+    #     Field description provided in the metadata::
+
+    #         >>> file = StringIO(r'''t,E,j
+    #         ... 0,0,0
+    #         ... 1,1,1''')
+    #         >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
+    #         >>> csv = CSVloader(file=file)
+    #         >>> csv.derive_schema(fields=metadata['figure description']['schema']['fields'])
+    #         {'fields': [{'name': 't', 'unit': 's'},
+    #                     {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
+    #                     {'name': 'j', 'unit': 'uA / cm2'}]}
+
+    #     """
+    #     from frictionless import Schema
+
+    #     return Schema(fields=self._fields(fields=fields))
+
+    def derive_fields(self, fields=None):
+        r"""
+        Fields describing the column names.
+
+        EXAMPLES:
+
+        If not specified, the fields are created from the `column_names`.::
 
             >>> from io import StringIO
             >>> file = StringIO(r'''t,E,j
@@ -379,29 +343,65 @@ class CSVloader:
             ... 1,1,1''')
             >>> from .csvloader import CSVloader
             >>> csv = CSVloader(file)
-            >>> csv.schema
-            {'fields': [{'comment': 'Created by echemdb-converters.', 'name': 't'},
-                        {'comment': 'Created by echemdb-converters.', 'name': 'E'},
-                        {'comment': 'Created by echemdb-converters.', 'name': 'j'}]}
+            >>> csv.derive_fields()
+            [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]
 
-        Field description provided in the metadata::
+        The fields can be provided as an argument to the loader.::
 
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-            >>> csv = CSVloader(file=file, fields=metadata['figure description']['schema']['fields'])
-            >>> csv.schema
-            {'fields': [{'name': 't', 'unit': 's'},
-                        {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
-                        {'name': 'j', 'unit': 'uA / cm2'}]}
+            >>> csv = CSVloader(file=file)
+            >>> csv.derive_fields(fields=metadata['figure description']['schema']['fields'])
+            [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
+
+        When a field is missing (here `t`) it will be generated and all obsolete fields are removed.::
+
+            >>> file = StringIO(r'''t,E,j
+            ... 0,0,0
+            ... 1,1,1''')
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}}
+            >>> csv = CSVloader(file=file)
+            >>> csv.derive_fields(fields=metadata['figure description']['schema']['fields'])
+            [{'comment': 'Created by echemdb-converters.', 'name': 't'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
 
         """
-        from frictionless import Schema
+        if not fields:
+            return self._create_fields()
 
-        return Schema(fields=self.fields)
+        from frictionless import Field, Schema
 
-    def create_fields(self):
+        # Validate if fields are valid frictionless fields.
+        schema = Schema(fields=[Field(field) for field in fields])
+
+        # Validate that the fields have an attribute 'name'
+        # and remove the field if not available.
+        for field in schema.fields:
+            try:
+                field["name"]
+            except KeyError:
+                # pylint dows not recognize that fields have a remove method
+                schema.fields.remove(field)  # pylint: disable=no-member
+                logger.warning("Field {field} has no attribute `name`.")
+
+        # Remove fields which are not found in the column names.
+        for name in schema.field_names:
+            if not name in self.column_names:
+                schema.remove_field(name)
+
+        # Add fields for columns names that are not described in the provided fields.
+        for name in self.column_names:
+            if not name in schema.field_names:
+                schema.add_field(self._create_field(name))
+                logger.warning("A field with name `{name}` was added to the schema.")
+
+        # Reorder fields according to the column order in the dataframe
+        fields = [schema.get_field(name) for name in self.column_names]
+
+        return fields
+
+    def _create_fields(self):
         r"""
         Creates a list of fields from the column names.
 
@@ -413,20 +413,20 @@ class CSVloader:
             ... 1,1,1''')
             >>> from .csvloader import CSVloader
             >>> csv = CSVloader(file)
-            >>> csv.create_fields()
+            >>> csv._create_fields()
             [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]
 
         """
-        return [self.create_field(name) for name in self.column_names]
+        return [self._create_field(name) for name in self.column_names]
 
     @classmethod
-    def create_field(cls, name):
+    def _create_field(cls, name):
         r"""
         Creates a field with a specified name.
 
         EXAMPLES::
 
-            >>> CSVloader.create_field('voltage')
+            >>> CSVloader._create_field('voltage')
             {'name': 'voltage', 'comment': 'Created by echemdb-converters.'}
 
         """

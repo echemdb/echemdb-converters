@@ -227,7 +227,7 @@ class ECLabLoader(CSVloader):
             skip_blank_lines=False,
         )
 
-    def create_fields(self):
+    def _create_fields(self, field=None):
         r"""
         Creates a list of fields from possible BiLogic field names provided :value:biologic_fields.
 
@@ -245,18 +245,19 @@ class ECLabLoader(CSVloader):
             ... ''')
             >>> from .csvloader import CSVloader
             >>> ec = CSVloader.get_loader('eclab')(file)
-            >>> ec.create_fields() # doctest: +NORMALIZE_WHITESPACE
-            [{'name': 'mode'}, {'name': 'time/s', 'unit': 's', 'dimension': 't', 'description': 'relative time'},
-            {'name': 'control/V', 'unit': 'V', 'dimension': 'E', 'description': 'control voltage'},
+            >>> ec._create_fields() # doctest: +NORMALIZE_WHITESPACE
+            [{'name': 'mode'},
+            {'name': 'time/s', 'unit': 's', 'dimension': 't', 'description': 'relative time'},
             {'name': 'Ewe/V', 'unit': 'V', 'dimension': 'E', 'description': 'working electrode potential'},
-            {'name': '<I>/mA', 'unit': 'mA', 'dimension': 'I', 'description': 'working electrode current'}]
+            {'name': '<I>/mA', 'unit': 'mA', 'dimension': 'I', 'description': 'working electrode current'},
+            {'name': 'control/V', 'unit': 'V', 'dimension': 'E', 'description': 'control voltage'}]
 
         """
         # TODO:: When the file contains an unnamed column an this is not 13, this approach will fail. (see: #8)
         return [
             field
-            for field in biologic_fields
             for name in self.column_names
+            for field in biologic_fields
             if name == field["name"]
         ]
 

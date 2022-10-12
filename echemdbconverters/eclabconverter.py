@@ -38,20 +38,32 @@ class ECLabConverter(ECConverter):
         ... Device metadata : some metadata
         ...
         ... mode\ttime/s\tEwe/V\t<I>/mA\tcontrol/V
-        ... 2\t0\t0.1\t0\t0
-        ... 2\t1\t1.4\t5\t1
+        ... 1\t2\t3\t4\t5
+        ... 1\t2.1\t3.1\t4.1\t5.1
         ... ''')
         >>> from .csvloader import CSVloader
         >>> ec = ECLabConverter(CSVloader.get_loader('eclab')(file))
+        >>> ec.loader.df
+           mode  time/s  Ewe/V  <I>/mA  control/V
+        0     1     2.0    3.0     4.0        5.0
+        1     1     2.1    3.1     4.1        5.1
+
         >>> ec.df
-           t  E  I
-        0  0  0  0
-        1  1  5  1
+           mode    t    E    I  control/V
+        0     1  2.0  3.0  4.0        5.0
+        1     1  2.1  3.1  4.1        5.1
+
+        >>> ec.fields()  # doctest: +NORMALIZE_WHITESPACE
+        [{'name': 'mode'},
+        {'description': 'relative time', 'dimension': 't', 'name': 't', 'unit': 's'},
+        {'description': 'working electrode potential', 'dimension': 'E', 'name': 'E', 'unit': 'V'},
+        {'description': 'working electrode current', 'dimension': 'I', 'name': 'I', 'unit': 'mA'},
+        {'description': 'control voltage', 'dimension': 'E', 'name': 'control/V', 'unit': 'V'}]
 
     """
 
     @property
-    def name_conversion(self):
+    def field_name_conversion(self):
 
         return {
             "time/s": "t",

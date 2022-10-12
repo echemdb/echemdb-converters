@@ -227,7 +227,7 @@ class ECLabLoader(CSVloader):
             skip_blank_lines=False,
         )
 
-    def _create_fields(self, field=None):
+    def _create_fields(self):
         r"""
         Creates a list of fields from possible BiLogic field names provided :value:biologic_fields.
 

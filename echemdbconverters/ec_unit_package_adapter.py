@@ -2,7 +2,7 @@ r"""
 Creates standardized echemdb datapackage compatible CSV.
 
 The file loaded must have the columns t, U/E, and I/j.
-Other columns are not included in the output data.
+In addition, the fields to these columns must have a unit.
 
 EXAMPLES::
 
@@ -18,7 +18,7 @@ EXAMPLES::
     0  0  0  0  0
     1  1  1  1  1
 
-The original dataframe is still accessible from the loader::
+The original dataframe can be accessed from the loader::
 
     >>> ec.loader.df
        t  E  j  x
@@ -58,7 +58,7 @@ class ECUnitPackageAdapter:
     Creates standardized echemdb datapackage compatible CSV.
 
     The file loaded must have the columns t, U or E, and I or j.
-    In addition each fields with the respective name must be associated with a unit.
+    In addition, the fields to these columns must have a unit.
 
     EXAMPLES::
 
@@ -85,10 +85,7 @@ class ECUnitPackageAdapter:
     """
     core_dimensions = {"time": ["t"], "voltage": ["E", "U"], "current": ["I", "j"]}
 
-    def __init__(
-        self, loader, fields=None, metadata=None, device=None
-    ):  # TODO add device as input argument and select loader accordingly
-        self.device = device
+    def __init__(self, loader, fields=None, metadata=None):
         self.loader = loader
         self._fields = self.loader.derive_fields(fields=fields)
         self._metadata = metadata
@@ -96,18 +93,31 @@ class ECUnitPackageAdapter:
     @staticmethod
     def create(device=None):
         r"""
-        Calls a specific `converter` based on a given device.
+        Calls a specific `EC adapter` based on a given device.
+
+        EXAMPLES::
+
+        >>> from io import StringIO
+        >>> file = StringIO(r'''t,E,j,x
+        ... 0,0,0,0
+        ... 1,1,1,1''')
+        >>> from .csvloader import CSVloader
+        >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
+        >>> ec = ECUnitPackageAdapter.create('eclab')(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
+        >>> ec.df
+           t  E  j  x
+        0  0  0  0  0
+        1  1  1  1  1
+
         """
-        from .eclab_adapater import ECLabAdapter
+        if device == "eclab":
+            from .eclab_adapater import ECLabAdapter
 
-        devices = {
-            "eclab": ECLabAdapter,  # Biologic-EClab device
-        }
+            return ECLabAdapter
 
-        if device in devices:
-            return devices[device]
-
-        raise KeyError(f"Device wth name '{device}' is unknown to the converter'.")
+        raise KeyError(
+            f"Device wth name '{device}' is unknown to the ECUnitPackageAdapter."
+        )
 
     @property
     def field_name_conversion(self):

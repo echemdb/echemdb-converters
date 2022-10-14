@@ -5,8 +5,8 @@ names and rows with comma separated values.
 
 In pandas the names of the columns are referred to as `column_names`,
 whereas in a frictionless datapackage the column names are called `fields`.
-The latter is a descriptor containing, including information about, i.e.,
-the type of data, a title or a description.
+The datapacakge contains information about, i.e.,
+the type of data, a title and a set of descriptors.
 
 The CSV object has the following properties:
 ::TODO: Add examples for the following functions
@@ -14,8 +14,6 @@ The CSV object has the following properties:
     * the column names
     * the header contents
     * the number of header lines
-    * metadata
-    * schema
 
 Loaders for non standard CSV files can be called:
 
@@ -154,14 +152,6 @@ class CSVloader:
             1     2       1   1.4       5          1
 
         """
-        # from .eclabloader import ECLabLoader
-
-        # devices = {
-        #     "eclab": ECLabLoader,  # Biologic-EClab device
-        # }
-
-        # if device in devices:
-        #     return devices[device]
         if device == "eclab":
             from .eclabloader import ECLabLoader
 
@@ -194,7 +184,7 @@ class CSVloader:
     @property
     def header(self):
         r"""
-        The header of the CVS (column names excluded).
+        The header of the CSV (column names excluded).
 
         EXAMPLES::
 

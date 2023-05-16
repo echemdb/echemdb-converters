@@ -299,7 +299,7 @@ class CSVloader:
             >>> from .csvloader import CSVloader
             >>> csv = CSVloader(file)
             >>> csv.derive_fields()
-            [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]
+            [{'name': 't', 'type': 'integer'}, {'name': 'E', 'type': 'integer'}, {'name': 'j', 'type': 'integer'}]
 
         The fields can be provided as an argument to the loader.::
 
@@ -309,7 +309,7 @@ class CSVloader:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
             >>> csv = CSVloader(file=file)
             >>> csv.derive_fields(fields=metadata['figure description']['schema']['fields'])
-            [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
+            [{'name': 't', 'type': 'integer', 'unit': 's'}, {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'}]
 
         When a field is missing (here `t`) it will be generated and all obsolete fields are removed.::
 
@@ -319,72 +319,41 @@ class CSVloader:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}}
             >>> csv = CSVloader(file=file)
             >>> csv.derive_fields(fields=metadata['figure description']['schema']['fields'])
-            [{'comment': 'Created by echemdb-converters.', 'name': 't'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}]
+            [{'name': 't', 'type': 'integer'}, {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'}]
 
         """
-        if not fields:
-            return self._create_fields()
+        from frictionless import Resource, Schema
 
-        from frictionless import Field, Schema
+        # infer fields from pandas dataframe
+        df_resource = Resource(self.df)
+        df_resource.infer()
 
-        # Validate if fields are valid frictionless fields.
-        schema = Schema(fields=[Field(field) for field in fields])
+        if fields:
+            # validate that fields have a name
+            _fields = []
 
-        # Validate that the fields have an attribute 'name'.
-        for field in schema.fields:
-            try:
-                field["name"]
-            except KeyError:
-                # pylint does not recognize that frictionless fields have a remove method
-                schema.fields.remove(field)  # pylint: disable=no-member
-                logger.warning(f"Field {field} has no attribute `name`.")
+            def validate_field(field):
+                try:
+                    field["name"]
+                except KeyError:
+                    return False
+                return True
 
-        # Remove fields which are not present in the column names.
-        for name in schema.field_names:
-            if not name in self.column_names:
-                schema.remove_field(name)
+            for field in fields:
+                if validate_field(field):
+                    _fields.append(field)
 
-        # Add fields for column that are not described in the provided fields.
-        for name in self.column_names:
-            if not name in schema.field_names:
-                schema.add_field(self._create_field(name))
-                logger.warning(f"A field with name `{name}` was added to the schema.")
+            schema = Schema.from_descriptor({"fields": _fields}, allow_invalid=True)
 
-        # Reorder fields according to the column order in the dataframe.
-        fields = [schema.get_field(name) for name in self.column_names]
+            # Update the df_resource schema with additional information from the metadata
+            for name in schema.field_names:
+                if name in self.column_names:
+                    field = schema.get_field(name).to_dict()
+                    for key in field:
+                        if not key == "name":
+                            df_resource.schema.update_field(name, {key: field[key]})
 
-        return fields
-
-    def _create_fields(self):
-        r"""
-        Creates a list of fields from the column names.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> csv = CSVloader(file)
-            >>> csv._create_fields()
-            [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]
-
-        """
-        return [self._create_field(name) for name in self.column_names]
-
-    @classmethod
-    def _create_field(cls, name):
-        r"""
-        Creates a field with a specified name.
-
-        EXAMPLES::
-
-            >>> CSVloader._create_field('voltage')
-            {'name': 'voltage', 'comment': 'Created by echemdb-converters.'}
-
-        """
-        return {"name": name, "comment": "Created by echemdb-converters."}
+        return df_resource.schema.fields
 
     @property
     def delimiter(self):

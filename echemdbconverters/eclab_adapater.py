@@ -56,11 +56,11 @@ class ECLabAdapter(ECUnitPackageAdapter):
         1     1  2.1  3.1  4.1        5.1
 
         >>> ec.fields()  # doctest: +NORMALIZE_WHITESPACE
-        [{'name': 'mode'},
-        {'description': 'relative time', 'dimension': 't', 'name': 't', 'unit': 's'},
-        {'description': 'working electrode potential', 'dimension': 'E', 'name': 'E', 'unit': 'V'},
-        {'description': 'working electrode current', 'dimension': 'I', 'name': 'I', 'unit': 'mA'},
-        {'description': 'control voltage', 'dimension': 'E', 'name': 'control/V', 'unit': 'V'}]
+        [{'name': 'mode', 'type': 'integer'},
+        {'name': 't', 'type': 'number', 'description': 'relative time', 'unit': 's', 'dimension': 't', 'original name': 'time/s'},
+        {'name': 'E', 'type': 'number', 'description': 'working electrode potential', 'unit': 'V', 'dimension': 'E', 'original name': 'Ewe/V'},
+        {'name': 'I', 'type': 'number', 'description': 'working electrode current', 'unit': 'mA', 'dimension': 'I', 'original name': '<I>/mA'},
+        {'name': 'control/V', 'type': 'number', 'description': 'control voltage', 'unit': 'V', 'dimension': 'E'}]
 
     """
 

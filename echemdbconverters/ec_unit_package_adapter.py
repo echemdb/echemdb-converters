@@ -80,7 +80,10 @@ class ECUnitPackageAdapter:
         ['t', 'E', 'j', 'x']
 
         >>> ec.fields()
-        [{'name': 't', 'unit': 's'}, {'name': 'E', 'reference': 'RHE', 'unit': 'V'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]
+        [{'name': 't', 'type': 'integer', 'unit': 's'},
+        {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'},
+        {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'},
+        {'name': 'x', 'type': 'integer', 'unit': 'm'}]
 
     """
     core_dimensions = {"time": ["t"], "voltage": ["E", "U"], "current": ["I", "j"]}
@@ -160,10 +163,10 @@ class ECUnitPackageAdapter:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.fields() # doctest: +NORMALIZE_WHITESPACE
-            [{'name': 't', 'unit': 's'},
-            {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
-            {'name': 'j', 'unit': 'uA / cm2'},
-            {'name': 'x', 'unit': 'm'}]
+            [{'name': 't', 'type': 'integer', 'unit': 's'},
+            {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'},
+            {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'},
+            {'name': 'x', 'type': 'integer', 'unit': 'm'}]
 
         A CSV with incomplete field information.::
 
@@ -175,10 +178,10 @@ class ECUnitPackageAdapter:
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'t', 'unit':'s'}]}}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.fields() # doctest: +NORMALIZE_WHITESPACE
-            [{'name': 't', 'unit': 's'},
-            {'name': 'E', 'reference': 'RHE', 'unit': 'V'},
-            {'name': 'j', 'unit': 'uA / cm2'},
-            {'comment': 'Created by echemdb-converters.', 'name': 'x'}]
+            [{'name': 't', 'type': 'integer', 'unit': 's'},
+            {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'},
+            {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'},
+            {'name': 'x', 'type': 'integer'}]
 
         A CSV with a missing potential axis which is, however, defined in the field description.::
 
@@ -219,13 +222,14 @@ class ECUnitPackageAdapter:
         for name in schema.field_names:
             # Change the name of specific fields.
             if name in self.field_name_conversion:
-                schema.get_field(name)["name"] = self.field_name_conversion[name]
+                schema.update_field(name, {"original name": name})
+                schema.update_field(name, {"name": self.field_name_conversion[name]})
             # Validate that each field with a core dimension has a unit.
             if name in list(
                 itertools.chain.from_iterable(list(self.core_dimensions.values()))
             ):
                 try:
-                    schema.get_field(name)["unit"]
+                    schema.get_field(name).custom["unit"]
                 except KeyError as exc:
                     raise KeyError(
                         f"No unit associated with the field named '{name}'"
@@ -236,7 +240,7 @@ class ECUnitPackageAdapter:
             if not set(item).intersection(set(schema.field_names)):
                 raise KeyError(f"No column with a '{key}' axis.")
 
-        return schema["fields"]
+        return schema.fields
 
     @property
     def column_names(self):

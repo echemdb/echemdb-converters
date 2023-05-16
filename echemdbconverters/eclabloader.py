@@ -227,9 +227,9 @@ class ECLabLoader(CSVloader):
             skip_blank_lines=False,
         )
 
-    def _create_fields(self):
+    def derive_fields(self, fields=None):
         r"""
-        Creates a list of fields from possible BiLogic field names provided :value:biologic_fields.
+        Fields describing the column names of eclab data.
 
         EXAMPLES::
 
@@ -245,21 +245,17 @@ class ECLabLoader(CSVloader):
             ... ''')
             >>> from .csvloader import CSVloader
             >>> ec = CSVloader.create('eclab')(file)
-            >>> ec._create_fields() # doctest: +NORMALIZE_WHITESPACE
-            [{'name': 'mode'},
-            {'name': 'time/s', 'unit': 's', 'dimension': 't', 'description': 'relative time'},
-            {'name': 'Ewe/V', 'unit': 'V', 'dimension': 'E', 'description': 'working electrode potential'},
-            {'name': '<I>/mA', 'unit': 'mA', 'dimension': 'I', 'description': 'working electrode current'},
-            {'name': 'control/V', 'unit': 'V', 'dimension': 'E', 'description': 'control voltage'}]
+            >>> ec.derive_fields()  # doctest: +NORMALIZE_WHITESPACE
+            [{'name': 'mode', 'type': 'integer'},
+            {'name': 'time/s', 'type': 'integer', 'description': 'relative time', 'unit': 's', 'dimension': 't'},
+            {'name': 'Ewe/V', 'type': 'number', 'description': 'working electrode potential', 'unit': 'V', 'dimension': 'E'},
+            {'name': '<I>/mA', 'type': 'integer', 'description': 'working electrode current', 'unit': 'mA', 'dimension': 'I'},
+            {'name': 'control/V', 'type': 'integer', 'description': 'control voltage', 'unit': 'V', 'dimension': 'E'}]
 
         """
         # TODO:: When the file contains an unnamed column an this is not 13, this approach will fail. (see: #8)
-        return [
-            field
-            for name in self.column_names
-            for field in biologic_fields
-            if name == field["name"]
-        ]
+        fields = fields or biologic_fields
+        return super().derive_fields(fields=fields)
 
     @property
     def decimal(self):

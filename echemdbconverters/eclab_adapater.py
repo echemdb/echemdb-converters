@@ -66,7 +66,6 @@ class ECLabAdapter(ECUnitPackageAdapter):
 
     @property
     def field_name_conversion(self):
-
         return {
             "time/s": "t",
             "Ewe/V": "E",

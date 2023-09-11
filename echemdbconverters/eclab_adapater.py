@@ -22,7 +22,7 @@ Converts ECLab MPT files into an echemdb datapackage compatible CSV object.
 #  along with echemdb-converters. If not, see <https://www.gnu.org/licenses/>.
 # ********************************************************************
 
-from .ec_unit_package_adapter import ECUnitPackageAdapter
+from echemdbconverters.ec_unit_package_adapter import ECUnitPackageAdapter
 
 
 class ECLabAdapter(ECUnitPackageAdapter):
@@ -42,8 +42,8 @@ class ECLabAdapter(ECUnitPackageAdapter):
         ... 1\t2.1\t3.1\t4.1\t5.1
         ... ''')
         >>> device = 'eclab'
-        >>> from .csvloader import CSVloader
-        >>> from .ec_unit_package_adapter import ECUnitPackageAdapter
+        >>> from echemdbconverters.csvloader import CSVloader
+        >>> from echemdbconverters.ec_unit_package_adapter import ECUnitPackageAdapter
         >>> ec = ECUnitPackageAdapter.create(device=device)(CSVloader.create(device)(file))
         >>> ec.loader.df
            mode  time/s  Ewe/V  <I>/mA  control/V

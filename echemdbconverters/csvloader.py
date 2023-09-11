@@ -109,7 +109,7 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader(file)
             >>> csv.augment()
             {}
@@ -120,7 +120,7 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader(file)
             >>> csv.augment(metadata={'foo':'bar'})
             {'foo': 'bar'}
@@ -153,7 +153,7 @@ class CSVloader:
 
         """
         if device == "eclab":
-            from .eclabloader import ECLabLoader
+            from echemdbconverters.eclabloader import ECLabLoader
 
             return ECLabLoader
 
@@ -296,7 +296,7 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader(file)
             >>> csv.derive_fields()
             [{'name': 't', 'type': 'integer'}, {'name': 'E', 'type': 'integer'}, {'name': 'j', 'type': 'integer'}]

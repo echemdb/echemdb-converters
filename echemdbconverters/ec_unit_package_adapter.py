@@ -10,7 +10,7 @@ EXAMPLES::
     >>> file = StringIO(r'''t,E,j,x
     ... 0,0,0,0
     ... 1,1,1,1''')
-    >>> from .csvloader import CSVloader
+    >>> from echemdbconverters.csvloader import CSVloader
     >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
     >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
     >>> ec.df
@@ -66,7 +66,7 @@ class ECUnitPackageAdapter:
         >>> file = StringIO(r'''t,E,j,x
         ... 0,0,0,0
         ... 1,1,1,1''')
-        >>> from .csvloader import CSVloader
+        >>> from echemdbconverters.csvloader import CSVloader
         >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
         >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
         >>> ec.df
@@ -104,7 +104,7 @@ class ECUnitPackageAdapter:
         >>> file = StringIO(r'''t,E,j,x
         ... 0,0,0,0
         ... 1,1,1,1''')
-        >>> from .csvloader import CSVloader
+        >>> from echemdbconverters.csvloader import CSVloader
         >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
         >>> ec = ECUnitPackageAdapter.create('eclab')(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
         >>> ec.df
@@ -114,7 +114,7 @@ class ECUnitPackageAdapter:
 
         """
         if device == "eclab":
-            from .eclab_adapater import ECLabAdapter
+            from echemdbconverters.eclab_adapater import ECLabAdapter
 
             return ECLabAdapter
 
@@ -138,7 +138,7 @@ class ECUnitPackageAdapter:
             >>> file = StringIO(r'''t,E,j,x
             ... 0,0,0,0
             ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> ec = ECUnitPackageAdapter(CSVloader(file))
             >>> ec.field_name_conversion
             {}
@@ -159,7 +159,7 @@ class ECUnitPackageAdapter:
             >>> file = StringIO(r'''t,E,j,x
             ... 0,0,0,0
             ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.fields() # doctest: +NORMALIZE_WHITESPACE
@@ -174,7 +174,7 @@ class ECUnitPackageAdapter:
             >>> file = StringIO(r'''t,E,j,x
             ... 0,0,0,0
             ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'t', 'unit':'s'}]}}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.fields() # doctest: +NORMALIZE_WHITESPACE
@@ -189,7 +189,7 @@ class ECUnitPackageAdapter:
             >>> file = StringIO(r'''t,j,x
             ... 0,0,0
             ... 1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.fields()
@@ -204,7 +204,7 @@ class ECUnitPackageAdapter:
             >>> file = StringIO(r'''t,E,j,x
             ... 0,0,0,0
             ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'t'}]}}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.fields()
@@ -253,7 +253,7 @@ class ECUnitPackageAdapter:
             >>> file = StringIO(r'''t,E,j,x
             ... 0,0,0,0
             ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'},{'name':'t', 'unit':'s'}]}}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.column_names
@@ -273,7 +273,7 @@ class ECUnitPackageAdapter:
             >>> file = StringIO(r'''t,E,j,x
             ... 0,0,0,0
             ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file), fields=metadata['figure description']['schema']['fields'])
             >>> ec.df
@@ -297,7 +297,7 @@ class ECUnitPackageAdapter:
             >>> file = StringIO(r'''t,E,j,x
             ... 0,0,0,0
             ... 1,1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}
             >>> ec = ECUnitPackageAdapter(CSVloader(file), metadata=metadata)
             >>> ec.metadata  # doctest: +NORMALIZE_WHITESPACE

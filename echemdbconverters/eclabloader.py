@@ -33,7 +33,7 @@ The file can also be loaded from the base loader::
     ... 2\t0\t0.1\t0\t0
     ... 2\t1\t1.4\t5\t1
     ... ''')
-    >>> from .csvloader import CSVloader
+    >>> from echemdbconverters.csvloader import CSVloader
     >>> csv = CSVloader.create('eclab')(file)
     >>> csv.df
         mode  time/s Ewe/V  <I>/mA  control/V
@@ -69,7 +69,7 @@ The file can also be loaded from the base loader::
 # ********************************************************************
 
 
-from .csvloader import CSVloader
+from echemdbconverters.csvloader import CSVloader
 
 biologic_fields = [
     {
@@ -135,7 +135,7 @@ class ECLabLoader(CSVloader):
         ... 2\t0\t0.1\t0\t0
         ... 2\t1\t1.4\t5\t1
         ... ''')
-        >>> from .csvloader import CSVloader
+        >>> from echemdbconverters.csvloader import CSVloader
         >>> csv = CSVloader.create('eclab')(file)
         >>> csv.df
            mode  time/s Ewe/V  <I>/mA  control/V
@@ -169,7 +169,7 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader.create('eclab')(file)
             >>> csv.header_lines
             5
@@ -208,7 +208,7 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader.create('eclab')(file)
             >>> csv.df
                mode  time/s Ewe/V  <I>/mA  control/V
@@ -243,7 +243,7 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> ec = CSVloader.create('eclab')(file)
             >>> ec.derive_fields()  # doctest: +NORMALIZE_WHITESPACE
             [{'name': 'mode', 'type': 'integer'},
@@ -275,7 +275,7 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0,1\t0\t0
             ... 2\t1\t1,4\t5\t1
             ... ''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> ec = CSVloader.create('eclab')(file)
             >>> ec.decimal
             ','

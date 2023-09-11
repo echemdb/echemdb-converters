@@ -33,8 +33,8 @@ The file can also be loaded from the base loader::
     ... 2\t0\t0.1\t0\t0
     ... 2\t1\t1.4\t5\t1
     ... ''')
-    >>> from .csvloader import CSVloader
-    >>> csv = CSVloader.get_loader('eclab')(file)
+    >>> from echemdbconverters.csvloader import CSVloader
+    >>> csv = CSVloader.create('eclab')(file)
     >>> csv.df
         mode  time/s Ewe/V  <I>/mA  control/V
     0     2       0   0.1       0          0
@@ -69,7 +69,7 @@ The file can also be loaded from the base loader::
 # ********************************************************************
 
 
-from .csvloader import CSVloader
+from echemdbconverters.csvloader import CSVloader
 
 biologic_fields = [
     {
@@ -135,8 +135,8 @@ class ECLabLoader(CSVloader):
         ... 2\t0\t0.1\t0\t0
         ... 2\t1\t1.4\t5\t1
         ... ''')
-        >>> from .csvloader import CSVloader
-        >>> csv = CSVloader.get_loader('eclab')(file)
+        >>> from echemdbconverters.csvloader import CSVloader
+        >>> csv = CSVloader.create('eclab')(file)
         >>> csv.df
            mode  time/s Ewe/V  <I>/mA  control/V
         0     2       0   0.1       0          0
@@ -169,8 +169,8 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> from .csvloader import CSVloader
-            >>> csv = CSVloader.get_loader('eclab')(file)
+            >>> from echemdbconverters.csvloader import CSVloader
+            >>> csv = CSVloader.create('eclab')(file)
             >>> csv.header_lines
             5
 
@@ -208,8 +208,8 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> from .csvloader import CSVloader
-            >>> csv = CSVloader.get_loader('eclab')(file)
+            >>> from echemdbconverters.csvloader import CSVloader
+            >>> csv = CSVloader.create('eclab')(file)
             >>> csv.df
                mode  time/s Ewe/V  <I>/mA  control/V
             0     2       0   0.1       0          0
@@ -227,9 +227,9 @@ class ECLabLoader(CSVloader):
             skip_blank_lines=False,
         )
 
-    def create_fields(self):
+    def derive_fields(self, fields=None):
         r"""
-        Creates a list of fields from possible BiLogic field names provided :value:biologic_fields.
+        Fields describing the column names of eclab data.
 
         EXAMPLES::
 
@@ -243,19 +243,19 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> from .csvloader import CSVloader
-            >>> ec = CSVloader.get_loader('eclab')(file)
-            >>> ec.create_fields()
-            [{'name': 'mode'}, {'name': 'time/s', 'unit': 's', 'dimension': 't', 'description': 'relative time'}, {'name': 'control/V', 'unit': 'V', 'dimension': 'E', 'description': 'control voltage'}, {'name': 'Ewe/V', 'unit': 'V', 'dimension': 'E', 'description': 'working electrode potential'}, {'name': '<I>/mA', 'unit': 'mA', 'dimension': 'I', 'description': 'working electrode current'}]
+            >>> from echemdbconverters.csvloader import CSVloader
+            >>> ec = CSVloader.create('eclab')(file)
+            >>> ec.derive_fields()  # doctest: +NORMALIZE_WHITESPACE
+            [{'name': 'mode', 'type': 'integer'},
+            {'name': 'time/s', 'type': 'integer', 'description': 'relative time', 'unit': 's', 'dimension': 't'},
+            {'name': 'Ewe/V', 'type': 'number', 'description': 'working electrode potential', 'unit': 'V', 'dimension': 'E'},
+            {'name': '<I>/mA', 'type': 'integer', 'description': 'working electrode current', 'unit': 'mA', 'dimension': 'I'},
+            {'name': 'control/V', 'type': 'integer', 'description': 'control voltage', 'unit': 'V', 'dimension': 'E'}]
 
         """
         # TODO:: When the file contains an unnamed column an this is not 13, this approach will fail. (see: #8)
-        return [
-            field
-            for field in biologic_fields
-            for name in self.column_names
-            if name == field["name"]
-        ]
+        fields = fields or biologic_fields
+        return super().derive_fields(fields=fields)
 
     @property
     def decimal(self):
@@ -275,8 +275,8 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0,1\t0\t0
             ... 2\t1\t1,4\t5\t1
             ... ''')
-            >>> from .csvloader import CSVloader
-            >>> ec = CSVloader.get_loader('eclab')(file)
+            >>> from echemdbconverters.csvloader import CSVloader
+            >>> ec = CSVloader.create('eclab')(file)
             >>> ec.decimal
             ','
 

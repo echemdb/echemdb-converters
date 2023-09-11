@@ -5,8 +5,8 @@ names and rows with comma separated values.
 
 In pandas the names of the columns are referred to as `column_names`,
 whereas in a frictionless datapackage the column names are called `fields`.
-The latter is a descriptor containing, including information about, i.e.,
-the type of data, a title or a description.
+The datapacakge contains information about, i.e.,
+the type of data, a title and a set of descriptors.
 
 The CSV object has the following properties:
 ::TODO: Add examples for the following functions
@@ -14,8 +14,6 @@ The CSV object has the following properties:
     * the column names
     * the header contents
     * the number of header lines
-    * metadata
-    * schema
 
 Loaders for non standard CSV files can be called:
 
@@ -76,10 +74,8 @@ class CSVloader:
 
     """
 
-    def __init__(self, file, metadata=None, fields=None):
+    def __init__(self, file):
         self._file = file.read()
-        self._metadata = metadata or {}
-        self._fields = fields
 
     @property
     def file(self):
@@ -100,78 +96,7 @@ class CSVloader:
 
         return StringIO(self._file)
 
-    @property
-    def fields(self):
-        r"""
-        Fields describing the column names.
-
-        EXAMPLES:
-
-        If not specified, the fields are created from the `column_names`.::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> csv = CSVloader(file)
-            >>> csv.fields
-            [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]
-
-        The fields can be provided as an argument to the loader.::
-
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-            >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
-            >>> csv.fields
-            [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}]
-
-        When a field is missing (here `t`) it will be generated and all obsolete fields descriptions (here `x`) are removed.::
-
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'}]}}}
-            >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
-            >>> csv.fields
-            [{'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}, {'name': 't', 'comment': 'Created by echemdb-converters.'}]
-
-        """
-        #_fields = self._fields
-        if not self._fields:
-            return self.create_fields()
-
-        from frictionless import Schema, Field
-
-        # Validate if fields are valid frictionless fields.
-        schema = Schema(fields=[Field(field) for field in self._fields])
-
-        # Validate that the fields have an attribute 'name'
-        # and remove the field if not available.
-        for field in schema.fields:
-            try:
-                field['name']
-            except KeyError:
-                schema.fields.remove(field)
-                logger.warning("Field {field} has no attribute `name`.")
-
-        # Remove fields which are not found in the column names.
-        for name in schema.field_names:
-            if not name in self.column_names:
-                schema.remove_field(name)
-
-        # Add fields for columns names that are not described in the provided fields.
-        for name in self.column_names:
-            if not name in schema.field_names:
-                schema.add_field(self.create_field(name))
-                logger.warning("A field with name `{name}` was added to the schema.")
-
-        return schema.fields
-
-    @property
-    def metadata(self):
+    def augment(self, metadata=None):
         r"""
         Metadata constructed from input metadata and the CSV header.
         A simple CSV does not have any metadata in the header.
@@ -184,9 +109,9 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader(file)
-            >>> csv.metadata
+            >>> csv.augment()
             {}
 
         Without metadata provided to the loader::
@@ -195,16 +120,16 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> csv = CSVloader(file, metadata={'foo':'bar'})
-            >>> csv.metadata
+            >>> from echemdbconverters.csvloader import CSVloader
+            >>> csv = CSVloader(file)
+            >>> csv.augment(metadata={'foo':'bar'})
             {'foo': 'bar'}
 
         """
-        return self._metadata.copy()
+        return metadata or {}
 
     @staticmethod
-    def get_loader(device=None):
+    def create(device=None):
         r"""
         Calls a specific `loader` based on a given device.
 
@@ -220,25 +145,17 @@ class CSVloader:
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> csv = CSVloader.get_loader('eclab')(file)
+            >>> csv = CSVloader.create('eclab')(file)
             >>> csv.df
             mode  time/s Ewe/V  <I>/mA  control/V
             0     2       0   0.1       0          0
             1     2       1   1.4       5          1
 
         """
-        # import here to avoid cyclic dependencies
-        # ::TODO: Implement the following converters
-        # ::TODO: from .thiolab_labview_converter import ThiolabLabviewConverter
-        # ::TODO: from .genericcsvconverter import GenericCsvConverter
-        from .eclabloader import ECLabLoader
+        if device == "eclab":
+            from echemdbconverters.eclabloader import ECLabLoader
 
-        devices = {  #'generic' : GenericCsvLoader, # Generic CSV converter
-            "eclab": ECLabLoader,  # Biologic-EClab device
-        }
-
-        if device in devices:
-            return devices[device]
+            return ECLabLoader
 
         raise KeyError(f"Device wth name '{device}' is unknown to the loader'.")
 
@@ -267,7 +184,7 @@ class CSVloader:
     @property
     def header(self):
         r"""
-        The header of the CVS (column names excluded).
+        The header of the CSV (column names excluded).
 
         EXAMPLES::
 
@@ -360,75 +277,83 @@ class CSVloader:
             ... 2\t0\t0,1\t0\t0
             ... 2\t1\t1,4\t5\t1
             ... ''')
-            >>> csv = CSVloader.get_loader('eclab')(file)
+            >>> csv = CSVloader.create('eclab')(file)
             >>> csv.header_lines
             5
 
         """
         return 0
 
-    @property
-    def schema(self):
+    def derive_fields(self, fields=None):
         r"""
-        A frictionless `Schema` object, including a `Fields` object
-        describing the columns.
+        Fields describing the column names.
 
-        EXAMPLES::
+        EXAMPLES:
+
+        If not specified, the fields are created from the `column_names`.::
 
             >>> from io import StringIO
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from .csvloader import CSVloader
+            >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader(file)
-            >>> csv.schema
-            {'fields': [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]}
+            >>> csv.derive_fields()
+            [{'name': 't', 'type': 'integer'}, {'name': 'E', 'type': 'integer'}, {'name': 'j', 'type': 'integer'}]
 
-        Field description provided in the metadata::
+        The fields can be provided as an argument to the loader.::
 
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
             >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
-            >>> csv = CSVloader(file=file, metadata=metadata, fields=metadata['figure description']['schema']['fields'])
-            >>> csv.schema
-            {'fields': [{'name': 't', 'unit': 's'}, {'name': 'E', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'unit': 'uA / cm2'}]}
+            >>> csv = CSVloader(file=file)
+            >>> csv.derive_fields(fields=metadata['figure description']['schema']['fields'])
+            [{'name': 't', 'type': 'integer', 'unit': 's'}, {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'}]
 
-        """
-        from frictionless import Schema
+        When a field is missing (here `t`) it will be generated and all obsolete fields are removed.::
 
-        return Schema(fields=self.fields)
-
-    def create_fields(self):
-        r"""
-        Creates a list of fields from the column names.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from .csvloader import CSVloader
-            >>> csv = CSVloader(file)
-            >>> csv.create_fields()
-            [{'name': 't', 'comment': 'Created by echemdb-converters.'}, {'name': 'E', 'comment': 'Created by echemdb-converters.'}, {'name': 'j', 'comment': 'Created by echemdb-converters.'}]
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}}
+            >>> csv = CSVloader(file=file)
+            >>> csv.derive_fields(fields=metadata['figure description']['schema']['fields'])
+            [{'name': 't', 'type': 'integer'}, {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'}]
 
         """
-        return [self.create_field(name) for name in self.column_names]
+        from frictionless import Resource, Schema
 
-    @classmethod
-    def create_field(cls, name):
-        r"""
-        Creates a field with a specified name.
+        # infer fields from pandas dataframe
+        df_resource = Resource(self.df)
+        df_resource.infer()
 
-        EXAMPLES::
+        if fields:
+            # validate that fields have a name
+            _fields = []
 
-            >>> CSVloader.create_field('voltage')
-            {'name': 'voltage', 'comment': 'Created by echemdb-converters.'}
+            def validate_field(field):
+                try:
+                    field["name"]
+                except KeyError:
+                    return False
+                return True
 
-        """
-        return {"name": name, 'comment': 'Created by echemdb-converters.'}
+            for field in fields:
+                if validate_field(field):
+                    _fields.append(field)
+
+            schema = Schema.from_descriptor({"fields": _fields}, allow_invalid=True)
+
+            # Update the df_resource schema with additional information from the metadata
+            for name in schema.field_names:
+                if name in self.column_names:
+                    field = schema.get_field(name).to_dict()
+                    for key in field:
+                        if not key == "name":
+                            df_resource.schema.update_field(name, {key: field[key]})
+
+        return df_resource.schema.fields
 
     @property
     def delimiter(self):
@@ -483,7 +408,7 @@ class CSVloader:
             ... 2\t0\t0,1\t0\t0
             ... 2\t1\t1,4\t5\t1
             ... ''')
-            >>> csv = CSVloader.get_loader('eclab')(file)
+            >>> csv = CSVloader.create('eclab')(file)
             >>> csv.decimal
             ','
 

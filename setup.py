@@ -31,7 +31,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "clevercsv",
-        "frictionless>=4,<5",
+        "frictionless>=5,<6",
         "pandas>=1.3,<2",
     ],
     python_requires=">=3.9",

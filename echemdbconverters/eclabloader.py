@@ -113,9 +113,6 @@ biologic_fields = [
     },
     {"name": "I Range", "description": "current range"},
     {"name": "P/W", "unit": "W", "dimension": "P", "description": "power"},
-    {
-        "name": "Unnamed: 13",  # It seems that there is an unnamed column in the csv where the number reflects the number of columns.(see: #8)
-    },
 ]
 
 

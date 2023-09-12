@@ -5,7 +5,7 @@ names and rows with comma separated values.
 
 In pandas the names of the columns are referred to as `column_names`,
 whereas in a frictionless datapackage the column names are called `fields`.
-The datapacakge contains information about, i.e.,
+The datapackage contains information about, i.e.,
 the type of data, a title and a set of descriptors.
 
 The CSV object has the following properties:

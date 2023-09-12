@@ -1,7 +1,7 @@
 # *********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2022 Albert Engstfeld
+#        Copyright (C) 2023 Albert Engstfeld
 #
 #  echemdb-converters is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with echemdb-converters. If not, see <https://www.gnu.org/licenses/>.
 # *********************************************************************
-import os
-import setuptools
 from distutils.core import setup
 
 setup(
@@ -31,11 +29,11 @@ setup(
     include_package_data=True,
     install_requires=[
         "clevercsv",
-        "frictionless>=4,<5",
+        "frictionless>=5,<6",
         "pandas>=1.3,<2",
     ],
     entry_points={
-        "console_scripts": ["echemdbconverters=echemdbconverters.__main__:cli"],
+        "console_scripts": ["echemdbconverters=echemdbconverters.entrypoint:cli"],
     },
     python_requires=">=3.9",
 )

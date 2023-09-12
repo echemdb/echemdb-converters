@@ -60,9 +60,9 @@ def _outfile(template, suffix=None, outdir=None):
 
     EXAMPLES::
 
-        >>> from svgdigitizer.test.cli import invoke, TemporaryData
-        >>> with TemporaryData("**/xy.svg") as directory:
-        ...     outname = _outfile(os.path.join(directory, "xy.svg"), suffix=".csv")
+        >>> from echemdbconverters.test.cli import invoke, TemporaryData
+        >>> with TemporaryData("**/test.cvs") as directory:
+        ...     outname = _outfile(os.path.join(directory, "test.csv"), suffix=".csv")
         ...     with open(outname, mode="wb") as csv:
         ...         _ = csv.write(b"...")
         ...     os.path.exists(os.path.join(directory, "xy.csv"))
@@ -223,5 +223,5 @@ __test__ = {
     name: command.__doc__ for (name, command) in cli.commands.items() if command.__doc__
 }
 
-if __name__ == "__main__":
-    cli()
+# if __name__ == "__main__":
+#     cli()

@@ -193,9 +193,11 @@ def convert(csv, device, outdir, metadata):
     from echemdbconverters.csvloader import CSVloader
 
     if device:
-        loader = CSVloader.create(device)(open(csv, "r"))
+        with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
+            loader = CSVloader.create(device)(file)
     else:
-        loader = CSVloader(open(csv, "r"))
+        with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
+            loader = CSVloader(file)
 
     if metadata:
         metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
@@ -274,11 +276,13 @@ def electrochemistry(csv, device, outdir, metadata):
             logger.warning("No units to the fields provided in the metadata")
 
     if device:
-        loader = ECUnitPackageAdapter.create(device=device)(
-            CSVloader.create(device)(open(csv, "r")), fields=fields
-        )
+        with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
+            loader = ECUnitPackageAdapter.create(device=device)(
+                CSVloader.create(device)(file), fields=fields
+            )
     else:
-        loader = ECUnitPackageAdapter(CSVloader(open(csv, "r")), fields=fields)
+        with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
+            loader = ECUnitPackageAdapter(CSVloader(file), fields=fields)
 
     fields = loader.fields()
 

@@ -1,5 +1,5 @@
 # Digitized data
-/data/generated
+/test/generated/*.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

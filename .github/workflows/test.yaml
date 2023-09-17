@@ -63,18 +63,18 @@ jobs:
       - name: cli-unit-csv
         shell: bash -l {0}
         run: |
-          echemdbconverters csv /test/csv/unit.csv --outdir /test/generated --metadata /test/csv/unit.csv.metadata
+          echemdbconverters csv test/csv/unit.csv --outdir /test/generated --metadata test/csv/unit.csv.metadata
           git diff --no-index --word-diff -- test/generated/unit.json test/generated/unit.json.expected
           python -c 'import pandas; pandas.testing.assert_frame_equal(pandas.read_csv("test/generated/unit.csv"), pandas.read_csv("test/generated/unit.csv.expected"))'
       - name: cli-eclab-csv
         shell: bash -l {0}
         run: |
-          echemdbconverters csv .test/csv/eclab_cv_csv.mpt --outdir .test/generated --metadata test/csv/eclab_cv_csv.mpt.metadata --device eclab
+          echemdbconverters csv test/csv/eclab_cv_csv.mpt --outdir test/generated --metadata test/csv/eclab_cv_csv.mpt.metadata --device eclab
           git diff --no-index --word-diff -- test/generated/eclab_cv_csv.json test/generated/eclab_cv_csv.json.expected
           python -c 'import pandas; pandas.testing.assert_frame_equal(pandas.read_csv("test/generated/eclab_cv_csv.csv"), pandas.read_csv("test/generated/eclab_cv_csv.csv.expected"))'
       - name: cli-eclab-ec
         shell: bash -l {0}
         run: |
-          echemdbconverters csv .test/csv/eclab_cv_ec.mpt --outdir .test/generated --metadata test/csv/eclab_cv_ec.mpt.metadata --device eclab
+          echemdbconverters csv test/csv/eclab_cv_ec.mpt --outdir test/generated --metadata test/csv/eclab_cv_ec.mpt.metadata --device eclab
           git diff --no-index --word-diff -- test/generated/eclab_cv_ec.json test/generated/eclab_cv_ec.json.expected
           python -c 'import pandas; pandas.testing.assert_frame_equal(pandas.read_csv("test/generated/eclab_cv_ec.csv"), pandas.read_csv("test/generated/eclab_cv_ec.csv.expected"))'

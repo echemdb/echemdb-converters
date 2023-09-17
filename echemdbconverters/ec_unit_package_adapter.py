@@ -306,4 +306,4 @@ class ECUnitPackageAdapter:
             {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]}}
 
         """
-        return self._metadata
+        return self._metadata or self.loader.metadata

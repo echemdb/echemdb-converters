@@ -3,17 +3,17 @@ The echemdb-converter suite.
 
 EXAMPLES::
 
-    # >>> from svgdigitizer.test.cli import invoke
-    # >>> invoke(cli, "--help")  # doctest: +NORMALIZE_WHITESPACE
-    # Usage: cli [OPTIONS] COMMAND [ARGS]...
-    #   The svgdigitizer suite.
-    # Options:
-    #   --help  Show this message and exit.
-    # Commands:
-    #   cv        Digitize a cylic voltammogram.
-    #   digitize  Digitize a plot.
-    #   paginate  Render PDF pages as individual SVG files with linked PNG images.
-    #   plot      Display a plot of the data traced in an SVG.
+    >>> from echemdbconverters.test.cli import invoke
+    >>> invoke(cli, "--help")  # doctest: +NORMALIZE_WHITESPACE
+    Usage: cli [OPTIONS] COMMAND [ARGS]...
+
+      The echemdb-converter suite
+
+    Options:
+      --help  Show this message and exit.
+    Commands:
+      csv  Convert a file containing CSV data into an echemdb unitpackage.
+      ec   Convert an electrochemistry file into an echemdb datapackage.
 
 """
 # ********************************************************************
@@ -36,9 +36,12 @@ EXAMPLES::
 #  You should have received a copy of the GNU General Public License
 #  along with echemdb-converters. If not, see <https://www.gnu.org/licenses/>.
 # ********************************************************************
+import logging
 import os
 
 import click
+
+logger = logging.getLogger("echemdb-converters")
 
 
 @click.group(help=__doc__.split("EXAMPLES")[0])
@@ -61,20 +64,20 @@ def _outfile(template, suffix=None, outdir=None):
     EXAMPLES::
 
         >>> from echemdbconverters.test.cli import invoke, TemporaryData
-        >>> with TemporaryData("**/test.cvs") as directory:
-        ...     outname = _outfile(os.path.join(directory, "test.csv"), suffix=".csv")
+        >>> with TemporaryData("../**/default.cvs") as directory:
+        ...     outname = _outfile(os.path.join(directory, "default.csv"), suffix=".csv")
         ...     with open(outname, mode="wb") as csv:
         ...         _ = csv.write(b"...")
-        ...     os.path.exists(os.path.join(directory, "xy.csv"))
+        ...     os.path.exists(os.path.join(directory, "default.csv"))
         True
 
     ::
 
-        >>> with TemporaryData("**/xy.svg") as directory:
-        ...     outname = _outfile(os.path.join(directory, "xy.svg"), suffix=".csv", outdir=os.path.join(directory, "subdirectory"))
+        >>> with TemporaryData("../**/default.csv") as directory:
+        ...     outname = _outfile(os.path.join(directory, "default.csv"), suffix=".csv", outdir=os.path.join(directory, "subdirectory"))
         ...     with open(outname, mode="wb") as csv:
         ...         _ = csv.write(b"...")
-        ...     os.path.exists(os.path.join(directory, "subdirectory", "xy.csv"))
+        ...     os.path.exists(os.path.join(directory, "subdirectory", "default.csv"))
         True
 
     """
@@ -88,7 +91,8 @@ def _outfile(template, suffix=None, outdir=None):
 
     return template
 
-def _create_package(converter, csvname, outdir):
+
+def _create_package(csvname, metadata, fields, outdir):
     r"""
     Return a data package built from a :param:`metadata` dict and tabular data
     in :param:`csvname`.
@@ -98,7 +102,6 @@ def _create_package(converter, csvname, outdir):
     from frictionless import Package, Resource, Schema
 
     package = Package(
-        converter.metadata,
         resources=[
             Resource(
                 path=os.path.basename(csvname),
@@ -108,9 +111,15 @@ def _create_package(converter, csvname, outdir):
     )
     package.infer()
 
-    package["resources"][0]["schema"] = converter.schema
+    resource = package.resources[0]
+
+    resource.custom.setdefault("metadata", {})
+    resource.custom["metadata"].setdefault("echemdb", metadata)
+
+    resource.schema = Schema(fields=fields)
 
     return package
+
 
 def _write_metadata(out, metadata):
     r"""
@@ -130,91 +139,152 @@ def _write_metadata(out, metadata):
         # in the metadata. However, standard JSON does not know about these so
         # we need to serialize them as strings explicitly.
         if isinstance(item, (datetime, date)):
-            return item.__str__()
+            return str(item)
 
         raise TypeError(f"Cannot serialize ${item} of type ${type(item)} to JSON.")
 
     import json
 
-    json.dump(metadata, out, default=defaultconverter)
+    json.dump(metadata, out, default=defaultconverter, ensure_ascii=False, indent=4)
+    # json.dump does not save files with a newline, which compromises the tests
+    # where the output files are compared to an expected json.
+    out.write("\n")
 
 
-@click.command(name='ec')
+@click.command(name="csv")
 @click.argument("csv", type=click.Path(exists=True))
-@click.option("--device", type=str, default=None, help='selects a specific CSVloader')
+@click.option("--device", type=str, default=None, help="selects a specific CSVloader")
 @click.option(
     "--outdir",
     type=click.Path(file_okay=False),
     default=None,
     help="write output files to this directory",
 )
-@click.option("--metadata", type=click.File("rb"), default=None, help="yaml file with metadata"
+@click.option(
+    "--metadata", type=click.File("rb"), default=None, help="yaml file with metadata"
 )
-@click.option("--package", is_flag=True, help="create .json in data package format")
-def convert(csv, device, outdir, metadata, package):
-    r"""
-    Convert an electrochemistry file into an echemdb datapackage.
+def convert(csv, device, outdir, metadata):
+    """
+    Convert a file containing CSV data into an echemdb unitpackage.
+    \f
 
     EXAMPLES::
 
-        >>> from svgdigitizer.test.cli import invoke, TemporaryData
-        >>> with TemporaryData("**/xy_rate.svg") as directory:
-        ...     invoke(cli, "cv", os.path.join(directory, "xy_rate.svg"))
+        >>> from echemdbconverters.test.cli import invoke, TemporaryData
+        >>> with TemporaryData("../**/default.csv") as directory:
+        ...     invoke(cli, "csv", os.path.join(directory, "default.csv"))
 
     TESTS:
 
     The command can be invoked on files in the current directory::
 
-        >>> from svgdigitizer.test.cli import invoke, TemporaryData
+        >>> from echemdbconverters.test.cli import invoke, TemporaryData
         >>> cwd = os.getcwd()
-        >>> with TemporaryData("**/xy_rate.svg") as directory:
+        >>> with TemporaryData("../**/default.csv") as directory:
         ...     os.chdir(directory)
         ...     try:
-        ...         invoke(cli, "cv", "xy_rate.svg")
+        ...         invoke(cli, "csv", "default.csv")
         ...     finally:
         ...         os.chdir(cwd)
 
-    The command can be invoked without sampling when data is not given in volts::
-
-        >>> from svgdigitizer.test.cli import invoke, TemporaryData
-        >>> from svgdigitizer.svg import SVG
-        >>> from svgdigitizer.svgplot import SVGPlot
-        >>> from svgdigitizer.electrochemistry.cv import CV
-        >>> with TemporaryData("**/xy_rate.svg") as directory:
-        ...     print(CV(SVGPlot(SVG(open(os.path.join(directory, "xy_rate.svg"))))).figure_schema.get_field("E")["unit"])
-        mV
-        >>> with TemporaryData("**/xy_rate.svg") as directory:
-        ...     invoke(cli, "cv", os.path.join(directory, "xy_rate.svg"))
-
     """
-    from .csvloader import CSVloader
-    from .ecconverter import ECConverter
+    from echemdbconverters.csvloader import CSVloader
     import yaml
+
+    if device:
+        loader = CSVloader.create(device)(open(csv, "r"))
+    else:
+        loader = CSVloader(open(csv, "r"))
 
     if metadata:
         metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
 
-    if device:
-        converter = ECConverter.get_converter(device)(CSVloader.get_loader(device)(open(csv, 'r'), metadata))
-    else:
-        converter = ECConverter(open(csv, 'r'), metadata)
+    fields = loader.derive_fields()
 
+    _create_outfiles(csv, loader, fields, metadata, outdir)
+
+
+def _create_outfiles(csv, loader, fields, metadata, outdir):
+    # write new csv
     csvname = _outfile(csv, suffix=".csv", outdir=outdir)
-    converter.df.to_csv(csvname, index=False)
+    loader.df.to_csv(csvname, index=False)
 
-    if package:
-        package = _create_package(converter, csvname, outdir)
+    # write package
+    package = _create_package(csvname, metadata, fields, outdir)
 
-        with open(
-            _outfile(csv, suffix=".json", outdir=outdir),
-            mode="w",
-            encoding="utf-8",
-        ) as json:
-            _write_metadata(json, package.to_dict() if package else converter.metadata)
-    pass
+    with open(
+        _outfile(csv, suffix=".json", outdir=outdir),
+        mode="w",
+        encoding="utf-8",
+    ) as json:
+        _write_metadata(json, package.to_dict())
+
+
+@click.command(name="ec")
+@click.argument("csv", type=click.Path(exists=True))
+@click.option("--device", type=str, default=None, help="selects a specific CSVloader")
+@click.option(
+    "--outdir",
+    type=click.Path(file_okay=False),
+    default=None,
+    help="write output files to this directory",
+)
+@click.option(
+    "--metadata", type=click.File("rb"), default=None, help="yaml file with metadata"
+)
+def electrochemistry(csv, device, outdir, metadata):
+    r"""
+    Convert an electrochemistry file into an echemdb datapackage.
+
+    EXAMPLES::
+
+        >>> from echemdbconverters.test.cli import invoke, TemporaryData
+        >>> with TemporaryData("unit.csv") as directory:
+        ...     with TemporaryData("unit.csv.metadata") as directory2:
+        ...         invoke(cli, "ec", os.path.join(directory, "unit.csv"), '--outdir', os.path.join(directory, "generated"), '--metadata', os.path.join(directory2, "unit.csv.metadata"))
+
+    TESTS:
+
+    The command can be invoked on files in the current directory::
+
+        >>> from echemdbconverters.test.cli import invoke, TemporaryData
+        >>> cwd = os.getcwd()
+        >>> with TemporaryData("unit.csv") as directory:
+        ...     with TemporaryData("unit.csv.metadata") as directory2:
+        ...         os.chdir(directory)
+        ...         try:
+        ...             invoke(cli, "ec", os.path.join(directory, "unit.csv"), '--outdir', os.path.join(directory, "generated"), '--metadata', os.path.join(directory2, "unit.csv.metadata"))
+        ...         finally:
+        ...             os.chdir(cwd)
+
+    """
+    from echemdbconverters.csvloader import CSVloader
+    from echemdbconverters.ec_unit_package_adapter import ECUnitPackageAdapter
+    import yaml
+
+    fields = None
+
+    if metadata:
+        metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
+        try:
+            fields = metadata["figure description"]["schema"]["fields"]
+        except (KeyError, AttributeError):
+            logger.warning("No units to the fields provided in the metadata")
+
+    if device:
+        loader = ECUnitPackageAdapter.create(device=device)(
+            CSVloader.create(device)(open(csv, "r")), fields=fields
+        )
+    else:
+        loader = ECUnitPackageAdapter(CSVloader(open(csv, "r")), fields=fields)
+
+    fields = loader.fields()
+
+    _create_outfiles(csv, loader, fields, metadata, outdir)
 
 
 cli.add_command(convert)
+cli.add_command(electrochemistry)
 
 # Register command docstrings for doctesting.
 # Since commands are not functions anymore due to their decorator, their
@@ -222,6 +292,3 @@ cli.add_command(convert)
 __test__ = {
     name: command.__doc__ for (name, command) in cli.commands.items() if command.__doc__
 }
-
-# if __name__ == "__main__":
-#     cli()

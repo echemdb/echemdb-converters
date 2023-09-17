@@ -84,7 +84,11 @@ class TemporaryData:
             import echemdbconverters
 
             cwd = os.getcwd()
-            os.chdir(os.path.join(os.path.dirname(echemdbconverters.__file__), "..", "test", "csv"))
+            os.chdir(
+                os.path.join(
+                    os.path.dirname(echemdbconverters.__file__), "..", "test", "csv"
+                )
+            )
             try:
                 for pattern in self._patterns:
                     for filename in glob.glob(pattern):

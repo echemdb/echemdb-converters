@@ -188,8 +188,9 @@ def convert(csv, device, outdir, metadata):
         ...         os.chdir(cwd)
 
     """
-    from echemdbconverters.csvloader import CSVloader
     import yaml
+
+    from echemdbconverters.csvloader import CSVloader
 
     if device:
         loader = CSVloader.create(device)(open(csv, "r"))
@@ -258,9 +259,10 @@ def electrochemistry(csv, device, outdir, metadata):
         ...             os.chdir(cwd)
 
     """
+    import yaml
+
     from echemdbconverters.csvloader import CSVloader
     from echemdbconverters.ec_unit_package_adapter import ECUnitPackageAdapter
-    import yaml
 
     fields = None
 

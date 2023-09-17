@@ -1,0 +1,52 @@
+{
+    "resources": [
+        {
+            "name": "unit",
+            "type": "table",
+            "path": "unit.csv",
+            "scheme": "file",
+            "format": "csv",
+            "mediatype": "text/csv",
+            "encoding": "utf-8",
+            "schema": {
+                "fields": [
+                    {
+                        "name": "t",
+                        "type": "integer"
+                    },
+                    {
+                        "name": "E",
+                        "type": "integer"
+                    },
+                    {
+                        "name": "j",
+                        "type": "integer"
+                    }
+                ]
+            },
+            "metadata": {
+                "echemdb": {
+                    "figure description": {
+                        "schema": {
+                            "fields": [
+                                {
+                                    "name": "E",
+                                    "unit": "U",
+                                    "reference": "RHE"
+                                },
+                                {
+                                    "name": "j",
+                                    "unit": "uA / cm2"
+                                },
+                                {
+                                    "name": "t",
+                                    "unit": "s"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

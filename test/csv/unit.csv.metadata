@@ -1,0 +1,10 @@
+figure description:
+    schema:
+        fields:
+          - name: E
+            unit: U
+            reference: RHE
+          - name: j
+            unit: uA / cm2
+          - name: t
+            unit: s

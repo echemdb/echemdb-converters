@@ -250,7 +250,6 @@ class ECLabLoader(CSVloader):
             {'name': 'control/V', 'type': 'integer', 'description': 'control voltage', 'unit': 'V', 'dimension': 'E'}]
 
         """
-        # TODO:: When the file contains an unnamed column an this is not 13, this approach will fail. (see: #8)
         fields = fields or biologic_fields
         return super().derive_fields(fields=fields)
 

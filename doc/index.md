@@ -22,7 +22,7 @@ This module is still under development.
 
 ## Examples
 
-```{note}
+```{hint}
 An `!` in the following examples indicates a shell command which is executed in a jupyter cell. Remove the `!` to run the command in a shell.
 ```
 
@@ -54,7 +54,9 @@ Unitpackages with specific metadata standards can be created. For example `echem
 !echemdbconverters csv ../test/csv/eclab_cv_csv.mpt --device eclab --metadata ../test/csv/eclab_cv_csv.mpt.metadata --outdir ../test/generated
 ```
 
-Finally use echemdbs' `unitpackage` to browse, modify and visualize the data.
+<!-- ## Further usage
+
+Use echemdbs' `unitpackage` to browse, modify and visualize the data.
 
 ```{code-cell} ipython3
 from unitpackage.collection import Collection
@@ -63,85 +65,10 @@ db = Collection(collect_datapackages('../test/generated'))
 entry = db['eclab_cv_ec']
 entry.rescale({'t':'h', 'E':'mV'}).plot('t', 'E')
 ```
+ -->
+
+
 <!--
-Annotation of scientific data plays a crucial role in research data management workflows to ensure that the data is stored according to the FAIR principles. A simple CSV file recorded during an experiment usually does, for example, not provide any information on the units of the values within the CSV, nor does it provide information on what system has been investigated, or who performed the experiment. Such information can be stored in [frictionless datapackages](https://frictionlessdata.io/), which consist of a CSV (data) file which is annotated with a JSON file.
-The `unitpackage` module provides a Python library to interact with such datapackages which have a very [specific structure](usage/unitpackage.md).
-An example demonstrating the usage of a collection of datapackages along with the `unitpackage` Python library is found on [echemdb.org](https://www.echemdb.org/cv). The website shows a collection of electrochemical data, stored following the [echemdb's metadata schema](https://github.com/echemdb/metadata-schema).
-
-## Examples
-
-A collection of datapackages can be generated from [local files](usage/local_collection.md) or from a remote repository, such as [echemdb.org](https://www.echemdb.org). To illustrate the usage of `unitpackage` we use in the following examples the data available on [echemdb.org](https://www.echemdb.org/cv). The data is downloaded by default when the `Collection` class does not receive the argument `data_packages=collect_datapackages('./files_folder)`.
-
-```{note}
-We denote the collection as `db` (database), even thought it is not a database in that sense.
-```
-
-```{code-cell} ipython3
-from unitpackage.collection import Collection
-db = Collection()
-```
-
-A single entry can be retrieved with an identifiers available in the database
-
-```{code-cell} ipython3
-entry = db['engstfeld_2018_polycrystalline_17743_f4b_1']
-```
-
-The metadata of the datapackage is available from `entry.package`.
-
-The data related to an entry can be returned as a [pandas](https://pandas.pydata.org/) dataframe.
-
-```{code-cell} ipython3
-entry.df.head()
-```
-
-The units of the columns can be retrieved.
-
-```{code-cell} ipython3
-entry.field_unit('j')
-```
-
-The values in the dataframe can be changed to other compatible units.
-
-```{code-cell} ipython3
-rescaled_entry = entry.rescale({'E' : 'mV', 'j' : 'uA / m2'})
-rescaled_entry.df.head()
-```
-
-The data can be visualized in a plotly figure:
-
-```{code-cell} ipython3
-entry.plot('E', 'j')
-```
-
-## Specific Collections
-
-For certain datasets, unitpackage can be extended by additional modules. Such a module is the `CVCollection` class which loads a collection of packages containing cyclic voltammograms which are stored according to the echemdb metadata schema. Such data is usually found in the field of electrochemistry as illustrated on [echemdb.org](https://www.echemdb.org/cv).
-
-```{code-cell} ipython3
-from unitpackage.cv.cv_collection import CVCollection
-db = CVCollection()
-db.describe()
-```
-
-Filtering the collection for entries having specific properties, e.g., containing Pt as working electrode material, returns a new collection.
-
-```{code-cell} ipython3
-db_filtered = db.filter(lambda entry: entry.get_electrode('WE').material == 'Pt')
-db_filtered.describe()
-```
-
-```{note}
-The filtering method is also available to the base class `Collection`.
-```
-
-## Further Usage
-
-Frictionless datapackages or unitpackges are perfectly machine readable making the underling data and metadata reusable in many ways.
-
-* The `unitpackage` API can be used to filter collections of similar data for certain properties, thus allowing for simple comparison of different data sets. For example, you could think of comparing local files recorded in the laboratory with data published in a repository.
-* The content of datapackages can be included in other applications or the generation of a website. The latter has been demonstrated for electrochemical data on [echemdb.org](https://www.echemdb.org/cv). The datapackages could also be published with the [frictionless Livemark](https://livemark.frictionlessdata.io/) data presentation framework.
-
 You can cite this project as described [on our zenodo page](https://zenodo.org/badge/latestdoi/637997870).
 
 ## Installation

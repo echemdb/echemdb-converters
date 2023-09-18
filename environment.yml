@@ -8,6 +8,9 @@ dependencies:
   - click>=8,<9
   - frictionless>=5,<6
   - isort
+  - jupytext>=1.13,<2
+  - myst-nb>=0.17.0,<0.18
+  - myst-parser>=0.18,<0.19
   - pandas
   - pip
   - pylint
@@ -15,7 +18,10 @@ dependencies:
   - pytest-doctestplus
   - pytest-xdist
   - pytest-remotedata
+  - python>=3.9
+  - sphinx>=4.3,<5
   - svgdigitizer
   - unitpackage
   - pip:
     - clevercsv>=0.7.4,<0.8.0
+    - sphinx_rtd_theme>=1,<2

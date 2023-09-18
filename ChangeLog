@@ -7,30 +7,9 @@ echemdb-converters Change Log
 v0.1.1
 ====================
 
-**Added:**
-
-* Added <news item>.
-
-**Changed:**
-
-* Changed <news item>.
-
-**Deprecated:**
-
-* Deprecated <news item>.
-
-**Removed:**
-
-* Removed <news item>.
-
 **Fixed:**
 
-* Fixed <news item>.
-
-**Performance:**
-
-* Improved <news item>.
-
+* Fixed inferring units from metadata of the CLI `csv`` command.
 
 
 v0.1.0

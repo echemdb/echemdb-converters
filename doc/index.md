@@ -66,8 +66,6 @@ entry = db['eclab_cv_ec']
 entry.rescale({'t':'h', 'E':'mV'}).plot('t', 'E')
 ```
 
-
-
 <!--
 You can cite this project as described [on our zenodo page](https://zenodo.org/badge/latestdoi/637997870).
 

@@ -66,30 +66,18 @@ entry = db['eclab_cv_ec']
 entry.rescale({'t':'h', 'E':'mV'}).plot('t', 'E')
 ```
 
-<!--
-You can cite this project as described [on our zenodo page](https://zenodo.org/badge/latestdoi/637997870).
-
 ## Installation
 
-This package is available on [PiPY](https://pypi.org/project/unitpackage/) and can be installed with pip:
+This package is available on [PiPY](https://pypi.org/project/echemdbconverters/) and can be installed with pip:
 
 ```sh .noeval
-pip install unitpackage
-```
-
-The package is also available on [conda-forge](https://github.com/conda-forge/unitpackage-feedstock) an can be installed with conda
-
-```sh .noeval
-conda install -c conda-forge unitpackage
-```
-
-or mamba
-
-```sh .noeval
-mamba install -c conda-forge unitpackage
+pip install echemdbconverters
 ```
 
 See the [installation instructions](installation.md) for further details.
+
+<!--
+You can cite this project as described [on our zenodo page](https://zenodo.org/badge/latestdoi/XXXXXX).
 -->
 
 ## License

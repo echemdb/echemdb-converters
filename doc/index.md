@@ -14,7 +14,12 @@ kernelspec:
 
 # Welcome to echemdb-converters's documentation!
 
-Add description!
+`echemdbconverters` provides a command line interface (CLI) for creating echemdb compatible [unitpackages](https://github.com/echemdb/unitpackage) from CSV or CSV like files. The module can be extended to load different kind of CSV files and/or to convert files with different structure but similar content into a standardized format. An API to the loaders and converters allows for seamless integration in existing workflows.
+
+## Examples
+
+CLI examples.
+
 <!--
 Annotation of scientific data plays a crucial role in research data management workflows to ensure that the data is stored according to the FAIR principles. A simple CSV file recorded during an experiment usually does, for example, not provide any information on the units of the values within the CSV, nor does it provide information on what system has been investigated, or who performed the experiment. Such information can be stored in [frictionless datapackages](https://frictionlessdata.io/), which consist of a CSV (data) file which is annotated with a JSON file.
 The `unitpackage` module provides a Python library to interact with such datapackages which have a very [specific structure](usage/unitpackage.md).

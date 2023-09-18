@@ -9,7 +9,8 @@ The datapackage contains information about, i.e.,
 the type of data, a title and a set of descriptors.
 
 The CSV object has the following properties:
-::TODO: Add examples for the following functions
+
+TODO:: Add examples for the following functions
     * a DataFrame
     * the column names
     * the header contents
@@ -17,7 +18,7 @@ The CSV object has the following properties:
 
 Loaders for non standard CSV files can be called:
 
-::TODO: Add example
+TODO:: Add example
 
 """
 # ********************************************************************
@@ -69,7 +70,8 @@ class CSVloader:
         >>> csv.column_names
         ['a', 'b']
 
-    More specific converters can be selected::
+    More specific converters can be selected:
+
     TODO:: Add example with csv.get_device('device')(file)
 
     """
@@ -101,7 +103,7 @@ class CSVloader:
         Metadata constructed from input metadata and the CSV header.
         A simple CSV does not have any metadata in the header.
 
-        EXAMPLES::
+        EXAMPLES:
 
         Without metadata::
 

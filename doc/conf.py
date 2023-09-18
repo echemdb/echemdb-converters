@@ -1,6 +1,6 @@
-project = 'unitpackage'
-copyright = '2022-2023, the unitpackage authors'
-author = 'the unitpackage authors'
+project = 'echemdb-converters'
+copyright = '2022-2023, the echemdb-converters authors'
+author = 'the echemdb-converters authors'
 
 release = '0.7.1'
 

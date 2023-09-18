@@ -100,21 +100,21 @@ class ECUnitPackageAdapter:
 
         EXAMPLES::
 
-        >>> from io import StringIO
-        >>> file = StringIO(r'''t,E,j,x
-        ... 0,0,0,0
-        ... 1,1,1,1''')
-        >>> from echemdbconverters.csvloader import CSVloader
-        >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
-        >>> ec = ECUnitPackageAdapter.create('eclab')(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
-        >>> ec.df
-           t  E  j  x
-        0  0  0  0  0
-        1  1  1  1  1
+            >>> from io import StringIO
+            >>> file = StringIO(r'''t,E,j,x
+            ... 0,0,0,0
+            ... 1,1,1,1''')
+            >>> from echemdbconverters.csvloader import CSVloader
+            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}}
+            >>> ec = ECUnitPackageAdapter.create('eclab')(CSVloader(file=file), fields=metadata['figure description']['schema']['fields'])
+            >>> ec.df
+            t  E  j  x
+            0  0  0  0  0
+            1  1  1  1  1
 
         """
         if device == "eclab":
-            from echemdbconverters.eclab_adapater import ECLabAdapter
+            from echemdbconverters.eclab_adapter import ECLabAdapter
 
             return ECLabAdapter
 

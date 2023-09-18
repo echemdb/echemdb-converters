@@ -192,6 +192,15 @@ def convert(csv, device, outdir, metadata):
 
     from echemdbconverters.csvloader import CSVloader
 
+    fields = None
+
+    if metadata:
+        metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
+        try:
+            fields = metadata["figure description"]["schema"]["fields"]
+        except (KeyError, AttributeError):
+            logger.warning("No units to the fields provided in the metadata")
+
     if device:
         with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
             loader = CSVloader.create(device)(file)
@@ -199,10 +208,10 @@ def convert(csv, device, outdir, metadata):
         with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
             loader = CSVloader(file)
 
-    if metadata:
-        metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
+    # if metadata:
+    #     metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
 
-    fields = loader.derive_fields()
+    fields = loader.derive_fields(fields=fields)
 
     _create_outfiles(csv, loader, fields, metadata, outdir)
 

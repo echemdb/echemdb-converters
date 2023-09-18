@@ -29,6 +29,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "clevercsv",
+        "click>=8,<9",
         "frictionless>=5,<6",
         "pandas",
     ],

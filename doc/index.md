@@ -51,10 +51,10 @@ Specific loaders convert non-standard CSV, which, for {download}`example <../tes
 Unitpackages with specific metadata standards can be created. For example `echemdb`'s unitpackages for electrochemical data, require a time, potential and current axis labelled `t`, `U` or `E`, and `j` or `I`. The CLI provides special commands (here `ec`).
 
 ```{code-cell} ipython3
-!echemdbconverters csv ../test/csv/eclab_cv_csv.mpt --device eclab --metadata ../test/csv/eclab_cv_csv.mpt.metadata --outdir ../test/generated
+!echemdbconverters ec ../test/csv/eclab_cv_ec.mpt --device eclab --metadata ../test/csv/eclab_cv_ec.mpt.metadata --outdir ../test/generated
 ```
 
-<!-- ## Further usage
+## Further usage
 
 Use echemdbs' `unitpackage` to browse, modify and visualize the data.
 
@@ -65,7 +65,7 @@ db = Collection(collect_datapackages('../test/generated'))
 entry = db['eclab_cv_ec']
 entry.rescale({'t':'h', 'E':'mV'}).plot('t', 'E')
 ```
- -->
+
 
 
 <!--

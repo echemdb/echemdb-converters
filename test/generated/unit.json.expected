@@ -12,15 +12,19 @@
                 "fields": [
                     {
                         "name": "t",
-                        "type": "integer"
+                        "type": "integer",
+                        "unit": "s"
                     },
                     {
                         "name": "E",
-                        "type": "integer"
+                        "type": "integer",
+                        "unit": "U",
+                        "reference": "RHE"
                     },
                     {
                         "name": "j",
-                        "type": "integer"
+                        "type": "integer",
+                        "unit": "uA / cm2"
                     }
                 ]
             },

@@ -197,7 +197,7 @@ def convert(csv, device, outdir, metadata):
     if metadata:
         metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
         try:
-            fields = metadata["figure description"]["schema"]["fields"]
+            fields = metadata["figure description"]["fields"]
         except (KeyError, AttributeError):
             logger.warning("No units to the fields provided in the metadata")
 
@@ -280,7 +280,7 @@ def electrochemistry(csv, device, outdir, metadata):
     if metadata:
         metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
         try:
-            fields = metadata["figure description"]["schema"]["fields"]
+            fields = metadata["figure description"]["fields"]
         except (KeyError, AttributeError):
             logger.warning("No units to the fields provided in the metadata")
 

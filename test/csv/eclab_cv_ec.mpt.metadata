@@ -112,8 +112,8 @@ curation:
   version: 1
   process:
   - role: experimentalist
-    name: Tobias Schmider
-    orcid: https://orcid.org/0000-0002-2911-2925
+    name: Max Doe
+    orcid: https://orcid.org/0000-0002-9686-3948
     date: 2022-04-05
 time metadata: '2022-04-05T09:25:25'
 measurement file name: 2022-04-05_DCP2_TOSC_000_PTSC4_HClO4_CO_03_CV_C01.mpt

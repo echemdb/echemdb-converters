@@ -308,9 +308,9 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}}
+            >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}
             >>> csv = CSVloader(file=file)
-            >>> csv.derive_fields(fields=metadata['figure description']['schema']['fields'])
+            >>> csv.derive_fields(fields=metadata['figure description']['fields'])
             [{'name': 't', 'type': 'integer', 'unit': 's'}, {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'}]
 
         When a field is missing (here `t`) it will be generated and all obsolete fields are removed.::
@@ -318,9 +318,9 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> metadata = {'figure description': {'schema': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}}
+            >>> metadata = {'figure description': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}
             >>> csv = CSVloader(file=file)
-            >>> csv.derive_fields(fields=metadata['figure description']['schema']['fields'])
+            >>> csv.derive_fields(fields=metadata['figure description']['fields'])
             [{'name': 't', 'type': 'integer'}, {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'}]
 
         """

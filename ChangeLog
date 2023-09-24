@@ -4,6 +4,19 @@ echemdb-converters Change Log
 
 .. current developments
 
+v0.1.2
+====================
+
+**Added:**
+
+* Added installation instructions to the documentation and readme.
+
+**Changed:**
+
+* Changed inferring fields from metadata in the CLI from `figure_description.schema.fields` to `figure_description.fields`.
+
+
+
 v0.1.1
 ====================
 

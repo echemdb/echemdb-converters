@@ -2,7 +2,7 @@ project = 'echemdb-converters'
 copyright = '2022-2023, the echemdb-converters authors'
 author = 'the echemdb-converters authors'
 
-release = '0.1.1'
+release = '0.1.2'
 
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.todo", "myst_nb"]
 

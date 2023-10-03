@@ -212,6 +212,28 @@ class ECLabLoader(CSVloader):
             0     2       0   0.1       0          0
             1     2       1   1.4       5          1
 
+        A file with a comma as decimal separator::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''EC-Lab ASCII FILE
+            ... Nb header lines : 6
+            ...
+            ... Device metadata : some metadata
+            ...
+            ... mode\ttime/s\tEwe/V\t<I>/mA\tcontrol/V
+            ... 2\t0\t0,1\t0\t0
+            ... 2\t1\t1,4\t5\t1
+            ... ''')
+            >>> from echemdbconverters.csvloader import CSVloader
+            >>> csv = CSVloader.create('eclab')(file)
+            >>> csv.df
+               mode  time/s Ewe/V  <I>/mA  control/V
+            0     2       0   0.1       0          0
+            1     2       1   1.4       5          1
+
+            >>> csv.df['Ewe/V'].dtype
+            dtype('float64')
+
         """
         import pandas as pd
 

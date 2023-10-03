@@ -219,7 +219,7 @@ def convert(csv, device, outdir, metadata):
 def _create_outfiles(csv, loader, fields, metadata, outdir):
     # write new csv
     csvname = _outfile(csv, suffix=".csv", outdir=outdir)
-    loader.df.to_csv(csvname, index=False)
+    loader.df.to_csv(csvname, index=False, decimal='.', sep=',')
 
     # write package
     package = _create_package(csvname, metadata, fields, outdir)

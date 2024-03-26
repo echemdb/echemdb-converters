@@ -285,25 +285,3 @@ class ECUnitPackageAdapter:
         df = self.loader.df.copy()
         df.columns = self.column_names
         return df
-
-    @property
-    def metadata(self):
-        r"""
-        Returns metadata associated with the CSV.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j,x
-            ... 0,0,0,0
-            ... 1,1,1,1''')
-            >>> from echemdbconverters.csvloader import CSVloader
-            >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name':'x', 'unit':'m'}]}}
-            >>> ec = ECUnitPackageAdapter(CSVloader(file), metadata=metadata)
-            >>> ec.metadata  # doctest: +NORMALIZE_WHITESPACE
-            {'figure description': {'fields': [{'name': 't', 'unit': 's'},
-            {'name': 'E', 'unit': 'V', 'reference': 'RHE'},
-            {'name': 'j', 'unit': 'uA / cm2'}, {'name': 'x', 'unit': 'm'}]}}
-
-        """
-        return self._metadata or self.loader.metadata

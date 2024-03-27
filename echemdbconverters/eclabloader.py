@@ -47,10 +47,11 @@ The file can also be loaded from the base loader::
     ['mode', 'time/s', 'Ewe/V', '<I>/mA', 'control/V']
 
 """
+
 # ********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2022 Albert Engstfeld
+#        Copyright (C) 2024 Albert Engstfeld
 #        Copyright (C) 2022 Johannes Hermann
 #        Copyright (C) 2022 Julian Rüth
 #
@@ -70,50 +71,6 @@ The file can also be loaded from the base loader::
 
 
 from echemdbconverters.csvloader import CSVloader
-
-biologic_fields = [
-    {
-        "name": "mode",
-    },
-    {
-        "name": "ox/red",
-    },
-    {
-        "name": "error",
-    },
-    {
-        "name": "control changes",
-    },
-    {
-        "name": "counter inc.",
-    },
-    {"name": "time/s", "unit": "s", "dimension": "t", "description": "relative time"},
-    {
-        "name": "control/V",
-        "unit": "V",
-        "dimension": "E",
-        "description": "control voltage",
-    },
-    {
-        "name": "Ewe/V",
-        "unit": "V",
-        "dimension": "E",
-        "description": "working electrode potential",
-    },
-    {
-        "name": "<I>/mA",
-        "unit": "mA",
-        "dimension": "I",
-        "description": "working electrode current",
-    },
-    {"name": "cycle number", "description": "cycle number"},
-    {
-        "name": "(Q-Qo)/C",
-        "unit": "C",
-    },
-    {"name": "I Range", "description": "current range"},
-    {"name": "P/W", "unit": "W", "dimension": "P", "description": "power"},
-]
 
 
 class ECLabLoader(CSVloader):
@@ -217,10 +174,10 @@ class ECLabLoader(CSVloader):
 
         return pd.read_csv(
             self.file,
-            sep='\t',
+            sep="\t",
             header=self.header_lines,
             decimal=self.decimal,
-            #encoding="latin1",
+            # encoding="latin1",
             skip_blank_lines=False,
         )
 

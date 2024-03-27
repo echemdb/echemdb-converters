@@ -21,10 +21,11 @@ Loaders for non standard CSV files can be called:
 TODO:: Add example
 
 """
+
 # ********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2022 Albert Engstfeld
+#        Copyright (C) 2024 Albert Engstfeld
 #        Copyright (C) 2022 Johannes Hermann
 #        Copyright (C) 2022 Julian Rüth
 #

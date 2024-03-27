@@ -6,7 +6,6 @@ dependencies:
   - black
   # - clevercsv
   - click>=8,<9
-  - frictionless>=5,<6
   - isort
   - jupytext>=1.13,<2
   - myst-nb>=0.17.0,<0.18

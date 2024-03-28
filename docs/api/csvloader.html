@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>echemdbconverters.csvloader &mdash; echemdb-converters 0.2.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="echemdbconverters.eclabloader" href="eclabloader.html" />
+    <link rel="prev" title="API" href="../api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            echemdb-converters
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">echemdbconverters.csvloader</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="eclabloader.html"><code class="docutils literal notranslate"><span class="pre">echemdbconverters.eclabloader</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">echemdb-converters</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API</a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">echemdbconverters.csvloader</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/echemdb/echemdb-converters/blob/master/echemdbconverters/csvloader.py" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="module-echemdbconverters.csvloader">
+<span id="echemdbconverters-csvloader"></span><h1><code class="docutils literal notranslate"><span class="pre">echemdbconverters.csvloader</span></code><a class="headerlink" href="#module-echemdbconverters.csvloader" title="Permalink to this headline"></a></h1>
+<p>Loader for CSV files (<a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc4180">https://datatracker.ietf.org/doc/html/rfc4180</a>)
+which consist of a single header line containing the column (field)
+names and rows with comma separated values.</p>
+<p>In pandas the names of the columns are referred to as <cite>column_names</cite>,
+whereas in a frictionless datapackage the column names are called <cite>fields</cite>.
+The datapackage contains information about, i.e.,
+the type of data, a title and a set of descriptors.</p>
+<p>The CSV object has the following properties:</p>
+<dl class="simple">
+<dt>TODO:: Add examples for the following functions</dt><dd><ul class="simple">
+<li><p>a DataFrame</p></li>
+<li><p>the column names</p></li>
+<li><p>the header contents</p></li>
+<li><p>the number of header lines</p></li>
+</ul>
+</dd>
+</dl>
+<p>Loaders for non standard CSV files can be called:</p>
+<p>TODO:: Add example</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">echemdbconverters.csvloader.</span></span><span class="sig-name descname"><span class="pre">CSVloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a CSV, where the first line must contain the column (field) names
+and the following lines comma separated values.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">df</span>
+<span class="go">   a  b</span>
+<span class="go">0  0  0</span>
+<span class="go">1  1  1</span>
+</pre></div>
+</div>
+<p>A list of column names:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">column_names</span>
+<span class="go">[&#39;a&#39;, &#39;b&#39;]</span>
+</pre></div>
+</div>
+<p>More specific converters can be selected:</p>
+<p>TODO:: Add example with csv.get_device(‘device’)(file)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.augment">
+<span class="sig-name descname"><span class="pre">augment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.augment" title="Permalink to this definition"></a></dt>
+<dd><p>Metadata constructed from input metadata and the CSV header.
+A simple CSV does not have any metadata in the header.</p>
+<p>EXAMPLES:</p>
+<p>Without metadata:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;t,E,j</span>
+<span class="gp">... </span><span class="s1">0,0,0</span>
+<span class="gp">... </span><span class="s1">1,1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">echemdbconverters.csvloader</span> <span class="kn">import</span> <span class="n">CSVloader</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">augment</span><span class="p">()</span>
+<span class="go">{}</span>
+</pre></div>
+</div>
+<p>Without metadata provided to the loader:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;t,E,j</span>
+<span class="gp">... </span><span class="s1">0,0,0</span>
+<span class="gp">... </span><span class="s1">1,1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">echemdbconverters.csvloader</span> <span class="kn">import</span> <span class="n">CSVloader</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">augment</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;foo&#39;</span><span class="p">:</span><span class="s1">&#39;bar&#39;</span><span class="p">})</span>
+<span class="go">{&#39;foo&#39;: &#39;bar&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.column_names">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">column_names</span></span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.column_names" title="Permalink to this definition"></a></dt>
+<dd><p>List of column (field) names describing the tabulated data.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">column_names</span>
+<span class="go">[&#39;a&#39;, &#39;b&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.create">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.create" title="Permalink to this definition"></a></dt>
+<dd><p>Calls a specific <cite>loader</cite> based on a given device.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;EC-Lab ASCII FILE</span>
+<span class="gp">... </span><span class="s1">Nb header lines : 6</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">Device metadata : some metadata</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">mode</span><span class="se">\t</span><span class="s1">time/s</span><span class="se">\t</span><span class="s1">Ewe/V</span><span class="se">\t</span><span class="s1">&lt;I&gt;/mA</span><span class="se">\t</span><span class="s1">control/V</span>
+<span class="gp">... </span><span class="s1">2</span><span class="se">\t</span><span class="s1">0</span><span class="se">\t</span><span class="s1">0.1</span><span class="se">\t</span><span class="s1">0</span><span class="se">\t</span><span class="s1">0</span>
+<span class="gp">... </span><span class="s1">2</span><span class="se">\t</span><span class="s1">1</span><span class="se">\t</span><span class="s1">1.4</span><span class="se">\t</span><span class="s1">5</span><span class="se">\t</span><span class="s1">1</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;eclab&#39;</span><span class="p">)(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">df</span>
+<span class="go">mode  time/s Ewe/V  &lt;I&gt;/mA  control/V</span>
+<span class="go">0     2       0   0.1       0          0</span>
+<span class="go">1     2       1   1.4       5          1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.data" title="Permalink to this definition"></a></dt>
+<dd><p>A file like object with the data of the CSV without header lines.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">csv</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="go">&lt;class &#39;_io.StringIO&#39;&gt;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+<span class="go">[&#39;0,0\n&#39;, &#39;1,1&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.decimal">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">decimal</span></span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.decimal" title="Permalink to this definition"></a></dt>
+<dd><p>The decimal separator in the floats in the CSV data.</p>
+<p>EXAMPLES:</p>
+<p>Not implemented in the base loader:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">decimal</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">NotImplementedError</span>
+</pre></div>
+</div>
+<p>Implementation in a specific device loader:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;EC-Lab ASCII FILE</span>
+<span class="gp">... </span><span class="s1">Nb header lines : 6</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">Device metadata : some metadata</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">mode</span><span class="se">\t</span><span class="s1">time/s</span><span class="se">\t</span><span class="s1">Ewe/V</span><span class="se">\t</span><span class="s1">&lt;I&gt;/mA</span><span class="se">\t</span><span class="s1">control/V</span>
+<span class="gp">... </span><span class="s1">2</span><span class="se">\t</span><span class="s1">0</span><span class="se">\t</span><span class="s1">0,1</span><span class="se">\t</span><span class="s1">0</span><span class="se">\t</span><span class="s1">0</span>
+<span class="gp">... </span><span class="s1">2</span><span class="se">\t</span><span class="s1">1</span><span class="se">\t</span><span class="s1">1,4</span><span class="se">\t</span><span class="s1">5</span><span class="se">\t</span><span class="s1">1</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;eclab&#39;</span><span class="p">)(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">decimal</span>
+<span class="go">&#39;,&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.delimiter">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delimiter</span></span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.delimiter" title="Permalink to this definition"></a></dt>
+<dd><p>The delimiter in the CSV, which is extracted from
+the first two lines of the CSV data.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">delimiter</span>
+<span class="go">&#39;,&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.df">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">df</span></span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.df" title="Permalink to this definition"></a></dt>
+<dd><p>A pandas dataframe of the data in the CSV.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">df</span>
+<span class="go">   a  b</span>
+<span class="go">0  0  0</span>
+<span class="go">1  1  1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.file" title="Permalink to this definition"></a></dt>
+<dd><p>A file like object of the loaded CSV.</p>
+<dl>
+<dt>EXAMPLES::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">csv</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+<span class="go">&lt;class &#39;_io.StringIO&#39;&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.header">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">header</span></span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.header" title="Permalink to this definition"></a></dt>
+<dd><p>The header of the CSV (column names excluded).</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">header</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="echemdbconverters.csvloader.CSVloader.header_lines">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">header_lines</span></span><a class="headerlink" href="#echemdbconverters.csvloader.CSVloader.header_lines" title="Permalink to this definition"></a></dt>
+<dd><p>The number of header lines in a CSV excluding the line with the column names.</p>
+<p>EXAMPLES:</p>
+<p>Files for the base loader do not have a header:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&#39;&#39;a,b</span>
+<span class="gp">... </span><span class="s1">0,0</span>
+<span class="gp">... </span><span class="s1">1,1&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">header_lines</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>Implementation in a specific device loader:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;EC-Lab ASCII FILE</span>
+<span class="gp">... </span><span class="s1">Nb header lines : 6</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">Device metadata : some metadata</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">mode</span><span class="se">\t</span><span class="s1">time/s</span><span class="se">\t</span><span class="s1">Ewe/V</span><span class="se">\t</span><span class="s1">&lt;I&gt;/mA</span><span class="se">\t</span><span class="s1">control/V</span>
+<span class="gp">... </span><span class="s1">2</span><span class="se">\t</span><span class="s1">0</span><span class="se">\t</span><span class="s1">0,1</span><span class="se">\t</span><span class="s1">0</span><span class="se">\t</span><span class="s1">0</span>
+<span class="gp">... </span><span class="s1">2</span><span class="se">\t</span><span class="s1">1</span><span class="se">\t</span><span class="s1">1,4</span><span class="se">\t</span><span class="s1">5</span><span class="se">\t</span><span class="s1">1</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CSVloader</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;eclab&#39;</span><span class="p">)(</span><span class="n">file</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span><span class="o">.</span><span class="n">header_lines</span>
+<span class="go">5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../api.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="eclabloader.html" class="btn btn-neutral float-right" title="echemdbconverters.eclabloader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, the echemdb-converters authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

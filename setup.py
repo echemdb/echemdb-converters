@@ -20,7 +20,7 @@ from distutils.core import setup
 
 setup(
     name="echemdbconverters",
-    version="0.1.2",
+    version="0.2.0",
     packages=["echemdbconverters", "echemdbconverters.test"],
     license="GPL 3.0+",
     description="echemdb-converters is a Python library and command line tool to load csv data and convert those into frictionless datapackages.",

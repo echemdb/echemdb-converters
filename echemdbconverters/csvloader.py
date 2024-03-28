@@ -21,10 +21,11 @@ Loaders for non standard CSV files can be called:
 TODO:: Add example
 
 """
+
 # ********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2022 Albert Engstfeld
+#        Copyright (C) 2024 Albert Engstfeld
 #        Copyright (C) 2022 Johannes Hermann
 #        Copyright (C) 2022 Julian Rüth
 #
@@ -285,77 +286,6 @@ class CSVloader:
 
         """
         return 0
-
-    def derive_fields(self, fields=None):
-        r"""
-        Fields describing the column names.
-
-        EXAMPLES:
-
-        If not specified, the fields are created from the `column_names`.::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> from echemdbconverters.csvloader import CSVloader
-            >>> csv = CSVloader(file)
-            >>> csv.derive_fields()
-            [{'name': 't', 'type': 'integer'}, {'name': 'E', 'type': 'integer'}, {'name': 'j', 'type': 'integer'}]
-
-        The fields can be provided as an argument to the loader.::
-
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> metadata = {'figure description': {'fields': [{'name':'t', 'unit':'s'},{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'}]}}
-            >>> csv = CSVloader(file=file)
-            >>> csv.derive_fields(fields=metadata['figure description']['fields'])
-            [{'name': 't', 'type': 'integer', 'unit': 's'}, {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'}]
-
-        When a field is missing (here `t`) it will be generated and all obsolete fields are removed.::
-
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> metadata = {'figure description': {'fields': [{'name':'E', 'unit':'V', 'reference':'RHE'},{'name':'j', 'unit':'uA / cm2'},{'name': 'x'},{'foo':'bar'}]}}
-            >>> csv = CSVloader(file=file)
-            >>> csv.derive_fields(fields=metadata['figure description']['fields'])
-            [{'name': 't', 'type': 'integer'}, {'name': 'E', 'type': 'integer', 'unit': 'V', 'reference': 'RHE'}, {'name': 'j', 'type': 'integer', 'unit': 'uA / cm2'}]
-
-        """
-        from frictionless import Resource, Schema
-
-        # infer fields from pandas dataframe
-        df_resource = Resource(self.df)
-        df_resource.infer()
-
-        if fields:
-            # validate that fields have a name
-            _fields = []
-
-            def validate_field(field):
-                try:
-                    field["name"]
-                except KeyError:
-                    return False
-                return True
-
-            for field in fields:
-                if validate_field(field):
-                    _fields.append(field)
-
-            schema = Schema.from_descriptor({"fields": _fields}, allow_invalid=True)
-
-            # Update the df_resource schema with additional information from the metadata
-            for name in schema.field_names:
-                if name in self.column_names:
-                    field = schema.get_field(name).to_dict()
-                    for key in field:
-                        if not key == "name":
-                            df_resource.schema.update_field(name, {key: field[key]})
-
-        return df_resource.schema.fields
 
     @property
     def delimiter(self):

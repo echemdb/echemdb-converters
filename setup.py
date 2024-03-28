@@ -32,6 +32,7 @@ setup(
         "click>=8,<9",
         "frictionless>=5,<6",
         "pandas",
+        "unitpackage>=0.8.2,<0.9.0",
     ],
     entry_points={
         "console_scripts": ["echemdbconverters=echemdbconverters.entrypoint:cli"],

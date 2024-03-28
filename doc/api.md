@@ -12,7 +12,5 @@ A [`Collection`](api/collection.md) of datapackages, denoted as [`entries`](api/
 ```{toctree}
 :caption: "Modules:"
 api/csvloader.md
-api/ec_unit_package_adapter.md
-api/eclab_adapter.md
 api/eclabloader.md
 ```

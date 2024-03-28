@@ -47,10 +47,11 @@ The file can also be loaded from the base loader::
     ['mode', 'time/s', 'Ewe/V', '<I>/mA', 'control/V']
 
 """
+
 # ********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2022 Albert Engstfeld
+#        Copyright (C) 2024 Albert Engstfeld
 #        Copyright (C) 2022 Johannes Hermann
 #        Copyright (C) 2022 Julian Rüth
 #
@@ -70,50 +71,6 @@ The file can also be loaded from the base loader::
 
 
 from echemdbconverters.csvloader import CSVloader
-
-biologic_fields = [
-    {
-        "name": "mode",
-    },
-    {
-        "name": "ox/red",
-    },
-    {
-        "name": "error",
-    },
-    {
-        "name": "control changes",
-    },
-    {
-        "name": "counter inc.",
-    },
-    {"name": "time/s", "unit": "s", "dimension": "t", "description": "relative time"},
-    {
-        "name": "control/V",
-        "unit": "V",
-        "dimension": "E",
-        "description": "control voltage",
-    },
-    {
-        "name": "Ewe/V",
-        "unit": "V",
-        "dimension": "E",
-        "description": "working electrode potential",
-    },
-    {
-        "name": "<I>/mA",
-        "unit": "mA",
-        "dimension": "I",
-        "description": "working electrode current",
-    },
-    {"name": "cycle number", "description": "cycle number"},
-    {
-        "name": "(Q-Qo)/C",
-        "unit": "C",
-    },
-    {"name": "I Range", "description": "current range"},
-    {"name": "P/W", "unit": "W", "dimension": "P", "description": "power"},
-]
 
 
 class ECLabLoader(CSVloader):
@@ -217,41 +174,12 @@ class ECLabLoader(CSVloader):
 
         return pd.read_csv(
             self.file,
-            sep=self.delimiter,
+            sep="\t",
             header=self.header_lines,
             decimal=self.decimal,
-            encoding="latin1",
+            # encoding="latin1",
             skip_blank_lines=False,
         )
-
-    def derive_fields(self, fields=None):
-        r"""
-        Fields describing the column names of eclab data.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO('''EC-Lab ASCII FILE
-            ... Nb header lines : 6
-            ...
-            ... Device metadata : some metadata
-            ...
-            ... mode\ttime/s\tEwe/V\t<I>/mA\tcontrol/V
-            ... 2\t0\t0.1\t0\t0
-            ... 2\t1\t1.4\t5\t1
-            ... ''')
-            >>> from echemdbconverters.csvloader import CSVloader
-            >>> ec = CSVloader.create('eclab')(file)
-            >>> ec.derive_fields()  # doctest: +NORMALIZE_WHITESPACE
-            [{'name': 'mode', 'type': 'integer'},
-            {'name': 'time/s', 'type': 'integer', 'description': 'relative time', 'unit': 's', 'dimension': 't'},
-            {'name': 'Ewe/V', 'type': 'number', 'description': 'working electrode potential', 'unit': 'V', 'dimension': 'E'},
-            {'name': '<I>/mA', 'type': 'integer', 'description': 'working electrode current', 'unit': 'mA', 'dimension': 'I'},
-            {'name': 'control/V', 'type': 'integer', 'description': 'control voltage', 'unit': 'V', 'dimension': 'E'}]
-
-        """
-        fields = fields or biologic_fields
-        return super().derive_fields(fields=fields)
 
     @property
     def decimal(self):

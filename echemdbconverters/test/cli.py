@@ -7,6 +7,7 @@ scenarios so we wrap it in more convenient ways here.
 The code has been inherited from svgdigitizer and adapted for echemdb-converters.
 
 """
+
 # *********************************************************************
 #  This file is part of svgdigitizer.
 #

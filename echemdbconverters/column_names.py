@@ -40,13 +40,13 @@ biologic_fields = [
     {
         "name": "<Ece>/V",
         "unit": "V",
-        "dimension": "V",
+        "dimension": "E",
         "description": "averaged potential of CE versus REF"
     },
     {
         "name": "<Ewe>/V",
         "unit": "V",
-        "dimension": "V",
+        "dimension": "E",
         "description": "averaged voltage (WE vs. REF)"
     },
     {
@@ -58,7 +58,7 @@ biologic_fields = [
     {
         "name": "|Ece|/V",
         "unit": "V",
-        "dimension": "V",
+        "dimension": "E",
         "description": "module of Ece (Note:Impedance related)"
     },
     {
@@ -70,7 +70,7 @@ biologic_fields = [
     {
         "name": "|Ewe|/V",
         "unit": "V",
-        "dimension": "V",
+        "dimension": "E",
         "description": "module of Ewe (Note:Impedance related"
     },
     {
@@ -170,7 +170,7 @@ biologic_fields = [
     {
         "name": "control/V/mA",
         "unit": "V mA-1",
-        "dimension": "control_V_I",
+        "dimension": "V / I",
         "description": "Ectrl/Ictrl: potential or current control "
     },
     {
@@ -256,7 +256,7 @@ biologic_fields = [
     {
         "name": "Ecell/V",
         "unit": "V",
-        "dimension": "E",
+        "dimension": "U",
         "description": "Ecell: WE versus CE potential"
     },
     {
@@ -290,13 +290,13 @@ biologic_fields = [
     {
         "name": "Ewe-Ece/V",
         "unit": "V",
-        "dimension": "V",
+        "dimension": "U",
         "description": "Ewe-Ece: WE versus CE potential "
     },
     {
         "name": "Ewe/V",
         "unit": "V",
-        "dimension": "V",
+        "dimension": "E",
         "description": "WE potential versus REF"
     },
     {
@@ -418,7 +418,7 @@ biologic_fields = [
     {
         "name": "Q discharge/mA.h/g",
         "unit": "mA h / g",
-        "dimension": "Q / g",
+        "dimension": "Q / m",
         "description": "Q discharge: Q for a discharge cycle reinitialized every cycle"
     },
     {

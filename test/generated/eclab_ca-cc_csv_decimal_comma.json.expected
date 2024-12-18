@@ -1,9 +1,9 @@
 {
     "resources": [
         {
-            "name": "eclab_cv_csv",
+            "name": "eclab_ca-cc_csv_decimal_comma",
             "type": "table",
-            "path": "eclab_cv_csv.csv",
+            "path": "eclab_ca-cc_csv_decimal_comma.csv",
             "scheme": "file",
             "format": "csv",
             "mediatype": "text/csv",
@@ -27,7 +27,15 @@
                         "type": "integer"
                     },
                     {
+                        "name": "Ns changes",
+                        "type": "integer"
+                    },
+                    {
                         "name": "counter inc.",
+                        "type": "integer"
+                    },
+                    {
+                        "name": "Ns",
                         "type": "integer"
                     },
                     {
@@ -43,11 +51,11 @@
                         "type": "number"
                     },
                     {
-                        "name": "<I>/mA",
+                        "name": "I/mA",
                         "type": "number"
                     },
                     {
-                        "name": "cycle number",
+                        "name": "dQ/C",
                         "type": "number"
                     },
                     {
@@ -59,12 +67,36 @@
                         "type": "integer"
                     },
                     {
-                        "name": "P/W",
+                        "name": "Q charge/discharge/mA.h",
                         "type": "number"
                     },
                     {
-                        "name": "Unnamed: 13",
-                        "type": "any"
+                        "name": "half cycle",
+                        "type": "integer"
+                    },
+                    {
+                        "name": "Q discharge/mA.h",
+                        "type": "number"
+                    },
+                    {
+                        "name": "Q charge/mA.h",
+                        "type": "number"
+                    },
+                    {
+                        "name": "Capacity/mA.h",
+                        "type": "number"
+                    },
+                    {
+                        "name": "Efficiency/%",
+                        "type": "number"
+                    },
+                    {
+                        "name": "cycle number",
+                        "type": "number"
+                    },
+                    {
+                        "name": "P/W",
+                        "type": "number"
                     }
                 ]
             },
@@ -76,7 +108,7 @@
                     },
                     "data description": {
                         "type": "raw",
-                        "measurement type": "CV",
+                        "measurement type": "CA",
                         "scan rate": {
                             "comment": "variable"
                         },

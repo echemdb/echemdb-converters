@@ -3,7 +3,7 @@ experiment:
   comment: intended approach
 data description:
   type: raw
-  measurement type: CV
+  measurement type: CA
   scan rate:
     comment: variable
   potential scale:

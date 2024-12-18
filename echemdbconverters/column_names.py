@@ -492,8 +492,9 @@ biologic_fields = [
 
 biologic_fields_alt_names = {
     "<I>/mA": "I",
-    "Ewe/V": "E",
+    "I/mA":"I",
     "<Ewe>/V": "E",
+    "Ewe/V": "E",
     "time/s": "t",
     "Re(Z)/Ohm": "Re(Z)",
     "-Im(Z)/Ohm": "-Im(Z)",

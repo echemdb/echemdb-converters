@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to echemdb-converters’s documentation! &mdash; echemdb-converters 0.2.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            echemdb-converters
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">echemdb-converters</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to echemdb-converters’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/echemdb/echemdb-converters/blob/main/doc/index.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="welcome-to-echemdb-converters-s-documentation">
+<h1>Welcome to echemdb-converters’s documentation!<a class="headerlink" href="#welcome-to-echemdb-converters-s-documentation" title="Permalink to this headline"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">echemdbconverters</span></code> provides a command line interface (CLI) for creating echemdb compatible <a class="reference external" href="https://github.com/echemdb/unitpackage">unitpackages</a> from CSV or CSV like files. The module can be extended to load different kind of CSV files and/or to convert files with different structure but similar content into a standardized format. An API to the loaders and converters allows for seamless integration in existing workflows.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This module is still under development.</p>
+</div>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">!</span></code> in the following examples indicates a shell command which is executed in a jupyter cell. Remove the <code class="docutils literal notranslate"><span class="pre">!</span></code> to run the command in a shell.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The input and output files for and from the following commands can be found in the <a class="reference external" href="https://github.com/echemdb/echemdb-converters/tree/master/test/">test folder</a> of the repository.</p>
+</div>
+<p>A frictionless datapackage consits of a JSON, describing one or more tabular data files. With <code class="docutils literal notranslate"><span class="pre">echemdbconverters</span></code>, a frictionless datapackage can be created from a <a class="reference download internal" download="" href="_downloads/616ebc84a676a352dd792e9dc46b1630/default.csv"><code class="xref download docutils literal notranslate"><span class="pre">CSV</span></code></a>  without header, where the first line contains the column names.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>echemdbconverters<span class="w"> </span>csv<span class="w"> </span>../test/csv/default.csv<span class="w"> </span>--outdir<span class="w"> </span>../test/generated
+</pre></div>
+</div>
+</div>
+</div>
+<p>By providing information on the units of the columns in a metadata file (YAML) a <a class="reference external" href="https://github.com/echemdb/unitpackage">unitpackage</a> can be created. The units to the columns must be included in the YAML under <code class="docutils literal notranslate"><span class="pre">figure_description.fields</span></code>, according to the <a class="reference external" href="https://specs.frictionlessdata.io/table-schema/#field-descriptors">frictionless field schema</a>. See <a class="reference download internal" download="" href="_downloads/e24e063bdc56fc5dd6b98f8cb3dadbd0/unit.csv.metadata"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">YAML</span></code></a> for reference.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>echemdbconverters<span class="w"> </span>csv<span class="w"> </span>../test/csv/unit.csv<span class="w"> </span>--metadata<span class="w"> </span>../test/csv/unit.csv.metadata<span class="w"> </span>--outdir<span class="w"> </span>../test/generated
+</pre></div>
+</div>
+</div>
+</div>
+<p>Specific loaders convert non-standard CSV, which, for <a class="reference download internal" download="" href="_downloads/8cc0375ab68a7f2495462f0f48140290/eclab_cv_csv.mpt"><code class="xref download docutils literal notranslate"><span class="pre">example</span></code></a>, contain a certain number of header lines, values are separated by different separators, or have a different decimal separator. Such files are often generated from software supplied with data acquisition instruments. The header is removed in the resulting CSV to the unitpackage.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>echemdbconverters<span class="w"> </span>csv<span class="w"> </span>../test/csv/eclab_cv_csv.mpt<span class="w"> </span>--device<span class="w"> </span>eclab<span class="w"> </span>--metadata<span class="w"> </span>../test/csv/eclab_cv_csv.mpt.metadata<span class="w"> </span>--outdir<span class="w"> </span>../test/generated
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>No units to the fields provided in the metadata
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="further-usage">
+<h2>Further usage<a class="headerlink" href="#further-usage" title="Permalink to this headline"></a></h2>
+<p>Use echemdbs’ <code class="docutils literal notranslate"><span class="pre">unitpackage</span></code> to browse, modify and visualize the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">unitpackage.collection</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">Collection</span><span class="o">.</span><span class="n">from_local</span><span class="p">(</span><span class="s1">&#39;../test/generated&#39;</span><span class="p">)</span>
+<span class="n">entry</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;eclab_cv_csv&#39;</span><span class="p">]</span>
+<span class="n">entry</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Entry(&#39;eclab_cv_csv&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
+<p>This package is available on <a class="reference external" href="https://pypi.org/project/echemdbconverters/">PiPY</a> and can be installed with pip:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>echemdbconverters
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="installation.html"><span class="doc std std-doc">installation instructions</span></a> for further details.</p>
+<!--
+You can cite this project as described [on our zenodo page](https://zenodo.org/badge/latestdoi/XXXXXX).
+-->
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline"></a></h2>
+<p>The contents of this repository are licensed under the <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public
+License v3.0</a> or, at your option, any later version.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, the echemdb-converters authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

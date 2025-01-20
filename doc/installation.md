@@ -32,27 +32,32 @@ pip install git+https://github.com/echemdb/echemdbconverters@main
 Install with pip for development
 --------------------------------
 
-If you want to work on the echemdbconverters itself, get a copy of the latest
-unreleased version of the echemdbconverters:
+If you want to work on the echemdbconverters itself, install [pixi](https://pixi.sh)
+and get a copy of the latest unreleased version of the echemdbconverters:
 
 ```sh
 git clone https://github.com/echemdb/echemdbconverters.git
 ```
 
-Move to the directory and install the dependencies
+To launch the echemdbconverter, run:
 
 ```sh
-conda activate echemdbconverters
-conda env create --file environment.yaml
-```
-
-Create an [editable](https://pip.pypa.io/en/stable/cli/pip_install/#editable-installs) install of the echemdbconverters:
-
-```sh
-pip install -e echemdbconverters
+pixi run svgdigitizer
 ```
 
 Any changes you make to the files in your local copy of the echemdbconverters should
 now be available in your next Python session.
+
+To build the documentation locally, run
+
+```sh
+pixi run doc
+```
+
+and to run all doctests, run
+
+```sh
+pixi run doctest
+```
 
 We would love to see your contribution to the echemdbconverters.

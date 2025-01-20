@@ -1,7 +1,7 @@
 # ********************************************************************
-#  This file is part of unitpackage.
+#  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2022-2023 Albert Engstfeld
+#        Copyright (C) 2022-2025 Albert Engstfeld
 #        Copyright (C) 2022      Johannes Hermann
 #        Copyright (C) 2022      Julian Rüth
 #        Copyright (C) 2022      Nicolas Hörmann
@@ -49,7 +49,7 @@ $ACTIVITIES = [
 ]
 
 $VERSION_BUMP_PATTERNS = [
-    ('setup.py', r"    version=", r'    version="$VERSION",'),
+    ('pyproject.toml', r'version =', 'version = "$VERSION"'),
     ('doc/conf.py', r"release = ", r"release = '$VERSION'"),
 ]
 

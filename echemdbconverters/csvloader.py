@@ -25,7 +25,7 @@ TODO:: Add example
 # ********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2024 Albert Engstfeld
+#        Copyright (C) 2025 Albert Engstfeld
 #        Copyright (C) 2022 Johannes Hermann
 #        Copyright (C) 2022 Julian Rüth
 #
@@ -159,6 +159,12 @@ class CSVloader:
             from echemdbconverters.eclabloader import ECLabLoader
 
             return ECLabLoader
+
+        if device == "gamry":
+            from echemdbconverters.gamryloader import GamryLoader
+
+            return GamryLoader
+
 
         raise KeyError(f"Device wth name '{device}' is unknown to the loader'.")
 

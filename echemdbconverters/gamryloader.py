@@ -17,12 +17,11 @@ The file can be loaded with the GamryLoader::
     ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
     ... ''')
     >>> from echemdbconverters.gamryloader import GamryLoader
-    >>> eclab_csv = GamryLoader(file)
-    >>> eclab_csv.df # doctest: +NORMALIZE_WHITESPACE
-       Unnamed: 0 Pt     T            Vf  ... IERange         Over Cycle     Temp
-    0         NaN  #     s    V vs. Ref.  ...       #         bits     #    deg C
-    1         NaN  0  0,06  2,00054E-001  ...       9  ..........a     0  -327,75
-    2         NaN  1  0,12  1,97170E-001  ...       9  ..........a     0  -327,75
+    >>> csv = GamryLoader(file)
+    >>> csv.df # doctest: +NORMALIZE_WHITESPACE
+       Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
+    0       0   0.06         0.200054  ...  ..........a          0       -327.75
+    1       1   0.12         0.197170  ...  ..........a          0       -327.75
     ...
 
 The file can also be loaded from the base loader::
@@ -40,17 +39,16 @@ The file can also be loaded from the base loader::
     >>> from echemdbconverters.csvloader import CSVloader
     >>> csv = CSVloader.create('gamry')(file)
     >>> csv.df
-       Unnamed: 0 Pt     T            Vf  ... IERange         Over Cycle     Temp
-    0         NaN  #     s    V vs. Ref.  ...       #         bits     #    deg C
-    1         NaN  0  0,06  2,00054E-001  ...       9  ..........a     0  -327,75
-    2         NaN  1  0,12  1,97170E-001  ...       9  ..........a     0  -327,75
+       Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
+    0       0   0.06         0.200054  ...  ..........a          0       -327.75
+    1       1   0.12         0.197170  ...  ..........a          0       -327.75
     ...
 
     >>> csv.header
     ['EXPLAIN\n', 'TAG\tCV\n', 'TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier\n', 'CURVE\tTABLE\t3597\n']
 
     >>> csv.column_names
-    ['Unnamed: 0', 'Pt', 'T', 'Vf', 'Im', 'Vu', 'Sig', 'Ach', 'IERange', 'Over', 'Cycle', 'Temp']
+    ['Pt / #', 'T / s', 'Vf / V vs. Ref.', 'Im / A', 'Vu / V', 'Sig / V', 'Ach / V', 'IERange / #', 'Over / bits', 'Cycle / #', 'Temp / deg C']
 
 """
 
@@ -96,15 +94,16 @@ class GamryLoader(CSVloader):
         >>> from echemdbconverters.csvloader import CSVloader
         >>> csv = CSVloader.create('gamry')(file)
         >>> csv.df
-           mode  time/s  Ewe/V  <I>/mA  control/V
-        0     2       0    0.1       0          0
-        1     2       1    1.4       5          1
+           Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
+        0       0   0.06         0.200054  ...  ..........a          0       -327.75
+        1       1   0.12         0.197170  ...  ..........a          0       -327.75
+        ...
 
         >>> csv.header
-        ['EC-Lab ASCII FILE\n', 'Nb header lines : 6\n', '\n', 'Device metadata : some metadata\n', '\n']
+        ['EXPLAIN\n', 'TAG\tCV\n', 'TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier\n', 'CURVE\tTABLE\t3597\n']
 
         >>> csv.column_names
-        ['mode', 'time/s', 'Ewe/V', '<I>/mA', 'control/V']
+        ['Pt / #', 'T / s', 'Vf / V vs. Ref.', 'Im / A', 'Vu / V', 'Sig / V', 'Ach / V', 'IERange / #', 'Over / bits', 'Cycle / #', 'Temp / deg C']
 
     """
 
@@ -145,11 +144,39 @@ class GamryLoader(CSVloader):
         """
 
         import re
-        expression = re.compile('CURVE	TABLE	(\d+)')
+
+        expression = re.compile(r"CURVE\tTABLE\t(\d+)")
 
         for idx, line in enumerate(self.file.readlines()):
             if expression.match(line):
-                return idx+1
+                return idx + 1
+
+        raise KeyError("Could not find a line containing `Curve Label` in the file.")
+
+    @property
+    def column_header_lines(self):
+        r"""The number of lines containing descriptive information
+        on the columns of Gamry DAT files is 2.
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''EXPLAIN
+            ... TAG\tCV
+            ... TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier
+            ... CURVE\tTABLE\t3597
+            ... \tPt\tT\tVf\tIm\tVu\tSig\tAch\tIERange\tOver\tCycle\tTemp
+            ... \t#\ts\tV vs. Ref.\tA\tV\tV\tV\t#\tbits\t#\tdeg C
+            ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
+            ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
+            ... ''')
+            >>> from echemdbconverters.csvloader import CSVloader
+            >>> csv = CSVloader.create('gamry')(file)
+            >>> csv.column_header_lines
+            2
+
+        """
+        return 2
 
     @property
     def df_original(self):
@@ -170,46 +197,26 @@ class GamryLoader(CSVloader):
             >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader.create('gamry')(file)
             >>> csv.df_original
-               Unnamed: 0 Pt     T            Vf  ... IERange         Over Cycle     Temp
-            0         NaN  #     s    V vs. Ref.  ...       #         bits     #    deg C
-            1         NaN  0  0,06  2,00054E-001  ...       9  ..........a     0  -327,75
-            2         NaN  1  0,12  1,97170E-001  ...       9  ..........a     0  -327,75
+               Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
+            0       0   0.06         0.200054  ...  ..........a          0       -327.75
+            1       1   0.12         0.197170  ...  ..........a          0       -327.75
             ...
 
         """
         import pandas as pd
+
         return pd.read_csv(
-            self.file,
+            self.data,
             sep="\t",
-            header=self.header_lines,
             #  TODO: set manually for now
-            decimal='.',
-            # decimal=self.decimal,
-            # encoding="latin1",
-            skip_blank_lines=False,
-        )
+            # decimal=',',
+            decimal=self.decimal,
+            names=self.column_header_names,
+        ).reset_index(drop=True)
 
     @property
     def _unnecessary_columns(self):
-        return ['Unnamed', 'Pt', 'Over', 'IERange']
-
-
-    @property
-    def _create_column_names(self):
-        import pandas as pd
-        df = pd.read_csv(
-            self.data,
-            sep="\t",
-            header=self.header_lines,
-            # skiprows=[self.header_lines+2:-1],
-            skipfooter=[self.header_lines+2],
-            #  TODO: set manually for now
-            decimal=',',
-            # decimal=self.decimal,
-            # encoding="latin1",
-            skip_blank_lines=False,
-        )
-        return df
+        return ["Unnamed", "Pt", "Over", "IERange"]
 
     @property
     def df(self):
@@ -231,26 +238,19 @@ class GamryLoader(CSVloader):
             >>> from echemdbconverters.csvloader import CSVloader
             >>> csv = CSVloader.create('gamry')(file)
             >>> csv.df
-               Unnamed: 0 Pt     T            Vf  ... IERange         Over Cycle     Temp
-            0         NaN  #     s    V vs. Ref.  ...       #         bits     #    deg C
-            1         NaN  0  0,06  2,00054E-001  ...       9  ..........a     0  -327,75
-            2         NaN  1  0,12  1,97170E-001  ...       9  ..........a     0  -327,75
+               Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
+            0       0   0.06         0.200054  ...  ..........a          0       -327.75
+            1       1   0.12         0.197170  ...  ..........a          0       -327.75
             ...
 
         """
         import pandas as pd
 
         df = pd.read_csv(
-            self.file,
-            sep="\t",
-            header=self.header_lines,
-            skiprows=[1],
-            #  TODO: set manually for now
-            decimal=',',
-            # decimal=self.decimal,
-            # encoding="latin1",
-            skip_blank_lines=False,
-        )
+            self.data, sep="\t", decimal=self.decimal, names=self.column_header_names
+        ).reset_index(drop=True)
+
+        return df
 
         # df = self.df_original
 
@@ -259,12 +259,12 @@ class GamryLoader(CSVloader):
         # # Remove the first row to clean up
         # df = df.iloc[1:].reset_index(drop=True)
 
-        for column in df.columns:
-            for unnecessary_colum in self._unnecessary_columns:
-                if unnecessary_colum in column:
-                    del df[column]
+        # for column in df.columns:
+        #     for unnecessary_colum in self._unnecessary_columns:
+        #         if unnecessary_colum in column:
+        #             del df[column]
 
-        return df
+        # return df
 
     @property
     def decimal(self):

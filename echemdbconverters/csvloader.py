@@ -77,8 +77,10 @@ class CSVloader:
 
     """
 
-    def __init__(self, file):
+    def __init__(self, file, header_lines=None, column_header_lines=None):
         self._file = file.read()
+        self._header_lines = header_lines
+        self._column_header_lines = column_header_lines
 
     @property
     def file(self):
@@ -165,98 +167,7 @@ class CSVloader:
 
             return GamryLoader
 
-
         raise KeyError(f"Device wth name '{device}' is unknown to the loader'.")
-
-    @property
-    def df(self):
-        r"""
-        A pandas dataframe of the data in the CSV.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''a,b
-            ... 0,0
-            ... 1,1''')
-            >>> csv = CSVloader(file)
-            >>> csv.df
-               a  b
-            0  0  0
-            1  1  1
-
-        """
-        import pandas as pd
-
-        return pd.read_csv(self.file, header=self.header_lines)
-
-    @property
-    def header(self):
-        r"""
-        The header of the CSV (column names excluded).
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''a,b
-            ... 0,0
-            ... 1,1''')
-            >>> csv = CSVloader(file)
-            >>> csv.header
-            []
-
-        """
-        lines = self.file.readlines()
-
-        return [lines[_] for _ in range(self.header_lines)]
-
-    @property
-    def data(self):
-        r"""
-        A file like object with the data of the CSV without header lines.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''a,b
-            ... 0,0
-            ... 1,1''')
-            >>> csv = CSVloader(file)
-            >>> type(csv.data)
-            <class '_io.StringIO'>
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''a,b
-            ... 0,0
-            ... 1,1''')
-            >>> csv = CSVloader(file)
-            >>> csv.data.readlines()
-            ['0,0\n', '1,1']
-
-        """
-        from io import StringIO
-
-        return StringIO(
-            "".join(line for line in self.file.readlines()[self.header_lines + 1 :])
-        )
-
-    @property
-    def column_names(self):
-        r"""
-        List of column (field) names describing the tabulated data.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''a,b
-            ... 0,0
-            ... 1,1''')
-            >>> csv = CSVloader(file)
-            >>> csv.column_names
-            ['a', 'b']
-
-        """
-        return self.df.columns.to_list()
 
     @property
     def header_lines(self):
@@ -291,7 +202,225 @@ class CSVloader:
             5
 
         """
-        return 0
+        return self._header_lines or 0
+
+    @property
+    def header(self):
+        r"""
+        The header of the CSV (excluding column names).
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> csv.header
+            []
+
+        """
+        lines = self.file.readlines()
+
+        return [lines[_] for _ in range(self.header_lines)]
+
+    @property
+    def column_header_lines(self):
+        r"""
+        The number of lines containing the descriptive information of the data
+        for each column.
+
+        EXAMPLES:
+
+        A file with a single column header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> csv.column_header_lines
+            1
+
+        A file with a two column header lines::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... x,y
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file, column_header_lines=2)
+            >>> csv.column_header_lines
+            2
+
+        """
+        return self._column_header_lines or 1
+
+    @property
+    def column_headers(self):
+        r"""
+        The lines in the file containing the descriptive information of the data
+        for each column.
+
+        EXAMPLES:
+
+        A file with a single column header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> csv.column_headers.readlines()
+            ['a,b\n']
+
+        A file with two column header lines, which is sometimes, for example,
+        used for storing units to the values::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''T,v
+            ... K,m/s
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file, column_header_lines=2)
+            >>> csv.column_headers.readlines()
+            ['T,v\n', 'K,m/s\n']
+
+        """
+        from io import StringIO
+
+        return StringIO(
+            "".join(
+                line
+                for line in self.file.readlines()[
+                    self.header_lines : self.header_lines + self.column_header_lines
+                ]
+            )
+        )
+
+    @property
+    def column_header_names(self):
+        r"""
+        A list of column header names constructed from the lines
+        containing the column head names.
+
+        EXAMPLES:
+
+        A file with a single column header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> csv.column_header_names
+            ['a', 'b']
+
+        For a file containing two or more column header lines,
+        we create a single name for each column including the information
+        from the following lines and separating those with a ``/``.::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''T,v
+            ... K,m/s
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file, column_header_lines=2)
+            >>> csv.column_header_names
+            ['T / K', 'v / m/s']
+
+        """
+
+        headers = [
+            line.strip().split(self.delimiter)
+            for line in self.column_headers.getvalue().splitlines()
+        ]
+
+        # If there's only one line, return it as is
+        if len(headers) == 1:
+            return headers[0]
+
+        # If there are multiple lines, combine them column-wise
+        return [" / ".join(items) for items in zip(*headers)]
+
+    @property
+    def data(self):
+        r"""
+        A file like object with the data of the CSV without header lines.
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> type(csv.data)
+            <class '_io.StringIO'>
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> csv.data.readlines()
+            ['0,0\n', '1,1']
+
+        """
+        from io import StringIO
+
+        return StringIO(
+            "".join(
+                line
+                for line in self.file.readlines()[
+                    self.header_lines + self.column_header_lines :
+                ]
+            )
+        )
+
+    @property
+    def df(self):
+        r"""
+        A pandas dataframe of the data in the CSV.
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> csv.df
+               a  b
+            0  0  0
+            1  1  1
+
+        """
+        import pandas as pd
+
+        return pd.read_csv(
+            self.data,
+            #    header=self.header_lines + self.column_header_lines,
+            names=self.column_header_names,
+        )
+
+    @property
+    def column_names(self):
+        r"""
+        List of column (field) names describing the tabulated data.
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> csv.column_names
+            ['a', 'b']
+
+        """
+        return self.df.columns.to_list()
 
     @property
     def delimiter(self):

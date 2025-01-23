@@ -265,37 +265,3 @@ class GamryLoader(CSVloader):
         #             del df[column]
 
         # return df
-
-    @property
-    def decimal(self):
-        r"""
-        Returns the decimal separator in the MPT,
-        which depends on the language settings of the operating system running the software.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO('''EXPLAIN
-            ... TAG\tCV
-            ... TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier
-            ... CURVE\tTABLE\t3597
-            ... \tPt\tT\tVf\tIm\tVu\tSig\tAch\tIERange\tOver\tCycle\tTemp
-            ... \t#\ts\tV vs. Ref.\tA\tV\tV\tV\t#\tbits\t#\tdeg C
-            ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
-            ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
-            ... ''')
-            >>> from echemdbconverters.csvloader import CSVloader
-            >>> csv = CSVloader.create('gamry')(file)
-            >>> csv.decimal
-            ','
-
-        """
-        # The values in the DAT files are possibly always tab separated.
-        # The data in the file only consist of numbers.
-        # Hence we simply determine if the line contains a comma or not.
-        # Since the first row in the date contains the units to the header
-        # we validate the second wor of the data.
-        if "," in self.data.readlines()[1]:
-            return ","
-
-        return "."

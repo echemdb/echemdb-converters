@@ -51,7 +51,7 @@ The file can also be loaded from the base loader::
 # ********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2024 Albert Engstfeld
+#        Copyright (C) 2025 Albert Engstfeld
 #        Copyright (C) 2022 Johannes Hermann
 #        Copyright (C) 2022 Julian Rüth
 #
@@ -180,35 +180,3 @@ class ECLabLoader(CSVloader):
             # encoding="latin1",
             skip_blank_lines=False,
         )
-
-    @property
-    def decimal(self):
-        r"""
-        Returns the decimal separator in the MPT,
-        which depends on the language settings of the operating system running the software.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO('''EC-Lab ASCII FILE
-            ... Nb header lines : 6
-            ...
-            ... Device metadata : some metadata
-            ...
-            ... mode\ttime/s\tEwe/V\t<I>/mA\tcontrol/V
-            ... 2\t0\t0,1\t0\t0
-            ... 2\t1\t1,4\t5\t1
-            ... ''')
-            >>> from echemdbconverters.csvloader import CSVloader
-            >>> ec = CSVloader.create('eclab')(file)
-            >>> ec.decimal
-            ','
-
-        """
-        # The values in the MPT are always tab separated.
-        # The data in the file only consist of numbers.
-        # Hence we simply determine if the line contains a comma or not.
-        if "," in self.data.readlines()[0]:
-            return ","
-
-        return "."

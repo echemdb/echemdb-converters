@@ -44,7 +44,7 @@ The file can also be loaded from the base loader::
     1       1   0.12         0.197170  ...  ..........a          0       -327.75
     ...
 
-    >>> csv.header
+    >>> csv.header.readlines()
     ['EXPLAIN\n', 'TAG\tCV\n', 'TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier\n', 'CURVE\tTABLE\t3597\n']
 
     >>> csv.column_names
@@ -99,7 +99,7 @@ class GamryLoader(CSVloader):
         1       1   0.12         0.197170  ...  ..........a          0       -327.75
         ...
 
-        >>> csv.header
+        >>> csv.header.readlines()
         ['EXPLAIN\n', 'TAG\tCV\n', 'TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier\n', 'CURVE\tTABLE\t3597\n']
 
         >>> csv.column_names

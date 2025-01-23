@@ -77,10 +77,19 @@ class CSVloader:
 
     """
 
-    def __init__(self, file, header_lines=None, column_header_lines=None):
+    def __init__(
+        self,
+        file,
+        header_lines=None,
+        column_header_lines=None,
+        decimal=None,
+        delimiters=["\t", ";", ","],
+    ):
         self._file = file.read()
         self._header_lines = header_lines
         self._column_header_lines = column_header_lines
+        self._decimal = decimal
+        self.delimiters = delimiters
 
     @property
     def file(self):
@@ -216,13 +225,27 @@ class CSVloader:
             ... 0,0
             ... 1,1''')
             >>> csv = CSVloader(file)
-            >>> csv.header
+            >>> type(csv.header)
+            <class '_io.StringIO'>
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = CSVloader(file)
+            >>> csv.header.readlines()
             []
 
         """
-        lines = self.file.readlines()
+        from io import StringIO
 
-        return [lines[_] for _ in range(self.header_lines)]
+        # lines = self.file.readlines()
+        # return [lines[_] for _ in range(self.header_lines)]
+        return StringIO(
+            "".join(line for line in self.file.readlines()[: self.header_lines])
+        )
 
     @property
     def column_header_lines(self):
@@ -428,22 +451,96 @@ class CSVloader:
         The delimiter in the CSV, which is extracted from
         the first two lines of the CSV data.
 
-        EXAMPLES::
+        A CSV containing integers::
 
             >>> from io import StringIO
-            >>> file = StringIO(r'''a,b
+            >>> file = StringIO('''a,b
             ... 0,0
             ... 1,1''')
             >>> csv = CSVloader(file)
             >>> csv.delimiter
             ','
 
-        """
-        import clevercsv
+        A CSV containing floats::
 
-        # Only two lines are used to detect the delimiter,
-        # since clevercsv is slow with files containing many columns.
-        return clevercsv.detect.Detector().detect(self.data.read()[:2]).delimiter
+            >>> from io import StringIO
+            >>> file = StringIO('''a,b
+            ... 0.0,0.0
+            ... 1.0,1.0''')
+            >>> csv = CSVloader(file)
+            >>> csv.delimiter
+            ','
+
+        A TSV containing floats with a single header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a\tb
+            ... 0\t0.0
+            ... 1\t1.0''')
+            >>> csv = CSVloader(file)
+            >>> csv.delimiter
+            '\t'
+
+        A TSV with three columns containing floats using `,` as decimal separator
+        with a single header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a\tb\tc
+            ... 0,0\t0,0\t0,0
+            ... 1,1\t1,0\t0,0''')
+            >>> csv = CSVloader(file)
+            >>> csv.delimiter
+            '\t'
+
+        A TSV with two columns containing floats using `,` as decimal separator
+        with a single header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a\tb
+            ... 0,0\t0,0
+            ... 1,1\t1,0''')
+            >>> csv = CSVloader(file)
+            >>> csv.delimiter
+            '\t'
+
+        A TSV containing integers and floats using `,` as decimal separator
+        with a single header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a\tb
+            ... 0\t0,0
+            ... 1\t1,0''')
+            >>> csv = CSVloader(file)
+            >>> csv.delimiter
+            '\t'
+
+        """
+        # TODO:: Validate that the number of delimiters in the data lines
+        # matches those in the column header line.
+        # This will otherwise likely lead to erroneous loading of pandas dataframes
+        # and requires setting the column names specifically.
+        if len(self.delimiters) == 1:
+            return self.delimiters[0]
+
+        if not len(self.delimiters) == 0:
+            from io import StringIO
+
+            import clevercsv
+
+            for delimiter in self.delimiters:
+                combined = StringIO(
+                    self.column_headers.getvalue() + self.data.getvalue()
+                )
+                combined.seek(0)
+                delimiter_ = (
+                    clevercsv.detect.Detector()
+                    .detect(combined.read(), delimiters=[delimiter])
+                    .delimiter
+                )
+                if delimiter_:
+                    return delimiter_
+
+        return clevercsv.detect.Detector().detect(combined.read()).delimiter
 
     @property
     def decimal(self):
@@ -452,20 +549,83 @@ class CSVloader:
 
         EXAMPLES:
 
-        Not implemented in the base loader::
+        A standard CVS containing floats with a single header line::
 
             >>> from io import StringIO
-            >>> file = StringIO(r'''a,b
+            >>> file = StringIO('''a,b
+            ... 0.0,0.0
+            ... 1.0,1.0''')
+            >>> csv = CSVloader(file)
+            >>> csv.decimal
+            '.'
+
+        A standard CVS containing integers with a single header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a,b
             ... 0,0
             ... 1,1''')
             >>> csv = CSVloader(file)
             >>> csv.decimal
+            '.'
+
+        A standard CVS containing integers and floats with a single header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a,b
+            ... 0,0.0
+            ... 1,1.0''')
+            >>> csv = CSVloader(file)
+            >>> csv.decimal
+            '.'
+
+        A TSV containing floats with a single header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a\tb
+            ... 0\t0.0
+            ... 1\t1.0''')
+            >>> csv = CSVloader(file)
+            >>> csv.decimal
+            '.'
+
+        A TSV containing integers and floats using `,` as decimal separator
+        with a single header line::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a,b
+            ... 0\t0,0
+            ... 1\t1,0''')
+            >>> csv = CSVloader(file)
+            >>> # csv.data.readlines()[1].strip().split(csv.delimiter)
+            >>> csv.decimal
+            ','
+
+        Data rows containing both '.' and ','::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a\tb\ttext
+            ... 0.0\t0.0\ta,b
+            ... 1.0\t1.0\tc,d''')
+            >>> csv = CSVloader(file)
+            >>> csv.decimal
+            '.'
+
+        Data rows containing both '.' and ',' in the values::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a\tb\ttext
+            ... 0.1\t0,0\ta,b
+            ... 1.1\t1,0\tc,d''')
+            >>> csv = CSVloader(file)
+            >>> csv.decimal
             Traceback (most recent call last):
             ...
-            NotImplementedError
+            ValueError: Decimal separator could not be determined. Found both ',' and '.' in numeric values in a single data line.
 
         Implementation in a specific device loader::
 
+            >>> from io import StringIO
             >>> file = StringIO('''EC-Lab ASCII FILE
             ... Nb header lines : 6
             ...
@@ -480,4 +640,44 @@ class CSVloader:
             ','
 
         """
-        raise NotImplementedError
+        if self._decimal:
+            return self._decimal
+
+        data = self.data.readlines()[0].strip().split(self.delimiter)
+
+        has_dot = any("." in item for item in data if self._validate_digit(item, "."))
+        has_comma = any("," in item for item in data if self._validate_digit(item, ","))
+
+        if has_dot and has_comma:
+            raise ValueError(
+                "Decimal separator could not be determined. Found both ',' and '.' in numeric values in a single data line."
+            )
+
+        if has_comma:
+            return ","
+
+        return "."
+
+    @classmethod
+    def _validate_digit(cls, item, character):
+        """
+        Validate if the string is numeric,
+        upon removing a specified character.
+
+        Examples::
+
+
+            >>> CSVloader._validate_digit('12,33', ',')
+            True
+
+            >>> CSVloader._validate_digit('a,b', ',')
+            False
+
+            >>> CSVloader._validate_digit('1.0', '.')
+            True
+
+        """
+        if character in item:
+            without_character = item.replace(character, "")
+            return without_character.isdigit()
+        return False

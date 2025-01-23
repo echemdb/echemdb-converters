@@ -218,39 +218,39 @@ class GamryLoader(CSVloader):
     def _unnecessary_columns(self):
         return ["Unnamed", "Pt", "Over", "IERange"]
 
-    @property
-    def df(self):
-        r"""
-        A pandas dataframe with the data of the EC-Lab MPT file.
+    # @property
+    # def df(self):
+    #     r"""
+    #     A pandas dataframe with the data of the EC-Lab MPT file.
 
-        EXAMPLES::
+    #     EXAMPLES::
 
-            >>> from io import StringIO
-            >>> file = StringIO('''EXPLAIN
-            ... TAG\tCV
-            ... TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier
-            ... CURVE\tTABLE\t3597
-            ... \tPt\tT\tVf\tIm\tVu\tSig\tAch\tIERange\tOver\tCycle\tTemp
-            ... \t#\ts\tV vs. Ref.\tA\tV\tV\tV\t#\tbits\t#\tdeg C
-            ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
-            ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
-            ... ''')
-            >>> from echemdbconverters.csvloader import CSVloader
-            >>> csv = CSVloader.create('gamry')(file)
-            >>> csv.df
-               Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
-            0       0   0.06         0.200054  ...  ..........a          0       -327.75
-            1       1   0.12         0.197170  ...  ..........a          0       -327.75
-            ...
+    #         >>> from io import StringIO
+    #         >>> file = StringIO('''EXPLAIN
+    #         ... TAG\tCV
+    #         ... TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier
+    #         ... CURVE\tTABLE\t3597
+    #         ... \tPt\tT\tVf\tIm\tVu\tSig\tAch\tIERange\tOver\tCycle\tTemp
+    #         ... \t#\ts\tV vs. Ref.\tA\tV\tV\tV\t#\tbits\t#\tdeg C
+    #         ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
+    #         ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
+    #         ... ''')
+    #         >>> from echemdbconverters.csvloader import CSVloader
+    #         >>> csv = CSVloader.create('gamry')(file)
+    #         >>> csv.df
+    #            Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
+    #         0       0   0.06         0.200054  ...  ..........a          0       -327.75
+    #         1       1   0.12         0.197170  ...  ..........a          0       -327.75
+    #         ...
 
-        """
-        import pandas as pd
+    #     """
+    #     import pandas as pd
 
-        df = pd.read_csv(
-            self.data, sep="\t", decimal=self.decimal, names=self.column_header_names
-        ).reset_index(drop=True)
+    #     df = pd.read_csv(
+    #         self.data, sep="\t", decimal=self.decimal, names=self.column_header_names
+    #     ).reset_index(drop=True)
 
-        return df
+    #     return df
 
         # df = self.df_original
 

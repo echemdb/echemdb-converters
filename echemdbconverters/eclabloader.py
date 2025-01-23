@@ -145,38 +145,38 @@ class ECLabLoader(CSVloader):
 
         return int(matches[0][0][1]) - 1
 
-    @property
-    def df(self):
-        r"""
-        A pandas dataframe with the data of the EC-Lab MPT file.
+    # @property
+    # def df(self):
+    #     r"""
+    #     A pandas dataframe with the data of the EC-Lab MPT file.
 
-        EXAMPLES::
+    #     EXAMPLES::
 
-            >>> from io import StringIO
-            >>> file = StringIO('''EC-Lab ASCII FILE
-            ... Nb header lines : 6
-            ...
-            ... Device metadata : some metadata
-            ...
-            ... mode\ttime/s\tEwe/V\t<I>/mA\tcontrol/V
-            ... 2\t0\t0.1\t0\t0
-            ... 2\t1\t1.4\t5\t1
-            ... ''')
-            >>> from echemdbconverters.csvloader import CSVloader
-            >>> csv = CSVloader.create('eclab')(file)
-            >>> csv.df
-               mode  time/s  Ewe/V  <I>/mA  control/V
-            0     2       0    0.1       0          0
-            1     2       1    1.4       5          1
+    #         >>> from io import StringIO
+    #         >>> file = StringIO('''EC-Lab ASCII FILE
+    #         ... Nb header lines : 6
+    #         ...
+    #         ... Device metadata : some metadata
+    #         ...
+    #         ... mode\ttime/s\tEwe/V\t<I>/mA\tcontrol/V
+    #         ... 2\t0\t0.1\t0\t0
+    #         ... 2\t1\t1.4\t5\t1
+    #         ... ''')
+    #         >>> from echemdbconverters.csvloader import CSVloader
+    #         >>> csv = CSVloader.create('eclab')(file)
+    #         >>> csv.df
+    #            mode  time/s  Ewe/V  <I>/mA  control/V
+    #         0     2       0    0.1       0          0
+    #         1     2       1    1.4       5          1
 
-        """
-        import pandas as pd
+    #     """
+    #     import pandas as pd
 
-        return pd.read_csv(
-            self.file,
-            sep="\t",
-            header=self.header_lines,
-            decimal=self.decimal,
-            # encoding="latin1",
-            skip_blank_lines=False,
-        )
+    #     return pd.read_csv(
+    #         self.file,
+    #         sep="\t",
+    #         header=self.header_lines,
+    #         decimal=self.decimal,
+    #         # encoding="latin1",
+    #         skip_blank_lines=False,
+    #     )

@@ -423,9 +423,10 @@ class CSVloader:
 
         return pd.read_csv(
             self.data,
-            #    header=self.header_lines + self.column_header_lines,
+            delimiter=self.delimiter,
+            decimal=self.decimal,
             names=self.column_header_names,
-        )
+        ).reset_index(drop=True)
 
     @property
     def column_names(self):

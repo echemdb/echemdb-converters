@@ -241,8 +241,6 @@ class CSVloader:
         """
         from io import StringIO
 
-        # lines = self.file.readlines()
-        # return [lines[_] for _ in range(self.header_lines)]
         return StringIO(
             "".join(line for line in self.file.readlines()[: self.header_lines])
         )

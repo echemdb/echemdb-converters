@@ -84,10 +84,6 @@ cli-default-csv-convert = "echemdbconverters csv test/csv/default.csv --outdir t
 cli-default-csv-diff = "git diff --no-index --word-diff -- test/generated/default.json test/generated/default.json.expected"
 cli-default-csv-validate = '''python -c "import pandas as pd; from pandas.testing import assert_frame_equal; assert_frame_equal(pd.read_csv('test/generated/default.csv'),pd.read_csv('test/generated/default.csv.expected'))"'''
 cli-default-csv = { depends-on = ["cli-default-csv-convert", "cli-default-csv-diff", "cli-default-csv-validate"] }
-cli-unit-csv-convert = "echemdbconverters csv test/csv/unit.csv --outdir test/generated --metadata test/csv/unit.csv.metadata"
-cli-unit-csv-diff = "git diff --no-index --word-diff -- test/generated/unit.json test/generated/unit.json.expected"
-cli-unit-csv-validate = '''python -c "import pandas; pandas.testing.assert_frame_equal(pandas.read_csv('test/generated/unit.csv'), pandas.read_csv('test/generated/unit.csv.expected'))"'''
-cli-unit-csv = { depends-on = ["cli-unit-csv-convert", "cli-unit-csv-diff", "cli-unit-csv-validate"]}
 cli-eclab-cv-convert = "echemdbconverters csv test/csv/eclab_cv_csv.mpt --outdir test/generated --metadata test/csv/eclab_cv_csv.mpt.metadata --device eclab"
 cli-eclab-cv-diff = "git diff --no-index --word-diff -- test/generated/eclab_cv_csv.json test/generated/eclab_cv_csv.json.expected"
 cli-eclab-cv-validate = "python -c 'import pandas as pd; pd.testing.assert_frame_equal(pd.read_csv(\"test/generated/eclab_cv_csv.csv\"), pd.read_csv(\"test/generated/eclab_cv_csv.csv.expected\"))'"
@@ -96,7 +92,16 @@ cli-eclab-ca-cc-convert = "echemdbconverters csv test/csv/eclab_ca-cc_csv_decima
 cli-eclab-ca-cc-diff = "git diff --no-index --word-diff -- test/generated/eclab_ca-cc_csv_decimal_comma.json test/generated/eclab_ca-cc_csv_decimal_comma.json.expected"
 cli-eclab-ca-cc-validate = "python -c 'import pandas as pd; pd.testing.assert_frame_equal(pd.read_csv(\"test/generated/eclab_ca-cc_csv_decimal_comma.csv\"), pd.read_csv(\"test/generated/eclab_ca-cc_csv_decimal_comma.csv.expected\"))'"
 cli-eclab-ca-cc = { depends-on = ["cli-eclab-ca-cc-convert", "cli-eclab-ca-cc-diff", "cli-eclab-ca-cc-validate"]}
-clitest = { depends-on = ["cli-default-csv", "cli-unit-csv", "cli-eclab-cv", "cli-eclab-ca-cc"] }
+cli-gamry-cv-convert = "echemdbconverters csv test/csv/gamry_cv_all_cycles.DTA --outdir test/generated --metadata test/csv/gamry_cv_all_cycles.DTA.metadata --device gamry"
+cli-gamry-cv-diff = "git diff --no-index --word-diff -- test/generated/gamry_cv_all_cycles.json test/generated/gamry_cv_all_cycles.json.expected"
+cli-gamry-cv-validate = "python -c 'import pandas as pd; pd.testing.assert_frame_equal(pd.read_csv(\"test/generated/gamry_cv_all_cycles.csv\"), pd.read_csv(\"test/generated/gamry_cv_all_cycles.csv.expected\"))'"
+cli-gamry-cv = { depends-on = ["cli-gamry-cv-convert", "cli-gamry-cv-diff", "cli-gamry-cv-validate"]}
+cli-unit-csv-convert = "echemdbconverters csv test/csv/unit.csv --outdir test/generated --metadata test/csv/unit.csv.metadata"
+cli-unit-csv-diff = "git diff --no-index --word-diff -- test/generated/unit.json test/generated/unit.json.expected"
+cli-unit-csv-validate = '''python -c "import pandas; pandas.testing.assert_frame_equal(pandas.read_csv('test/generated/unit.csv'), pandas.read_csv('test/generated/unit.csv.expected'))"'''
+cli-unit-csv = { depends-on = ["cli-unit-csv-convert", "cli-unit-csv-diff", "cli-unit-csv-validate"]}
+
+clitest = { depends-on = ["cli-default-csv", "cli-eclab-cv", "cli-eclab-ca-cc", "cli-gamry-cv", "cli-unit-csv"] }
 
 [tool.pixi.feature.doc.dependencies]
 jupytext = "*"

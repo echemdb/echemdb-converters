@@ -677,8 +677,16 @@ class CSVloader:
             >>> CSVloader._validate_digit('1.0', '.')
             True
 
+            >>> CSVloader._validate_digit('1.1E10', '.')
+            True
+
+            >>> CSVloader._validate_digit('1,1E10', ',')
+            True
+
         """
-        if character in item:
+        try:
             without_character = item.replace(character, "")
-            return without_character.isdigit()
-        return False
+            float(without_character)
+            return True
+        except ValueError:
+            return False

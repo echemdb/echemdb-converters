@@ -25,4 +25,4 @@ jobs:
         run: pixi run -e ${{ matrix.environment }} doctest
       - name: cli-test
         shell: pixi run bash -e {0}
-        run: pixi run -e ${{ matrix.environment }} testcli
+        run: pixi run -e ${{ matrix.environment }} clitest

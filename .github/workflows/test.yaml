@@ -23,27 +23,6 @@ jobs:
           pixi-version: v0.39.5
       - name: doctest
         run: pixi run -e ${{ matrix.environment }} doctest
-      - name: cli-default-csv
+      - name: cli-test
         shell: pixi run bash -e {0}
-        run: |
-          pixi run -e ${{ matrix.environment }} echemdbconverters csv test/csv/default.csv --outdir test/generated
-          git diff --no-index --word-diff -- test/generated/default.json test/generated/default.json.expected
-          python -c 'import pandas; pandas.testing.assert_frame_equal(pandas.read_csv("test/generated/default.csv"), pandas.read_csv("test/generated/default.csv.expected"))'
-      - name: cli-unit-csv
-        shell: pixi run bash -e {0}
-        run: |
-          pixi run -e ${{ matrix.environment }} echemdbconverters csv test/csv/unit.csv --outdir test/generated --metadata test/csv/unit.csv.metadata
-          git diff --no-index --word-diff -- test/generated/unit.json test/generated/unit.json.expected
-          python -c 'import pandas; pandas.testing.assert_frame_equal(pandas.read_csv("test/generated/unit.csv"), pandas.read_csv("test/generated/unit.csv.expected"))'
-      - name: cli-eclab-csv
-        shell: pixi run bash -e {0}
-        run: |
-          pixi run -e ${{ matrix.environment }} echemdbconverters csv test/csv/eclab_cv_csv.mpt --outdir test/generated --metadata test/csv/eclab_cv_csv.mpt.metadata --device eclab
-          git diff --no-index --word-diff -- test/generated/eclab_cv_csv.json test/generated/eclab_cv_csv.json.expected
-          python -c 'import pandas; pandas.testing.assert_frame_equal(pandas.read_csv("test/generated/eclab_cv_csv.csv"), pandas.read_csv("test/generated/eclab_cv_csv.csv.expected"))'
-      - name: cli-eclab-ca-cp-decimal-comma
-        shell: pixi run bash -e {0}
-        run: |
-          pixi run -e ${{ matrix.environment }} echemdbconverters csv test/csv/eclab_ca-cc_csv_decimal_comma.mpt --outdir test/generated --metadata test/csv/eclab_ca-cc_csv_decimal_comma.mpt.metadata --device eclab
-          git diff --no-index --word-diff -- test/generated/eclab_ca-cc_csv_decimal_comma.json test/generated/eclab_ca-cc_csv_decimal_comma.json.expected
-          python -c 'import pandas; pandas.testing.assert_frame_equal(pandas.read_csv("test/generated/eclab_ca-cc_csv_decimal_comma.csv"), pandas.read_csv("test/generated/eclab_ca-cc_csv_decimal_comma.csv.expected"))'
+        run: pixi run -e ${{ matrix.environment }} testcli

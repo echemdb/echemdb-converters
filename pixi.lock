@@ -5666,7 +5666,7 @@ packages:
   name: echemdbconverters
   version: 0.2.1
   path: .
-  sha256: c4aaf789ef15489f23d17a056b80a1c2e818dd3d3c1cf9b7834ce058ccde9d29
+  sha256: b84db2df028f8513c60d4073d5da86ec263ec730251430dd382cdba7efa96ae7
   requires_dist:
   - clevercsv>=0.7.0,<0.9.0
   - click>=8,<9

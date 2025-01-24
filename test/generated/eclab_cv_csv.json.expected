@@ -61,10 +61,6 @@
                     {
                         "name": "P/W",
                         "type": "number"
-                    },
-                    {
-                        "name": "Unnamed: 13",
-                        "type": "any"
                     }
                 ]
             },

@@ -109,12 +109,35 @@ class TemporaryData:
         self._tmpdir.__exit__(*args)
 
 
-@pytest.mark.parametrize("name,args", [
-    ("default", ["csv", "default.csv"]),
-    ("unit", ["csv", "unit.csv", "--metadata", "unit.csv.metadata"]),
-    ("eclab_cv", ["csv", "eclab_cv.mpt", "--metadata", "eclab_cv.mpt.metadata", "--device", "eclab"]),
-    ("eclab_ca", ["csv", "eclab_ca.mpt", "--metadata", "eclab_ca.mpt.metadata", "--device", "eclab"]),
-])
+@pytest.mark.parametrize(
+    "name,args",
+    [
+        ("default", ["csv", "default.csv"]),
+        ("unit", ["csv", "unit.csv", "--metadata", "unit.csv.metadata"]),
+        (
+            "eclab_cv",
+            [
+                "csv",
+                "eclab_cv.mpt",
+                "--metadata",
+                "eclab_cv.mpt.metadata",
+                "--device",
+                "eclab",
+            ],
+        ),
+        (
+            "eclab_ca",
+            [
+                "csv",
+                "eclab_ca.mpt",
+                "--metadata",
+                "eclab_ca.mpt.metadata",
+                "--device",
+                "eclab",
+            ],
+        ),
+    ],
+)
 def test_csv(name, args):
     r"""
     Test that the csv command from the command line interface works correctly.
@@ -123,18 +146,27 @@ def test_csv(name, args):
     CSV files that match expected outputs.
     """
     import os
+
     cwd = os.getcwd()
     with TemporaryData(f"{name}.*") as workdir:
         os.chdir(workdir)
         try:
             from echemdbconverters.entrypoint import cli
+
             invoke(cli, *args, "--outdir", "outdir")
 
             import json
-            assert json.load(open(f"outdir/{name}.json")) == json.load(open(f"{name}.json.expected"))
 
-            import pandas, pandas.testing
-            pandas.testing.assert_frame_equal(pandas.read_csv(f"outdir/{name}.csv"), pandas.read_csv(f"{name}.csv.expected"))
+            with open(f"outdir/{name}.json", encoding="ASCII") as actual:
+                with open(f"{name}.json.expected", encoding="ASCII") as expected:
+                    assert json.load(actual) == json.load(expected)
+
+            import pandas
+            import pandas.testing
+
+            pandas.testing.assert_frame_equal(
+                pandas.read_csv(f"outdir/{name}.csv"),
+                pandas.read_csv(f"{name}.csv.expected"),
+            )
         finally:
             os.chdir(cwd)
-

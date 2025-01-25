@@ -61,7 +61,7 @@ def cli():
 @click.option(
     "--outdir",
     type=click.Path(file_okay=False),
-    default=None,
+    default=".",
     help="write output files to this directory",
 )
 @click.option(

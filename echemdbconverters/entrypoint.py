@@ -113,9 +113,6 @@ def convert(csv, device, outdir, metadata):
         with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
             loader = CSVloader(file)
 
-    # if metadata:
-    #     metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
-
     entry = Entry.from_df(
         df=loader.df, basename=Path(csv).stem, metadata=metadata, fields=fields
     )
@@ -123,12 +120,11 @@ def convert(csv, device, outdir, metadata):
 
 
 cli.add_command(convert)
-# cli.add_command(electrochemistry)
 
-# Possibly uncomment
+
 # Register command docstrings for doctesting.
 # Since commands are not functions anymore due to their decorator, their
 # docstrings would otherwise be ignored.
-# __test__ = {
-#     name: command.__doc__ for (name, command) in cli.commands.items() if command.__doc__
-# }
+__test__ = {
+    name: command.__doc__ for (name, command) in cli.commands.items() if command.__doc__
+}

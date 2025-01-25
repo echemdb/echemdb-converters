@@ -9,7 +9,7 @@ The code has been inherited from svgdigitizer and adapted for echemdb-converters
 """
 
 # *********************************************************************
-#  This file is part of svgdigitizer.
+#  This file is part of echemdb-converters.
 #
 #        Copyright (C) 2021-2025 Julian Rüth
 #

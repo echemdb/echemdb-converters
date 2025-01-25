@@ -42,10 +42,10 @@ By providing information on the units of the columns in a metadata file (YAML) a
 !echemdbconverters csv ../test/csv/unit.csv --metadata ../test/csv/unit.csv.metadata --outdir ../test/generated
 ```
 
-Specific loaders convert non-standard CSV, which, for {download}`example <../test/csv/eclab_cv_csv.mpt>`, contain a certain number of header lines, values are separated by different separators, or have a different decimal separator. Such files are often generated from software supplied with data acquisition instruments. The header is removed in the resulting CSV to the unitpackage.
+Specific loaders convert non-standard CSV, which, for {download}`example <../test/csv/eclab_cv.mpt>`, contain a certain number of header lines, values are separated by different separators, or have a different decimal separator. Such files are often generated from software supplied with data acquisition instruments. The header is removed in the resulting CSV to the unitpackage.
 
 ```{code-cell} ipython3
-!echemdbconverters csv ../test/csv/eclab_cv_csv.mpt --device eclab --metadata ../test/csv/eclab_cv_csv.mpt.metadata --outdir ../test/generated
+!echemdbconverters csv ../test/csv/eclab_cv.mpt --device eclab --metadata ../test/csv/eclab_cv.mpt.metadata --outdir ../test/generated
 ```
 
 ## Further usage
@@ -55,7 +55,7 @@ Use echemdbs' `unitpackage` to browse, modify and visualize the data.
 ```{code-cell} ipython3
 from unitpackage.collection import Collection
 db = Collection.from_local('../test/generated')
-entry = db['eclab_cv_csv']
+entry = db['eclab_cv']
 entry
 ```
 

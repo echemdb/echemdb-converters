@@ -11,7 +11,7 @@ The code has been inherited from svgdigitizer and adapted for echemdb-converters
 # *********************************************************************
 #  This file is part of svgdigitizer.
 #
-#        Copyright (C) 2021 Julian Rüth
+#        Copyright (C) 2021-2025 Julian Rüth
 #
 #  svgdigitizer is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@ The code has been inherited from svgdigitizer and adapted for echemdb-converters
 #  You should have received a copy of the GNU General Public License
 #  along with svgdigitizer. If not, see <https://www.gnu.org/licenses/>.
 # *********************************************************************
+
+import pytest
 
 
 def invoke(command, *args):
@@ -87,7 +89,7 @@ class TemporaryData:
             cwd = os.getcwd()
             os.chdir(
                 os.path.join(
-                    os.path.dirname(echemdbconverters.__file__), "..", "test", "csv"
+                    os.path.dirname(echemdbconverters.__file__), "..", "test", "data"
                 )
             )
             try:
@@ -98,9 +100,41 @@ class TemporaryData:
                 return self._tmpdir.name
             finally:
                 os.chdir(cwd)
+            self._tmpdir.__enter__()
         except Exception:
             self._tmpdir.cleanup()
             raise
 
     def __exit__(self, *args):
-        self._tmpdir.cleanup()
+        self._tmpdir.__exit__(*args)
+
+
+@pytest.mark.parametrize("name,args", [
+    ("default", ["csv", "default.csv"]),
+    ("unit", ["csv", "unit.csv", "--metadata", "unit.csv.metadata"]),
+    ("eclab_cv", ["csv", "eclab_cv.mpt", "--metadata", "eclab_cv.mpt.metadata", "--device", "eclab"]),
+    ("eclab_ca", ["csv", "eclab_ca.mpt", "--metadata", "eclab_ca.mpt.metadata", "--device", "eclab"]),
+])
+def test_csv(name, args):
+    r"""
+    Test that the csv command from the command line interface works correctly.
+
+    This function is executed by pytest and checks that "csv" produces JSON and
+    CSV files that match expected outputs.
+    """
+    import os
+    cwd = os.getcwd()
+    with TemporaryData(f"{name}.*") as workdir:
+        os.chdir(workdir)
+        try:
+            from echemdbconverters.entrypoint import cli
+            invoke(cli, *args, "--outdir", "outdir")
+
+            import json
+            assert json.load(open(f"outdir/{name}.json")) == json.load(open(f"{name}.json.expected"))
+
+            import pandas, pandas.testing
+            pandas.testing.assert_frame_equal(pandas.read_csv(f"outdir/{name}.csv"), pandas.read_csv(f"{name}.csv.expected"))
+        finally:
+            os.chdir(cwd)
+

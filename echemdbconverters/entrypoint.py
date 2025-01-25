@@ -20,9 +20,9 @@ EXAMPLES::
 # ********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2024 Albert Engstfeld
-#        Copyright (C) 2022 Johannes Hermann
-#        Copyright (C) 2022 Julian Rüth
+#        Copyright (C)      2024 Albert Engstfeld
+#        Copyright (C)      2022 Johannes Hermann
+#        Copyright (C) 2022-2025 Julian Rüth
 #
 #  echemdb-converters is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ def convert(csv, device, outdir, metadata):
 
     EXAMPLES::
 
+        >>> import os.path
         >>> from echemdbconverters.test.cli import invoke, TemporaryData
         >>> with TemporaryData("../**/default.csv") as directory:
         ...     invoke(cli, "csv", os.path.join(directory, "default.csv"))

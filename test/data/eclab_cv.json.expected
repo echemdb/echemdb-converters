@@ -1,9 +1,9 @@
 {
     "resources": [
         {
-            "name": "eclab_ca-cc_csv_decimal_comma",
+            "name": "eclab_cv",
             "type": "table",
-            "path": "eclab_ca-cc_csv_decimal_comma.csv",
+            "path": "eclab_cv.csv",
             "scheme": "file",
             "format": "csv",
             "mediatype": "text/csv",
@@ -27,15 +27,7 @@
                         "type": "integer"
                     },
                     {
-                        "name": "Ns changes",
-                        "type": "integer"
-                    },
-                    {
                         "name": "counter inc.",
-                        "type": "integer"
-                    },
-                    {
-                        "name": "Ns",
                         "type": "integer"
                     },
                     {
@@ -51,11 +43,11 @@
                         "type": "number"
                     },
                     {
-                        "name": "I/mA",
+                        "name": "<I>/mA",
                         "type": "number"
                     },
                     {
-                        "name": "dQ/C",
+                        "name": "cycle number",
                         "type": "number"
                     },
                     {
@@ -67,36 +59,12 @@
                         "type": "integer"
                     },
                     {
-                        "name": "Q charge/discharge/mA.h",
-                        "type": "number"
-                    },
-                    {
-                        "name": "half cycle",
-                        "type": "integer"
-                    },
-                    {
-                        "name": "Q discharge/mA.h",
-                        "type": "number"
-                    },
-                    {
-                        "name": "Q charge/mA.h",
-                        "type": "number"
-                    },
-                    {
-                        "name": "Capacity/mA.h",
-                        "type": "number"
-                    },
-                    {
-                        "name": "Efficiency/%",
-                        "type": "number"
-                    },
-                    {
-                        "name": "cycle number",
-                        "type": "number"
-                    },
-                    {
                         "name": "P/W",
                         "type": "number"
+                    },
+                    {
+                        "name": "Unnamed: 13",
+                        "type": "any"
                     }
                 ]
             },
@@ -108,7 +76,7 @@
                     },
                     "data description": {
                         "type": "raw",
-                        "measurement type": "CA",
+                        "measurement type": "CV",
                         "scan rate": {
                             "comment": "variable"
                         },

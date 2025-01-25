@@ -30,22 +30,22 @@ An `!` in the following examples indicates a shell command which is executed in 
 The input and output files for and from the following commands can be found in the [test folder](https://github.com/echemdb/echemdb-converters/tree/master/test/) of the repository.
 ```
 
-A frictionless datapackage consits of a JSON, describing one or more tabular data files. With `echemdbconverters`, a frictionless datapackage can be created from a {download}`CSV <../test/csv/default.csv>`  without header, where the first line contains the column names.
+A frictionless datapackage consits of a JSON, describing one or more tabular data files. With `echemdbconverters`, a frictionless datapackage can be created from a {download}`CSV <../test/data/default.csv>`  without header, where the first line contains the column names.
 
 ```{code-cell} ipython3
-!echemdbconverters csv ../test/csv/default.csv --outdir ../test/generated
+!echemdbconverters csv ../test/data/default.csv --outdir ../test/generated
 ```
 
-By providing information on the units of the columns in a metadata file (YAML) a [unitpackage](https://github.com/echemdb/unitpackage) can be created. The units to the columns must be included in the YAML under `figure_description.fields`, according to the [frictionless field schema](https://specs.frictionlessdata.io/table-schema/#field-descriptors). See {download}`example YAML <../test/csv/unit.csv.metadata>` for reference.
+By providing information on the units of the columns in a metadata file (YAML) a [unitpackage](https://github.com/echemdb/unitpackage) can be created. The units to the columns must be included in the YAML under `figure_description.fields`, according to the [frictionless field schema](https://specs.frictionlessdata.io/table-schema/#field-descriptors). See {download}`example YAML <../test/data/unit.csv.metadata>` for reference.
 
 ```{code-cell} ipython3
-!echemdbconverters csv ../test/csv/unit.csv --metadata ../test/csv/unit.csv.metadata --outdir ../test/generated
+!echemdbconverters csv ../test/data/unit.csv --metadata ../test/data/unit.csv.metadata --outdir ../test/generated
 ```
 
-Specific loaders convert non-standard CSV, which, for {download}`example <../test/csv/eclab_cv.mpt>`, contain a certain number of header lines, values are separated by different separators, or have a different decimal separator. Such files are often generated from software supplied with data acquisition instruments. The header is removed in the resulting CSV to the unitpackage.
+Specific loaders convert non-standard CSV, which, for {download}`example <../test/data/eclab_cv.mpt>`, contain a certain number of header lines, values are separated by different separators, or have a different decimal separator. Such files are often generated from software supplied with data acquisition instruments. The header is removed in the resulting CSV to the unitpackage.
 
 ```{code-cell} ipython3
-!echemdbconverters csv ../test/csv/eclab_cv.mpt --device eclab --metadata ../test/csv/eclab_cv.mpt.metadata --outdir ../test/generated
+!echemdbconverters csv ../test/data/eclab_cv.mpt --device eclab --metadata ../test/data/eclab_cv.mpt.metadata --outdir ../test/generated
 ```
 
 ## Further usage

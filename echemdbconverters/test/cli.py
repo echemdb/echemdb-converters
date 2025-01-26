@@ -112,9 +112,15 @@ class TemporaryData:
 @pytest.mark.parametrize(
     "name,args",
     [
-        ("default", ["csv", "default.csv"]),
-        ("unit", ["csv", "unit.csv", "--metadata", "unit.csv.metadata"]),
-        (
+        (  # "Standard" CSV with a single column header line.
+            "default",
+            ["csv", "default.csv"],
+        ),
+        (  # "Standard" CSV for which the units to the columns are included in an additional metadata file.
+            "unit",
+            ["csv", "unit.csv", "--metadata", "unit.csv.metadata"],
+        ),
+        (  # Biologic EClab file for cyclic voltammetry (using `,` as decimal separator)
             "eclab_cv",
             [
                 "csv",
@@ -125,7 +131,7 @@ class TemporaryData:
                 "eclab",
             ],
         ),
-        (
+        (  # Biologic EClab file for chronoamperrometry or chronopotentiometry (using `,` as decimal separator)
             "eclab_ca",
             [
                 "csv",

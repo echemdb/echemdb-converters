@@ -4,5 +4,5 @@ max-module-lines=65536
 good-names=df
 
 [MESSAGES CONTROL]
-# TODO: Solce cyclic-import error (see #10)
-disable=import-outside-toplevel,too-many-arguments,logging-fstring-interpolation,use-maxsplit-arg,fixme, cyclic-import
+# TODO: Solve cyclic-import error (see #10)
+disable=import-outside-toplevel,too-many-arguments,logging-fstring-interpolation,use-maxsplit-arg,fixme, cyclic-import, abstract-method

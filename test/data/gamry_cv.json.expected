@@ -1,9 +1,9 @@
 {
     "resources": [
         {
-            "name": "eclab_cv",
+            "name": "gamry_cv",
             "type": "table",
-            "path": "eclab_cv.csv",
+            "path": "gamry_cv.csv",
             "scheme": "file",
             "format": "csv",
             "mediatype": "text/csv",
@@ -11,55 +11,47 @@
             "schema": {
                 "fields": [
                     {
-                        "name": "mode",
+                        "name": "Pt / #",
                         "type": "integer"
                     },
                     {
-                        "name": "ox/red",
+                        "name": "T / s",
+                        "type": "number"
+                    },
+                    {
+                        "name": "Vf / V vs. Ref.",
+                        "type": "number"
+                    },
+                    {
+                        "name": "Im / A",
+                        "type": "number"
+                    },
+                    {
+                        "name": "Vu / V",
+                        "type": "number"
+                    },
+                    {
+                        "name": "Sig / V",
+                        "type": "number"
+                    },
+                    {
+                        "name": "Ach / V",
+                        "type": "number"
+                    },
+                    {
+                        "name": "IERange / #",
                         "type": "integer"
                     },
                     {
-                        "name": "error",
+                        "name": "Over / bits",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Cycle / #",
                         "type": "integer"
                     },
                     {
-                        "name": "control changes",
-                        "type": "integer"
-                    },
-                    {
-                        "name": "counter inc.",
-                        "type": "integer"
-                    },
-                    {
-                        "name": "time/s",
-                        "type": "number"
-                    },
-                    {
-                        "name": "control/V",
-                        "type": "number"
-                    },
-                    {
-                        "name": "Ewe/V",
-                        "type": "number"
-                    },
-                    {
-                        "name": "<I>/mA",
-                        "type": "number"
-                    },
-                    {
-                        "name": "cycle number",
-                        "type": "number"
-                    },
-                    {
-                        "name": "(Q-Qo)/C",
-                        "type": "number"
-                    },
-                    {
-                        "name": "I Range",
-                        "type": "integer"
-                    },
-                    {
-                        "name": "P/W",
+                        "name": "Temp / deg C",
                         "type": "number"
                     }
                 ]

@@ -67,6 +67,7 @@ pytest-xdist = "*"
 
 [tool.pixi.feature.test.tasks]
 doctest = "pytest -n auto --doctest-modules echemdbconverters"
+pytest = "pytest -n auto echemdbconverters/**/*.py"
 
 [tool.pixi.feature.lint.dependencies]
 black = ">=23,<24"

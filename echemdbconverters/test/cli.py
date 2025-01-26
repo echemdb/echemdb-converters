@@ -4,7 +4,7 @@ Helpers for click CLI testing.
 Click's own CliRunner is quite cumbersome to work with in some simple test
 scenarios so we wrap it in more convenient ways here.
 
-The code has been inherited from svgdigitizer and adapted for echemdb-converters.
+The code has been inherited from echemdb-converters and adapted for echemdb-converters.
 
 """
 
@@ -13,18 +13,18 @@ The code has been inherited from svgdigitizer and adapted for echemdb-converters
 #
 #        Copyright (C) 2021-2025 Julian Rüth
 #
-#  svgdigitizer is free software: you can redistribute it and/or modify
+#  echemdb-converters is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  svgdigitizer is distributed in the hope that it will be useful,
+#  echemdb-converters is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with svgdigitizer. If not, see <https://www.gnu.org/licenses/>.
+#  along with echemdb-converters. If not, see <https://www.gnu.org/licenses/>.
 # *********************************************************************
 
 import pytest

@@ -42,7 +42,7 @@ git clone https://github.com/echemdb/echemdbconverters.git
 To launch the echemdbconverter, run:
 
 ```sh
-pixi run svgdigitizer
+pixi run echemdbconverters
 ```
 
 Any changes you make to the files in your local copy of the echemdbconverters should

@@ -433,24 +433,6 @@ class BaseLoader:
         ).reset_index(drop=True)
 
     @property
-    def column_names(self):
-        r"""
-        List of column (field) names describing the tabulated data.
-
-        EXAMPLES::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''a,b
-            ... 0,0
-            ... 1,1''')
-            >>> csv = BaseLoader(file)
-            >>> csv.column_names
-            ['a', 'b']
-
-        """
-        return self.df.columns.to_list()
-
-    @property
     def delimiter(self):
         r"""
         The delimiter in the CSV, which is extracted from

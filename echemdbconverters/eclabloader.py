@@ -33,8 +33,8 @@ The file can also be loaded from the base loader::
     ... 2\t0\t0.1\t0\t0
     ... 2\t1\t1.4\t5\t1
     ... ''')
-    >>> from echemdbconverters.beseloader import BaseLoader
-    >>> csv = CSVloader.create('eclab')(file)
+    >>> from echemdbconverters.baseloader import BaseLoader
+    >>> csv = BaseLoader.create('eclab')(file)
     >>> csv.df
        mode  time/s  Ewe/V  <I>/mA  control/V
     0     2       0    0.1       0          0
@@ -89,8 +89,8 @@ class ECLabLoader(BaseLoader):
         ... 2\t0\t0.1\t0\t0
         ... 2\t1\t1.4\t5\t1
         ... ''')
-        >>> from echemdbconverters.beseloader import BaseLoader
-        >>> csv = CSVloader.create('eclab')(file)
+        >>> from echemdbconverters.baseloader import BaseLoader
+        >>> csv = BaseLoader.create('eclab')(file)
         >>> csv.df
            mode  time/s  Ewe/V  <I>/mA  control/V
         0     2       0    0.1       0          0
@@ -123,8 +123,8 @@ class ECLabLoader(BaseLoader):
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> from echemdbconverters.beseloader import BaseLoader
-            >>> csv = CSVloader.create('eclab')(file)
+            >>> from echemdbconverters.baseloader import BaseLoader
+            >>> csv = BaseLoader.create('eclab')(file)
             >>> csv.header_lines
             5
 

@@ -95,7 +95,7 @@ def convert(csv, device, outdir, metadata):
     """
     import yaml
 
-    from echemdbconverters.csvloader import BaseLoader
+    from echemdbconverters.baseloader import BaseLoader
 
     fields = None
 

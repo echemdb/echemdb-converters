@@ -36,8 +36,8 @@ The file can also be loaded from the base loader::
     ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
     ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
     ... ''')
-    >>> from echemdbconverters.beseloader import BaseLoader
-    >>> csv = CSVloader.create('gamry')(file)
+    >>> from echemdbconverters.baseloader import BaseLoader
+    >>> csv = BaseLoader.create('gamry')(file)
     >>> csv.df
        Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
     0       0   0.06         0.200054  ...  ..........a          0       -327.75
@@ -91,8 +91,8 @@ class GamryLoader(BaseLoader):
         ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
         ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
         ... ''')
-        >>> from echemdbconverters.beseloader import BaseLoader
-        >>> csv = CSVloader.create('gamry')(file)
+        >>> from echemdbconverters.baseloader import BaseLoader
+        >>> csv = BaseLoader.create('gamry')(file)
         >>> csv.df
            Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
         0       0   0.06         0.200054  ...  ..........a          0       -327.75
@@ -136,8 +136,8 @@ class GamryLoader(BaseLoader):
             ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
             ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
             ... ''')
-            >>> from echemdbconverters.beseloader import BaseLoader
-            >>> csv = CSVloader.create('gamry')(file)
+            >>> from echemdbconverters.baseloader import BaseLoader
+            >>> csv = BaseLoader.create('gamry')(file)
             >>> csv.header_lines
             4
 
@@ -170,8 +170,8 @@ class GamryLoader(BaseLoader):
             ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
             ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
             ... ''')
-            >>> from echemdbconverters.beseloader import BaseLoader
-            >>> csv = CSVloader.create('gamry')(file)
+            >>> from echemdbconverters.baseloader import BaseLoader
+            >>> csv = BaseLoader.create('gamry')(file)
             >>> csv.column_header_lines
             2
 
@@ -194,8 +194,8 @@ class GamryLoader(BaseLoader):
             ... \t0\t0,06\t2,00054E-001\t1,72821E-005\t0,00000E+000\t2,00000E-001\t6,45222E-004\t9\t..........a\t0\t-327,75
             ... \t1\t0,12\t1,97170E-001\t1,04547E-005\t0,00000E+000\t1,97000E-001\t-1,17889E-003\t9\t..........a\t0\t-327,75
             ... ''')
-            >>> from echemdbconverters.beseloader import BaseLoader
-            >>> csv = CSVloader.create('gamry')(file)
+            >>> from echemdbconverters.baseloader import BaseLoader
+            >>> csv = BaseLoader.create('gamry')(file)
             >>> csv.df_original
                Pt / #  T / s  Vf / V vs. Ref.  ...  Over / bits  Cycle / #  Temp / deg C
             0       0   0.06         0.200054  ...  ..........a          0       -327.75

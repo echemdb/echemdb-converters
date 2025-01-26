@@ -12,10 +12,10 @@ Ewe,I filtering : 50 kHz
 Channel : Floating
 Acquisition started on : 04/05/2022 09:23:57.813
 Technique started on : 04/05/2022 09:25:24.575
-Loaded Setting File :  C:\Users\Operator\Documents\EC-Lab\Data\Tobias\template\CV_hold_04V_CO_2_HClO4.mps
+Loaded Setting File :  C:\data\CV\CV_hold_04V_CO_2_HClO4.mps
 Saved on :
-	File : 2022-04-05_DCP2_TOSC_000_PTSC4_HClO4_CO_03_CV_C01.mpr
-	Directory : C:\Users\Operator\Documents\DCP2_rawdata\CV\2022-04-05\
+	File : 2022-04-05_DCP2_CV_C01.mpr
+	Directory : C:\data\CV\2022-04-05\
 	Host : 134.60.37.140
 Device : VSP-300 (SN 0936)
 Address : USB

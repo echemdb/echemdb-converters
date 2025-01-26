@@ -63,7 +63,7 @@ class BaseLoader:
         >>> file = StringIO(r'''a,b
         ... 0,0
         ... 1,1''')
-        >>> csv = CSVloader(file)
+        >>> csv = BaseLoader(file)
         >>> csv.df
            a  b
         0  0  0
@@ -87,10 +87,10 @@ class BaseLoader:
         ... 2\t0\t0.1\t0\t0
         ... 2\t1\t1.4\t5\t1
         ... ''')
-        >>> from echemdbconverters.beseloader import BaseLoader
-        >>> csv = CSVloader.create('eclab')(file)
+        >>> from echemdbconverters.baseloader import BaseLoader
+        >>> csv = BaseLoader.create('eclab')(file)
         >>> csv.df
-        mode  time/s  Ewe/V  <I>/mA  control/V
+           mode  time/s  Ewe/V  <I>/mA  control/V
         0     2       0    0.1       0          0
         1     2       1    1.4       5          1
 
@@ -102,25 +102,25 @@ class BaseLoader:
         header_lines=None,
         column_header_lines=None,
         decimal=None,
-        delimiters=["\t", ";", ","],
+        delimiters=None,
     ):  # pylint: disable=dangerous-default-value
         self._file = file.read()
         self._header_lines = header_lines
         self._column_header_lines = column_header_lines
         self._decimal = decimal
-        self.delimiters = delimiters
+        self.delimiters = delimiters or ["\t", ";", ","]
 
     @property
     def file(self):
         r"""
-        A file like object of the loaded CSV.
+        A file like object of the loaded file.
 
         EXAMPLES::
             >>> from io import StringIO
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> type(csv.file)
             <class '_io.StringIO'>
 
@@ -128,38 +128,6 @@ class BaseLoader:
         from io import StringIO
 
         return StringIO(self._file)
-
-    def augment(self, metadata=None):
-        r"""
-        Metadata constructed from input metadata and the CSV header.
-        A simple CSV does not have any metadata in the header.
-
-        EXAMPLES:
-
-        Without metadata::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> from echemdbconverters.beseloader import BaseLoader
-            >>> csv = CSVloader(file)
-            >>> csv.augment()
-            {}
-
-        Without metadata provided to the loader::
-
-            >>> from io import StringIO
-            >>> file = StringIO(r'''t,E,j
-            ... 0,0,0
-            ... 1,1,1''')
-            >>> from echemdbconverters.beseloader import BaseLoader
-            >>> csv = CSVloader(file)
-            >>> csv.augment(metadata={'foo':'bar'})
-            {'foo': 'bar'}
-
-        """
-        return metadata or {}
 
     @staticmethod
     def create(device=None):
@@ -178,7 +146,7 @@ class BaseLoader:
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> csv = CSVloader.create('eclab')(file)
+            >>> csv = BaseLoader.create('eclab')(file)
             >>> csv.df
                mode  time/s  Ewe/V  <I>/mA  control/V
             0     2       0    0.1       0          0
@@ -210,7 +178,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.header_lines
             0
 
@@ -225,7 +193,7 @@ class BaseLoader:
             ... 2\t0\t0,1\t0\t0
             ... 2\t1\t1,4\t5\t1
             ... ''')
-            >>> csv = CSVloader.create('eclab')(file)
+            >>> csv = BaseLoader.create('eclab')(file)
             >>> csv.header_lines
             5
 
@@ -243,7 +211,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> type(csv.header)
             <class '_io.StringIO'>
 
@@ -253,7 +221,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.header.readlines()
             []
 
@@ -278,7 +246,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.column_header_lines
             1
 
@@ -289,7 +257,7 @@ class BaseLoader:
             ... x,y
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file, column_header_lines=2)
+            >>> csv = BaseLoader(file, column_header_lines=2)
             >>> csv.column_header_lines
             2
 
@@ -310,7 +278,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.column_headers.readlines()
             ['a,b\n']
 
@@ -322,7 +290,7 @@ class BaseLoader:
             ... K,m/s
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file, column_header_lines=2)
+            >>> csv = BaseLoader(file, column_header_lines=2)
             >>> csv.column_headers.readlines()
             ['T,v\n', 'K,m/s\n']
 
@@ -352,7 +320,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.column_header_names
             ['a', 'b']
 
@@ -365,7 +333,7 @@ class BaseLoader:
             ... K,m/s
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file, column_header_lines=2)
+            >>> csv = BaseLoader(file, column_header_lines=2)
             >>> csv.column_header_names
             ['T / K', 'v / m/s']
 
@@ -394,7 +362,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> type(csv.data)
             <class '_io.StringIO'>
 
@@ -402,7 +370,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.data.readlines()
             ['0,0\n', '1,1']
 
@@ -429,7 +397,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.df
                a  b
             0  0  0
@@ -456,7 +424,7 @@ class BaseLoader:
             >>> file = StringIO(r'''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.column_names
             ['a', 'b']
 
@@ -475,7 +443,7 @@ class BaseLoader:
             >>> file = StringIO('''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.delimiter
             ','
 
@@ -485,7 +453,7 @@ class BaseLoader:
             >>> file = StringIO('''a,b
             ... 0.0,0.0
             ... 1.0,1.0''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.delimiter
             ','
 
@@ -495,7 +463,7 @@ class BaseLoader:
             >>> file = StringIO('''a\tb
             ... 0\t0.0
             ... 1\t1.0''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.delimiter
             '\t'
 
@@ -506,7 +474,7 @@ class BaseLoader:
             >>> file = StringIO('''a\tb\tc
             ... 0,0\t0,0\t0,0
             ... 1,1\t1,0\t0,0''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.delimiter
             '\t'
 
@@ -517,7 +485,7 @@ class BaseLoader:
             >>> file = StringIO('''a\tb
             ... 0,0\t0,0
             ... 1,1\t1,0''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.delimiter
             '\t'
 
@@ -527,8 +495,28 @@ class BaseLoader:
             >>> from io import StringIO
             >>> file = StringIO('''a\tb
             ... 0\t0,0
-            ... 1\t1,0''')
-            >>> csv = CSVloader(file)
+            ... 1\t1,0
+            ... ''')
+            >>> csv = BaseLoader(file)
+            >>> csv.delimiter
+            '\t'
+
+        A rather messy file:
+
+            >>> from io import StringIO
+            >>> file = StringIO(('''# I am messy data
+            ... Random stuff
+            ... maybe metadata : 3
+            ... in different formats = abc123
+            ... hopefully, some information
+            ... on where the data block starts!
+            ... t\tE\tj
+            ... s\tV\tA/cm2
+            ... 0\t0\t0
+            ... 1\t1\t1
+            ... 2\t2\t2
+            ... '''))
+            >>> csv = BaseLoader(file)
             >>> csv.delimiter
             '\t'
 
@@ -573,7 +561,17 @@ class BaseLoader:
             >>> file = StringIO('''a,b
             ... 0.0,0.0
             ... 1.0,1.0''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
+            >>> csv.decimal
+            '.'
+
+        For CVS containing only integers we simply return None.::
+
+            >>> from io import StringIO
+            >>> file = StringIO('''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = BaseLoader(file)
             >>> csv.decimal
             '.'
 
@@ -583,7 +581,7 @@ class BaseLoader:
             >>> file = StringIO('''a,b
             ... 0,0
             ... 1,1''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.decimal
             '.'
 
@@ -593,7 +591,7 @@ class BaseLoader:
             >>> file = StringIO('''a,b
             ... 0,0.0
             ... 1,1.0''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.decimal
             '.'
 
@@ -603,7 +601,7 @@ class BaseLoader:
             >>> file = StringIO('''a\tb
             ... 0\t0.0
             ... 1\t1.0''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.decimal
             '.'
 
@@ -614,7 +612,7 @@ class BaseLoader:
             >>> file = StringIO('''a,b
             ... 0\t0,0
             ... 1\t1,0''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> # csv.data.readlines()[1].strip().split(csv.delimiter)
             >>> csv.decimal
             ','
@@ -625,7 +623,7 @@ class BaseLoader:
             >>> file = StringIO('''a\tb\ttext
             ... 0.0\t0.0\ta,b
             ... 1.0\t1.0\tc,d''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.decimal
             '.'
 
@@ -635,7 +633,7 @@ class BaseLoader:
             >>> file = StringIO('''a\tb\ttext
             ... 0.1\t0,0\ta,b
             ... 1.1\t1,0\tc,d''')
-            >>> csv = CSVloader(file)
+            >>> csv = BaseLoader(file)
             >>> csv.decimal
             Traceback (most recent call last):
             ...
@@ -653,7 +651,7 @@ class BaseLoader:
             ... 2\t0\t0,1\t0\t0
             ... 2\t1\t1,4\t5\t1
             ... ''')
-            >>> csv = CSVloader.create('eclab')(file)
+            >>> csv = BaseLoader.create('eclab')(file)
             >>> csv.decimal
             ','
 
@@ -685,19 +683,19 @@ class BaseLoader:
         Examples::
 
 
-            >>> CSVloader._validate_digit('12,33', ',')
+            >>> BaseLoader._validate_digit('12,33', ',')
             True
 
-            >>> CSVloader._validate_digit('a,b', ',')
+            >>> BaseLoader._validate_digit('a,b', ',')
             False
 
-            >>> CSVloader._validate_digit('1.0', '.')
+            >>> BaseLoader._validate_digit('1.0', '.')
             True
 
-            >>> CSVloader._validate_digit('1.1E10', '.')
+            >>> BaseLoader._validate_digit('1.1E10', '.')
             True
 
-            >>> CSVloader._validate_digit('1,1E10', ',')
+            >>> BaseLoader._validate_digit('1,1E10', ',')
             True
 
         """

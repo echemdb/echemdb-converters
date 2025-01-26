@@ -33,7 +33,7 @@ The file can also be loaded from the base loader::
     ... 2\t0\t0.1\t0\t0
     ... 2\t1\t1.4\t5\t1
     ... ''')
-    >>> from echemdbconverters.csvloader import CSVloader
+    >>> from echemdbconverters.beseloader import BaseLoader
     >>> csv = CSVloader.create('eclab')(file)
     >>> csv.df
        mode  time/s  Ewe/V  <I>/mA  control/V
@@ -70,10 +70,10 @@ The file can also be loaded from the base loader::
 # ********************************************************************
 
 
-from echemdbconverters.csvloader import CSVloader
+from echemdbconverters.baseloader import BaseLoader
 
 
-class ECLabLoader(CSVloader):
+class ECLabLoader(BaseLoader):
     r"""
     Loads BioLogic EC-Lab MPT files.
 
@@ -89,7 +89,7 @@ class ECLabLoader(CSVloader):
         ... 2\t0\t0.1\t0\t0
         ... 2\t1\t1.4\t5\t1
         ... ''')
-        >>> from echemdbconverters.csvloader import CSVloader
+        >>> from echemdbconverters.beseloader import BaseLoader
         >>> csv = CSVloader.create('eclab')(file)
         >>> csv.df
            mode  time/s  Ewe/V  <I>/mA  control/V
@@ -123,7 +123,7 @@ class ECLabLoader(CSVloader):
             ... 2\t0\t0.1\t0\t0
             ... 2\t1\t1.4\t5\t1
             ... ''')
-            >>> from echemdbconverters.csvloader import CSVloader
+            >>> from echemdbconverters.beseloader import BaseLoader
             >>> csv = CSVloader.create('eclab')(file)
             >>> csv.header_lines
             5

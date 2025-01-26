@@ -52,7 +52,7 @@ import logging
 logger = logging.getLogger("loader")
 
 
-class CSVloader:
+class BaseLoader:
     r"""
     Loads a CSV, where the first line must contain the column (field) names
     and the following lines comma separated values.
@@ -87,7 +87,7 @@ class CSVloader:
         ... 2\t0\t0.1\t0\t0
         ... 2\t1\t1.4\t5\t1
         ... ''')
-        >>> from echemdbconverters.csvloader import CSVloader
+        >>> from echemdbconverters.beseloader import BaseLoader
         >>> csv = CSVloader.create('eclab')(file)
         >>> csv.df
         mode  time/s  Ewe/V  <I>/mA  control/V
@@ -142,7 +142,7 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from echemdbconverters.csvloader import CSVloader
+            >>> from echemdbconverters.beseloader import BaseLoader
             >>> csv = CSVloader(file)
             >>> csv.augment()
             {}
@@ -153,7 +153,7 @@ class CSVloader:
             >>> file = StringIO(r'''t,E,j
             ... 0,0,0
             ... 1,1,1''')
-            >>> from echemdbconverters.csvloader import CSVloader
+            >>> from echemdbconverters.beseloader import BaseLoader
             >>> csv = CSVloader(file)
             >>> csv.augment(metadata={'foo':'bar'})
             {'foo': 'bar'}

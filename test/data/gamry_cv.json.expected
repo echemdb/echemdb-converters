@@ -1,9 +1,9 @@
 {
     "resources": [
         {
-            "name": "gamry_cv_all_cycles",
+            "name": "gamry_cv",
             "type": "table",
-            "path": "gamry_cv_all_cycles.csv",
+            "path": "gamry_cv.csv",
             "scheme": "file",
             "format": "csv",
             "mediatype": "text/csv",

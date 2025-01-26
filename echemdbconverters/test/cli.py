@@ -142,6 +142,17 @@ class TemporaryData:
                 "eclab",
             ],
         ),
+        (  # Gamry Instruments Framework software file for cyclic voltammetry
+            "gamry_cv",
+            [
+                "csv",
+                "gamry_cv.DTA",
+                "--metadata",
+                "gamry_cv.DTA.metadata",
+                "--device",
+                "gamry",
+            ],
+        ),
     ],
 )
 def test_csv(name, args):

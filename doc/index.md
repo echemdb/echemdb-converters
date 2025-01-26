@@ -24,8 +24,14 @@ or files containing multiple data tables, etc.
 Our approach aims at providing a single interface to load data into a certain format independent of the data source.
 Filetypes supported and tested by `echemdbconverters` are:
 
+| Manufacturer | Device type  | Software                    | Filesuffix | Loader      | device |
+|--------------|--------------|-----------------------------|------------|-------------|--------|
+| Biologic     | Potentiostat | EClab                       | mpt        | EClabLoader | eclab  |
+| Gamry        | Potentiostat | Gamry Instruments Framework | DTA        | GamryLoader | gamry  |
+|              |              |                             |            |             |        |
+
 ```{todo}
-Add Table with existing loaders.
+Improve table, such as including links.
 ```
 
 ## Examples

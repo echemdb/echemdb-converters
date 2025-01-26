@@ -1,4 +1,7 @@
 r"""
+
+TODO:: Include module imports in each doctest.
+TODO:: Reword
 Loader for CSV files (https://datatracker.ietf.org/doc/html/rfc4180)
 which consist of a single header line containing the column (field)
 names and rows with comma separated values.
@@ -71,9 +74,25 @@ class CSVloader:
         >>> csv.column_names
         ['a', 'b']
 
-    More specific converters can be selected:
+    TODO:: Link to device list in the documentation.
+    More specific loaders can be selected.::
 
-    TODO:: Add example with csv.get_device('device')(file)
+        >>> from io import StringIO
+        >>> file = StringIO('''EC-Lab ASCII FILE
+        ... Nb header lines : 6
+        ...
+        ... Device metadata : some metadata
+        ...
+        ... mode\ttime/s\tEwe/V\t<I>/mA\tcontrol/V
+        ... 2\t0\t0.1\t0\t0
+        ... 2\t1\t1.4\t5\t1
+        ... ''')
+        >>> from echemdbconverters.csvloader import CSVloader
+        >>> csv = CSVloader.create('eclab')(file)
+        >>> csv.df
+        mode  time/s  Ewe/V  <I>/mA  control/V
+        0     2       0    0.1       0          0
+        1     2       1    1.4       5          1
 
     """
 
@@ -84,7 +103,7 @@ class CSVloader:
         column_header_lines=None,
         decimal=None,
         delimiters=["\t", ";", ","],
-    ):
+    ):  # pylint: disable=dangerous-default-value
         self._file = file.read()
         self._header_lines = header_lines
         self._column_header_lines = column_header_lines

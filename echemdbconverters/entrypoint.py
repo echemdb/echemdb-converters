@@ -20,9 +20,9 @@ EXAMPLES::
 # ********************************************************************
 #  This file is part of echemdb-converters.
 #
-#        Copyright (C) 2024 Albert Engstfeld
-#        Copyright (C) 2022 Johannes Hermann
-#        Copyright (C) 2022 Julian Rüth
+#        Copyright (C)      2024 Albert Engstfeld
+#        Copyright (C)      2022 Johannes Hermann
+#        Copyright (C) 2022-2025 Julian Rüth
 #
 #  echemdb-converters is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ def cli():
 @click.option(
     "--outdir",
     type=click.Path(file_okay=False),
-    default=None,
+    default=".",
     help="write output files to this directory",
 )
 @click.option(
@@ -74,6 +74,7 @@ def convert(csv, device, outdir, metadata):
 
     EXAMPLES::
 
+        >>> import os.path
         >>> from echemdbconverters.test.cli import invoke, TemporaryData
         >>> with TemporaryData("../**/default.csv") as directory:
         ...     invoke(cli, "csv", os.path.join(directory, "default.csv"))
@@ -112,9 +113,6 @@ def convert(csv, device, outdir, metadata):
         with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
             loader = CSVloader(file)
 
-    # if metadata:
-    #     metadata = yaml.load(metadata, Loader=yaml.SafeLoader)
-
     entry = Entry.from_df(
         df=loader.df, basename=Path(csv).stem, metadata=metadata, fields=fields
     )
@@ -122,12 +120,11 @@ def convert(csv, device, outdir, metadata):
 
 
 cli.add_command(convert)
-# cli.add_command(electrochemistry)
 
-# Possibly uncomment
+
 # Register command docstrings for doctesting.
 # Since commands are not functions anymore due to their decorator, their
 # docstrings would otherwise be ignored.
-# __test__ = {
-#     name: command.__doc__ for (name, command) in cli.commands.items() if command.__doc__
-# }
+__test__ = {
+    name: command.__doc__ for (name, command) in cli.commands.items() if command.__doc__
+}

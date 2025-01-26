@@ -1,9 +1,9 @@
 {
     "resources": [
         {
-            "name": "eclab_ca-cc_csv_decimal_comma",
+            "name": "eclab_ca",
             "type": "table",
-            "path": "eclab_ca-cc_csv_decimal_comma.csv",
+            "path": "eclab_ca.csv",
             "scheme": "file",
             "format": "csv",
             "mediatype": "text/csv",

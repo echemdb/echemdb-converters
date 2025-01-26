@@ -1,9 +1,9 @@
 {
     "resources": [
         {
-            "name": "eclab_cv_csv",
+            "name": "eclab_cv",
             "type": "table",
-            "path": "eclab_cv_csv.csv",
+            "path": "eclab_cv.csv",
             "scheme": "file",
             "format": "csv",
             "mediatype": "text/csv",

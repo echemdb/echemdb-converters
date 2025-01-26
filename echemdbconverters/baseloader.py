@@ -71,7 +71,7 @@ class BaseLoader:
 
     A list of column names::
 
-        >>> csv.column_names
+        >>> csv.column_header_names
         ['a', 'b']
 
     TODO: Link to device list in the documentation.
@@ -369,6 +369,8 @@ class BaseLoader:
 
         # If there are multiple lines, combine them column-wise
         return [" / ".join(items) for items in zip(*headers)]
+
+
 
     @property
     def data(self):

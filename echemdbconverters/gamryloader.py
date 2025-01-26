@@ -47,7 +47,7 @@ The file can also be loaded from the base loader::
     >>> csv.header.readlines()
     ['EXPLAIN\n', 'TAG\tCV\n', 'TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier\n', 'CURVE\tTABLE\t3597\n']
 
-    >>> csv.column_names
+    >>> csv.column_header_names
     ['Pt / #', 'T / s', 'Vf / V vs. Ref.', 'Im / A', 'Vu / V', 'Sig / V', 'Ach / V', 'IERange / #', 'Over / bits', 'Cycle / #', 'Temp / deg C']
 
 """
@@ -102,7 +102,7 @@ class GamryLoader(BaseLoader):
         >>> csv.header.readlines()
         ['EXPLAIN\n', 'TAG\tCV\n', 'TITLE\tLABEL\tCyclic Voltammetry\tTest &Identifier\n', 'CURVE\tTABLE\t3597\n']
 
-        >>> csv.column_names
+        >>> csv.column_header_names
         ['Pt / #', 'T / s', 'Vf / V vs. Ref.', 'Im / A', 'Vu / V', 'Sig / V', 'Ach / V', 'IERange / #', 'Over / bits', 'Cycle / #', 'Temp / deg C']
 
     """

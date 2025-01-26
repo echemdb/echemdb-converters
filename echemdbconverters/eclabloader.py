@@ -43,7 +43,7 @@ The file can also be loaded from the base loader::
     >>> csv.header.readlines()
     ['EC-Lab ASCII FILE\n', 'Nb header lines : 6\n', '\n', 'Device metadata : some metadata\n', '\n']
 
-    >>> csv.column_names
+    >>> csv.column_header_names
     ['mode', 'time/s', 'Ewe/V', '<I>/mA', 'control/V']
 
 """
@@ -99,7 +99,7 @@ class ECLabLoader(BaseLoader):
         >>> csv.header.readlines()
         ['EC-Lab ASCII FILE\n', 'Nb header lines : 6\n', '\n', 'Device metadata : some metadata\n', '\n']
 
-        >>> csv.column_names
+        >>> csv.column_header_names
         ['mode', 'time/s', 'Ewe/V', '<I>/mA', 'control/V']
 
     """

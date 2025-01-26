@@ -74,7 +74,7 @@ class BaseLoader:
         >>> csv.column_names
         ['a', 'b']
 
-    TODO:: Link to device list in the documentation.
+    TODO: Link to device list in the documentation.
     More specific loaders can be selected.::
 
         >>> from io import StringIO
@@ -231,6 +231,25 @@ class BaseLoader:
         return StringIO(
             "".join(line for line in self.file.readlines()[: self.header_lines])
         )
+
+    @property
+    def metadata(self):
+        r"""A dict containing the metadata of the file found in its header.
+
+        EXAMPLES::
+
+            >>> from io import StringIO
+            >>> file = StringIO(r'''a,b
+            ... 0,0
+            ... 1,1''')
+            >>> csv = BaseLoader(file)
+            >>> csv.metadata
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
+
+        """
+        raise NotImplementedError
 
     @property
     def column_header_lines(self):

@@ -233,7 +233,7 @@ class BaseLoader:
         )
 
     @property
-    def metadata(self):
+    def metadata(self):  # pylint: disable=abstract-method
         r"""A dict containing the metadata of the file found in its header.
 
         EXAMPLES::
@@ -369,8 +369,6 @@ class BaseLoader:
 
         # If there are multiple lines, combine them column-wise
         return [" / ".join(items) for items in zip(*headers)]
-
-
 
     @property
     def data(self):

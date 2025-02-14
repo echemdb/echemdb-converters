@@ -95,7 +95,7 @@ def convert(csv, device, outdir, metadata):
     """
     import yaml
 
-    from echemdbconverters.csvloader import CSVloader
+    from echemdbconverters.baseloader import BaseLoader
 
     fields = None
 
@@ -108,10 +108,10 @@ def convert(csv, device, outdir, metadata):
 
     if device:
         with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
-            loader = CSVloader.create(device)(file)
+            loader = BaseLoader.create(device)(file)
     else:
         with open(csv, "r") as file:  # pylint: disable=unspecified-encoding
-            loader = CSVloader(file)
+            loader = BaseLoader(file)
 
     entry = Entry.from_df(
         df=loader.df, basename=Path(csv).stem, metadata=metadata, fields=fields

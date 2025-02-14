@@ -50,9 +50,9 @@ command('update_pixi_lock', 'pixi run black')
 $ACTIVITIES = [
     'version_bump',
     'changelog',
-    'update_pixi_lock',
     'build',
     'twine',
+    'update_pixi_lock',
     'tag',
     'push_tag',
     'ghrelease',
@@ -61,7 +61,6 @@ $ACTIVITIES = [
 $VERSION_BUMP_PATTERNS = [
     ('pyproject.toml', r'version =', 'version = "$VERSION"'),
     ('doc/conf.py', r"release = ", r"release = '$VERSION'"),
-    ('pixi.lock', r'(name:\s*echemdbconverters\s*\n\s*version:\s*)[\d\.]+', r'\1$VERSION'),
 ]
 
 $CHANGELOG_FILENAME = 'ChangeLog'

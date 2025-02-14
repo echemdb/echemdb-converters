@@ -73,9 +73,9 @@ def update_pixi_lock():
     )
 
     lockfile_content = re.sub(
-        r"(name:\s*echemdbconverters\s*\n\s*version:\s*{version}\s*\n\s*sha256:\s*)[a-fA-F0-9]+",
-        rf"\g<1>{sha256sum}",
-        lockfile_content,
+      r"(name:\s*echemdbconverters\s*\n\s*version:\s*)[\d\.]+(\s*\n\s*sha256:\s*)[a-fA-F0-9]+",
+      rf"\g<1>{version}\2{sha256sum}",
+      lockfile_content,
     )
 
     lockfile_path.write_text(lockfile_content)

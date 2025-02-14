@@ -16,7 +16,7 @@ python -m http.server 8880 -b localhost --directory generated/html &
 
 Then open http://localhost:8880/ with your browser.
 
-Some MDd files can be interactively edited in jupyter
+Some MD files can be interactively edited in jupyter
 
 ```sh
 pixi run jupyter lab

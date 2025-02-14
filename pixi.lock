@@ -6794,7 +6794,7 @@ packages:
 - pypi: .
   name: echemdbconverters
   version: 0.3.5
-  sha256: 5517b074be407848f80adb9212d6c70fc48bf5f55e910c525debce4923523529
+  sha256: c0595f48538629ad7e7aeaf06a378b92d847fbcf14c7daaa737d68353ed5043a
   requires_dist:
   - clevercsv>=0.7.0,<0.9.0
   - click>=8,<9

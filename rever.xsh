@@ -42,7 +42,7 @@ $PROJECT = 'echemdb-converters'
 from rever.activities.command import command
 
 command('build', 'python -m build')
-command('twine', 'twine upload dist/echemdb-converters-' + $VERSION + '.tar.gz')
+command('twine', 'twine upload dist/echemdbconverters-' + $VERSION + '.tar.gz')
 
 $ACTIVITIES = [
     'version_bump',

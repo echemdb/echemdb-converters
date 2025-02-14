@@ -49,7 +49,8 @@ $ACTIVITIES = [
     'changelog',
     'tag',
     'push_tag',
-    'pypi',
+    'build',
+    'twine',
     'ghrelease',
 ]
 

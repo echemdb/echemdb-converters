@@ -82,6 +82,14 @@ def update_pixi_lock():
 
     print(f"Updated pixi.lock to version {version} with sha256 {sha256sum}")
 
+@activity
+def commit_pixi_lock():
+    from rever.activities.command import command
+
+    # Commit pixi.lock with a message
+    command('commit', 'git add pixi.lock')
+    command('commit', 'git commit -m "Update pixi.lock to version $VERSION with sha256"')
+
 command('build', 'python -m build')
 command('twine', 'twine upload dist/echemdbconverters-' + $VERSION + '.tar.gz')
 
@@ -93,6 +101,7 @@ $ACTIVITIES = [
     'push_tag',
     'build',
     'update_pixi_lock',
+    'commit_pixi_lock',
     'twine',
     'ghrelease',
 ]

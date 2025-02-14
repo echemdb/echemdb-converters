@@ -63,8 +63,6 @@ $CHANGELOG_TEMPLATE = 'TEMPLATE.rst'
 $CHANGELOG_NEWS = 'doc/news'
 $PUSH_TAG_REMOTE = 'git@github.com:echemdb/echemdb-converters.git'
 
-$PYPI_BUILD_COMMANDS = ['sdist', 'bdist_wheel']
-
 $GITHUB_ORG = 'echemdb'
 $GITHUB_REPO = 'echemdb-converters'
 

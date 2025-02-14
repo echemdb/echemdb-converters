@@ -88,11 +88,11 @@ command('twine', 'twine upload dist/echemdbconverters-' + $VERSION + '.tar.gz')
 
 $ACTIVITIES = [
     'version_bump',
-    'update_pixi_lock',
     'changelog',
     'tag',
     'push_tag',
     'build',
+    'update_pixi_lock',
     'twine',
     'ghrelease',
 ]

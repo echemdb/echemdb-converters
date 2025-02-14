@@ -40,12 +40,55 @@ git diff --cached --exit-code
 $PROJECT = 'echemdb-converters'
 
 from rever.activities.command import command
+from rever.activity import activity
+
+@activity
+def update_pixi_lock():
+    import hashlib
+    from pathlib import Path
+    import re
+
+    # Get version from Rever
+    version = $VERSION
+    tarball = Path(f"dist/echemdbconverters-{version}.tar.gz")
+
+    if not tarball.exists():
+        raise FileNotFoundError(f"Expected file {tarball} not found. Did you run 'build'?")
+
+    # Compute SHA256
+    sha256_hash = hashlib.sha256()
+    with tarball.open("rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+    sha256sum = sha256_hash.hexdigest()
+
+    # Update pixi.lock
+    lockfile_path = Path("pixi.lock")
+    lockfile_content = lockfile_path.read_text()
+
+    lockfile_content = re.sub(
+        r"(name:\s*echemdbconverters\s*\n\s*version:\s*)[\d\.]+",
+        rf"\g<1>{version}",
+        lockfile_content,
+    )
+
+    lockfile_content = re.sub(
+        r"(name:\s*echemdbconverters\s*\n\s*version:\s*{version}\s*\n\s*sha256:\s*)[a-fA-F0-9]+",
+        rf"\g<1>{sha256sum}",
+        lockfile_content,
+    )
+
+    lockfile_path.write_text(lockfile_content)
+
+    print(f"Updated pixi.lock to version {version} with sha256 {sha256sum}")
 
 command('build', 'python -m build')
 command('twine', 'twine upload dist/echemdbconverters-' + $VERSION + '.tar.gz')
 
+
 $ACTIVITIES = [
     'version_bump',
+    'update_pixi_lock',
     'changelog',
     'tag',
     'push_tag',
@@ -57,6 +100,7 @@ $ACTIVITIES = [
 $VERSION_BUMP_PATTERNS = [
     ('pyproject.toml', r'version =', 'version = "$VERSION"'),
     ('doc/conf.py', r"release = ", r"release = '$VERSION'"),
+    ('pixi.lock', r'(name:\s*echemdbconverters\s*\n\s*version:\s*)[\d\.]+', r'\1$VERSION'),
 ]
 
 $CHANGELOG_FILENAME = 'ChangeLog'

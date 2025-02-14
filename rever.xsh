@@ -84,6 +84,7 @@ def update_pixi_lock():
 
 command('build', 'python -m build')
 command('twine', 'twine upload dist/echemdbconverters-' + $VERSION + '.tar.gz')
+command('update_pixi_lock', 'pixi run update')
 command('add_pixi_lock', 'git add pixi.lock')
 command('commit_pixi_lock', 'git commit -m "Update pixi.lock to version $VERSION with sha256"')
 
@@ -91,10 +92,8 @@ command('commit_pixi_lock', 'git commit -m "Update pixi.lock to version $VERSION
 $ACTIVITIES = [
     'version_bump',
     'changelog',
-    'build',
     'update_pixi_lock',
-    'add_pixi_lock',
-    'commit_pixi_lock',
+    'build',
     'twine',
     'tag',
     'push_tag',
@@ -104,6 +103,7 @@ $ACTIVITIES = [
 $VERSION_BUMP_PATTERNS = [
     ('pyproject.toml', r'version =', 'version = "$VERSION"'),
     ('doc/conf.py', r"release = ", r"release = '$VERSION'"),
+    ('pixi.lock', r'(name:\s*echemdbconverters\s*\n\s*version:\s*)[\d\.]+', r'\1$VERSION'),
 ]
 
 $CHANGELOG_FILENAME = 'ChangeLog'

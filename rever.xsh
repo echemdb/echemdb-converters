@@ -84,7 +84,8 @@ def update_pixi_lock():
 
 command('build', 'python -m build')
 command('twine', 'twine upload dist/echemdbconverters-' + $VERSION + '.tar.gz')
-command('update_pixi_lock', 'pixi run update')
+# run a pixi task to update lock file
+command('update_pixi_lock', 'pixi run black')
 command('add_pixi_lock', 'git add pixi.lock')
 command('commit_pixi_lock', 'git commit -m "Update pixi.lock to version $VERSION with sha256"')
 

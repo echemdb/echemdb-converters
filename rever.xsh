@@ -41,24 +41,19 @@ $PROJECT = 'echemdb-converters'
 
 from rever.activities.command import command
 
-command('build', 'python -m build')
-command('twine', 'twine upload dist/echemdbconverters-' + $VERSION + '.tar.gz')
-# run a pixi task to update lock file
-command('update_pixi_lock', 'pixi run black')
-command('add_pixi_lock', 'git add pixi.lock')
-command('commit_pixi_lock', 'git commit -m "Update pixi.lock"')
+command('pixi', 'pixi install --manifest-path "$PWD/pyproject.toml" -e dev')
 
+command('build', 'python -m build')
+command('twine', 'twine upload dist/echemdbconverters-' + $VERSION + '.tar.gz dist/echemdbconverters-' + $VERSION + '-py3-none-any.whl')
 
 $ACTIVITIES = [
     'version_bump',
+    'pixi',
     'changelog',
-    'build',
-    'twine',
-    'update_pixi_lock',
-    'add_pixi_lock',
-    'commit_pixi_lock',
     'tag',
     'push_tag',
+    'build',
+    'twine',
     'ghrelease',
 ]
 

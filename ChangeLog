@@ -4,6 +4,15 @@ echemdb-converters Change Log
 
 .. current developments
 
+v0.4.0
+====================
+
+**Fixed:**
+
+* Fixed creating documentation and uploading wheel.
+
+
+
 v0.3.0
 ====================
 

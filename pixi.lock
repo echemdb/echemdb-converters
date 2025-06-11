@@ -6784,8 +6784,8 @@ packages:
   timestamp: 1733217860944
 - pypi: .
   name: echemdbconverters
-  version: 0.3.5
-  sha256: f852a8a28ec40f07c3035d7ea17dcfb6dd6c5dc49b9e32bf8eb3b753d454eee3
+  version: 0.4.0
+  sha256: df91a7f021b410bead5263aeb99cfafbce66d8d38f4c2414344dda5f51c7b118
   requires_dist:
   - clevercsv>=0.7.0,<0.9.0
   - click>=8,<9
